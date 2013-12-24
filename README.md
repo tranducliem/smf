@@ -1,11 +1,11 @@
-# PyroCMS Community Edition
+# Systems Management Feedback
 
-[![Build Status](https://travis-ci.org/pyrocms/pyrocms.png?branch=2.2/master)](https://travis-ci.org/pyrocms/pyrocms)
+[![Build Status](https://travis-ci.org/sysfeedback.byethost4.com/sysfeedback.byethost4.com.png?branch=2.2/master)](https://travis-ci.org/sysfeedback.byethost4/sysfeedback.byethost4)
 
-* [Website](https://www.pyrocms.com/)
-* [Documentation](https://www.pyrocms.com/documentation)
-* [License](http://pyrocms.com/legal/license)
-* [Forums](http://forum.pyrocms.com)
+* [Website](http://sysfeedback.byethost4.com/)
+* [Documentation](http://sysfeedback.byethost4.com/)
+* [License](http://sysfeedback.byethost4.com/legal/license)
+* [Forums](http://forum.sysfeedback.byethost4.com)
 * Version: 2.2.3
 
 ## Team
@@ -16,10 +16,10 @@
 
 ## Description
 
-PyroCMS is a CMS built using the CodeIgniter PHP framework. Using an MVC architecture
+sysfeedback.byethost4 is a CMS built using the CodeIgniter PHP framework. Using an MVC architecture
 it was built with modularity in mind. Lightweight, themeable and dynamic.
 
-PyroCMS Community Edition is free to use, redistribute and/or modify for any purpose whether personal or commercial however you must retain the copyright in your source code and in the footer of the administration.
+Systems Management Feedback is free to use, redistribute and/or modify for any purpose whether personal or commercial however you must retain the copyright in your source code and in the footer of the administration.
 
 ## Installation
 
@@ -27,12 +27,12 @@ Run http://example.com/installer to run the web-based installation script.
 
 ## Upgrading
 
-* [Upgrading v2.1.x to v2.2.x](http://docs.pyrocms.com/2.2/manual/reference/upgrade-guides/upgrade-2-1-to-2-2-0)
+* [Upgrading v2.1.x to v2.2.x](http://docs.sysfeedback.byethost4.com/2.2/manual/reference/upgrade-guides/upgrade-2-1-to-2-2-0)
 
 ## Bugs & Feature Requests
 
-* [Issue tracker](http://github.com/pyrocms/pyrocms/issues)
-* [Forum](http://forum.pyrocms.com)
+* [Issue tracker](http://github.com/sysfeedback.byethost4/sysfeedback.byethost4/issues)
+* [Forum](http://forum.sysfeedback.byethost4.com)
 
 Before reporting bugs or requesting any features, please check that it does not already exist.
 
@@ -63,7 +63,7 @@ It's strongly recommended that you download the [git-flow client](https://github
 
 Think you should be on this list? Add yourself in the next pull request you submit.
 
-[All Contributors](https://github.com/pyrocms/pyrocms/contributors)
+[All Contributors](https://github.com/sysfeedback.byethost4/sysfeedback.byethost4/contributors)
 
 ### Translators
 
