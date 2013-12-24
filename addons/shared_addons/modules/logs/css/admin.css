@@ -1,0 +1,47 @@
+/* 
+    Document   : admin
+    Created on : 2013-01-10, 13:30:43
+    Author     : user
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+root { 
+    display: block;
+}
+
+.scrollable {
+    max-height: 400px;
+    margin-top: 0;
+    overflow: auto;
+}
+.rainbow {
+    margin-top: 0;
+    font-size: 12px;
+    line-height: 18px;
+    font-family: monospace;
+}
+
+.rainbow .error {
+    color: #900;
+    padding: 2px;
+    border-radius: 3px;
+    clear: left;
+    display: inline-block;
+}
+.rainbow .date {
+    display: inline-block;
+}
+.rainbow .time {
+    clear: right;
+    display: inline-block;    
+}
+
+.rainbow .meta {
+    display: block;
+    color: #fff;
+    margin-top: 10px;
+    background-color: #999;
+    padding: 3px;
+    border-radius: 3px;
+}
