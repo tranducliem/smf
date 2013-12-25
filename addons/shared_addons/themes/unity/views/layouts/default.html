@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!--[if IE 7]> <html lang="en" class="ie7"> <![endif]-->
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+    {{ theme:partial name="metadata" }}
+
+    <!-- Google Analytics -->
+    {{ integration:analytics }}
+</head>
+<body>
+    <!--=== Style Switcher ===-->
+    {{ theme:partial name="style_switcher" }}
+    <!--=== End Style Switcher ===-->
+
+    <!--=== Top ===-->
+    {{ theme:partial name="top" }}
+    <!--=== End Top ===-->
+
+    <!--=== Header ===-->
+    <div class="header">
+        <div class="container">
+            {{ theme:partial name="logo" }}
+            {{ theme:partial name="menu" }}
+        </div><!-- /container -->
+    </div><!--/header -->
+    <!--=== End Header ===-->
+
+    {{ if page:is_home == true }}
+        <!--=== Slider ===-->
+        {{ theme:partial name="slider" }}
+        <!--=== End Slider ===-->
+
+        <!--=== Purchase Block ===-->
+        {{ theme:partial name="purchase_book" }}
+        <!-- End Purchase Block -->
+
+        <!--=== Home Content Part ===-->
+        {{ theme:partial name="home_content" }}
+        <!--=== End Home Content Part ===-->
+    {{ else }}
+        <!--=== Breadcrumbs ===-->
+        {{ theme:partial name="breadcrumbs" }}
+        <!--=== End Breadcrumbs ===-->
+
+        <!--=== Content Part ===-->
+        {{ template:body }}
+        <!--=== End Content Part ===-->
+    {{ endif }}
+
+    <!--=== Footer ===-->
+    {{ theme:partial name="footer" }}
+    <!--=== End Footer ===-->
+
+    <!--=== Copyright ===-->
+    {{ theme:partial name="copyright" }}
+    <!--=== End Copyright ===-->
+
+    <!-- JS Global Init -->
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            App.init();
+            App.initSliders();
+            Index.initParallaxSlider();
+        });
+    </script>
+    <!--[if lt IE 9]>
+    <script src="{{ theme:path }}/js/respond.js"></script>
+    <![endif]-->
+
+</body>
+</html>

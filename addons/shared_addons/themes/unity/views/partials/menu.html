@@ -1,0 +1,39 @@
+<!-- Menu -->
+<div class="navbar">
+    <div class="navbar-inner">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </a><!-- /nav-collapse -->
+        <div class="nav-collapse collapse">
+            <ul class="nav top-2">
+                {{ navigation:links group="header" class="active" }}
+                    {{ if children }}
+                        <li class="{{ class }}"><a href="{{ url }}" class="dropdown-toggle {{ class }}" data-toggle="dropdown" >{{ title }}<b class="caret"></b></a>
+                    {{ else }}
+                        <li class="{{ class }}"><a href="{{ url }}" class="{{ class }}" target="{{ target }}" >{{ title }}</a>
+                    {{ endif }}
+                        {{ if children }}
+                            <ul class="dropdown-menu">
+                                {{ children }}
+                                    <li><a href="{{ url }}" target="{{ target }}" >{{ title }}</a></li>
+                                {{ /children }}
+                            </ul>
+                            <b class="caret-out"></b>
+                        {{ endif }}
+                    </li>
+                {{ /navigation:links }}
+                <li><a class="search"><i class="icon-search search-btn"></i></a></li>
+            </ul>
+            <div class="search-open">
+                <div class="input-append">
+                    <form>
+                        <input type="text" class="span3" placeholder="Search" />
+                        <button type="submit" class="btn-u">Go</button>
+                    </form>
+                </div>
+            </div>
+        </div><!-- /nav-collapse -->
+    </div><!-- /navbar-inner -->
+</div><!-- /navbar -->
