@@ -3,6 +3,8 @@
 /system/cms/cache
 /assets/cache/*
 /system/cms/cache/*
+/system/cms/cache/default
+/system/cms/cache/default/*
 /system/cms/config/database.php
 /system/cms/logs/log-*.php
 
