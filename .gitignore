@@ -1,15 +1,22 @@
-.DS_Store
-.buildpath
+# Ignore all cache files
+/assets/cache
+/system/cms/cache
+/assets/cache/*
+/system/cms/cache/*
+/system/cms/cache/default
+/system/cms/cache/default/*
+/system/cms/config/database.php
+/system/cms/logs/log-*.php
+
+# Ignore other unneeded files.
+.travis.yml
+phpdoc.dist
+*.swp
+*~
 .project
-.settings
+.DS_Store
 .idea
-assets/cache/*
-assets/page_types/*
-!assets/page_types/.htaccess
-!assets/page_types/default/
-assets/page_types/default/*
-!assets/page_types/default/.htaccess
-system/cms/cache/*
-system/cms/config/database.php
-system/cms/logs/log-*.php
+.secret
+.buildpath
+.settings
 nbproject/
