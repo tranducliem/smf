@@ -114,7 +114,7 @@ function pick_language()
 	$CI_config->set_item('language', $config['supported_languages'][$lang]['folder']);
 
 	// Sets a constant to use throughout ALL of CI.
-	define('AUTO_LANGUAGE', $lang);
+	//define('AUTO_LANGUAGE', $lang);
 
 	log_message('debug', 'Defined const AUTO_LANGUAGE: '.AUTO_LANGUAGE);
 }

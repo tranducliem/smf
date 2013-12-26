@@ -25,4 +25,8 @@ class Department_m extends MY_Model {
         parent::limit($limit, $offset);
         return parent::get_all();
     }
+    public function get_company_list() {
+        return $this->db->get('company')
+                 ->result();
+    }
 } 

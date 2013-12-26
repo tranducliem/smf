@@ -1,3 +1,11 @@
+<?php
+$op_company = array();
+if ($company != '') {
+    foreach ($company as $item) {
+       $op_company+=array($item->id => $item->title);
+    }
+}
+?>
 <section class="title">
     <?php if ($this->method == 'create'): ?>
         <h4><?php echo lang('department:create_title') ?></h4>
@@ -36,7 +44,7 @@
                             
                             <li>
                                 <label for="company_id"><?php echo lang('department:form_company_id') ?> </label>
-                                <div class="input"><?php echo form_input('company_id', $post->company_id, 'maxlength="11" class="width-20"') ?></div>
+                                <div class="input"><?php echo form_dropdown('company_id', $op_company, $post->company_id); ?></div>
                             </li>
                         </ul>
                     </fieldset>

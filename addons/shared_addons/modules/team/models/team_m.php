@@ -1,4 +1,6 @@
-<?php defined('BASEPATH') or exit('No direct script access allowed');
+<?php
+
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
  * The Test Class
@@ -7,22 +9,27 @@
  * @Date: 11/20/13
  * @Update: 11/20/2013
  */
-
 class Team_m extends MY_Model {
 
     protected $_table = "team";
 
-    public function __construct(){
+    public function __construct() {
         parent::__construct();
     }
 
-    public function get_team_list($limit, $offset, $base_where = array()){
-        if(!empty($base_where)){
-            if($base_where['title'] != ''){
+    public function get_team_list($limit, $offset, $base_where = array()) {
+        if (!empty($base_where)) {
+            if ($base_where['title'] != '') {
                 $this->db->like('title', $base_where['title']);
             }
         }
         parent::limit($limit, $offset);
         return parent::get_all();
     }
-} 
+
+    public function get_company_list() {
+        return $this->db->get('company')
+                 ->result();
+    }
+
+}

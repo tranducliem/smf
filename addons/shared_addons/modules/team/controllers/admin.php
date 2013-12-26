@@ -82,8 +82,9 @@ class Admin extends Admin_Controller
      */
     public function create(){
         $post = new stdClass();
-
-        // Get the blog stream.
+        // Get all company
+        $company = $this->team_m->get_company_list();
+        // Get the team stream.
         $this->load->driver('Streams');
         $stream = $this->streams->streams->get_stream('team', 'teams');
         $stream_fields = $this->streams_m->get_stream_fields($stream->id, $stream->stream_namespace);
@@ -132,6 +133,7 @@ class Admin extends Admin_Controller
         $this->template
             ->title($this->module_details['name'], lang('team:create_title'))
             ->set('stream_fields', $this->streams->fields->get_stream_fields($stream->stream_slug, $stream->stream_namespace, $values))
+            ->set('company',$company)
             ->set('post', $post)
             ->build('admin/form');
     }
@@ -149,7 +151,8 @@ class Admin extends Admin_Controller
     public function edit($id = 0){
         $id or redirect('admin/team');
         $post = $this->team_m->get($id);
-
+        // Get all company
+        $company = $this->team_m->get_company_list();
         $this->load->driver('Streams');
         $stream = $this->streams->streams->get_stream('team', 'teams');
         $stream_fields = $this->streams_m->get_stream_fields($stream->id, $stream->stream_namespace);
@@ -197,6 +200,7 @@ class Admin extends Admin_Controller
             ->title($this->module_details['name'], sprintf(lang('team:edit_name_label'), $post->title))
             ->set('stream_fields', $this->streams->fields->get_stream_fields($stream->stream_slug, $stream->stream_namespace, $values, $post->id))
             ->set('post', $post)
+            ->set('company',$company)
             ->build('admin/form');
     }
 
