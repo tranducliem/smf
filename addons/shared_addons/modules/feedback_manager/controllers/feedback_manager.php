@@ -11,6 +11,7 @@
 
 class Feedback_manager extends Public_Controller
 {
+    private $_data = Array();
     protected $section = 'posts';
 
     protected $validation_rules = array(
@@ -56,7 +57,6 @@ class Feedback_manager extends Public_Controller
         $this->load->library(array('keywords/keywords', 'form_validation'));
         $this->load->model('feedback_manager_m');
         $this->lang->load('feedback_manager');
-        $this->lang->load('global');
         $this->lang->load('buttons');
     }
 
@@ -162,7 +162,7 @@ class Feedback_manager extends Public_Controller
             ->title($this->module_details['name'], lang('feedback_manager:create_title'))
             ->set('stream_fields', $this->streams->fields->get_stream_fields($stream->stream_slug, $stream->stream_namespace, $values))
             ->set('post', $post)
-            ->append_js('module::datapicker.js')
+            /*->append_js('module::datapicker.js')*/
             ->build('form');
 //            ->build('admin/form');
     }
@@ -295,5 +295,36 @@ class Feedback_manager extends Public_Controller
                 redirect('feedback_manager');
                 break;
         }
+    }
+
+    public function manage()
+    {
+        $base_where = array();
+        if ($this->input->post('f_keywords'))
+        {
+            $base_where['title'] = $this->input->post('f_keywords');
+        }
+
+        // Create pagination links
+        $total_rows = $this->feedback_manager_m->count_by($base_where);
+        $pagination = create_pagination('feedback_manager/index', $total_rows);
+
+        $post = $this->feedback_manager_m->get_feedback_manager_list($pagination['limit'], $pagination['offset'], $base_where);
+        $this->input->is_ajax_request() and $this->template->set_layout(false);
+
+        $this->template
+            ->title($this->module_details['name'])
+            ->append_js('module::filter.js')
+            ->set_partial('filters', 'admin/partials/filters')
+            ->set('pagination', $pagination)
+            ->set('post', $post);
+
+        $this->template->build('manage');
+    }
+
+    public function view($id)
+    {
+        $this->_data['post'] = $this->feedback_manager_m->get($id);
+        $this->template->build('view',$this->_data);
     }
 }
