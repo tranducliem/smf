@@ -9,13 +9,13 @@
  * @Update: 11/21/13
  */
 
-class Question extends Public_Controller {
+class Team extends Public_Controller {
 
     public function __construct(){
         parent::__construct();
         $this->load->driver('Streams');
-        $this->stream = $this->streams_m->get_stream('question', true, 'questions');
-        $this->load->model('question_m');
+        $this->stream = $this->streams_m->get_stream('team', true, 'teams');
+        $this->load->model('team_m');
     }
 
     /**
@@ -29,12 +29,46 @@ class Question extends Public_Controller {
     public function index(){
         // Get the latest question posts
         $posts = $this->streams->entries->get_entries(array(
-            'stream'		=> 'question',
-            'namespace'		=> 'questions',
+            'stream'		=> 'team',
+            'namespace'		=> 'teams',
+            'limit'         => Settings::get('records_per_page'),
+            'where'		    => "",
+            'paginate'		=> 'yes',
+            'pag_base'		=> site_url('team/page'),
+            'pag_segment'   => 3
+        ));
+
+        // Process posts
+        foreach ($posts['entries'] as &$post) {
+            $this->_process_post($post);
+        }
+        $meta = $this->_posts_metadata($posts['entries']);
+
+        $this->template
+            ->title($this->module_details['name'])
+            ->set_breadcrumb(lang('team:team_title'))
+            ->set_metadata('og:title', $this->module_details['name'], 'og')
+            ->set_metadata('og:type', 'team', 'og')
+            ->set_metadata('og:url', current_url(), 'og')
+            ->set_metadata('og:description', $meta['description'], 'og')
+            ->set_metadata('description', $meta['description'])
+            ->set_metadata('keywords', $meta['keywords'])
+            ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
+            ->set('posts', $posts['entries'])
+            ->set('pagination', $posts['pagination'])
+            ->build('index');
+    }
+
+
+    public function show(){
+        // Get the latest team posts
+        $posts = $this->streams->entries->get_entries(array(
+            'stream'		=> 'team',
+            'namespace'		=> 'teams',
             'limit'             => Settings::get('records_per_page'),
             'where'		=> "",
             'paginate'		=> 'yes',
-            'pag_base'		=> site_url('question/page'),
+            'pag_base'		=> site_url('team/page'),
             'pag_segment'       => 3
         ));
 
@@ -46,9 +80,9 @@ class Question extends Public_Controller {
 
         $this->template
             ->title($this->module_details['name'])
-            ->set_breadcrumb(lang('question:question_title'))
+            ->set_breadcrumb(lang('team:team_title'))
             ->set_metadata('og:title', $this->module_details['name'], 'og')
-            ->set_metadata('og:type', 'question', 'og')
+            ->set_metadata('og:type', 'team', 'og')
             ->set_metadata('og:url', current_url(), 'og')
             ->set_metadata('og:description', $meta['description'], 'og')
             ->set_metadata('description', $meta['description'])
@@ -68,7 +102,7 @@ class Question extends Public_Controller {
      * @Update: 11/21/13
      */
     private function _process_post(&$post) {
-        $post['url'] = site_url('question/'.date('Y/m', $post['created']).'/'.$post['name']);
+        $post['url'] = site_url('team/'.date('Y/m', $post['created']).'/'.$post['name']);
     }
 
     /**
