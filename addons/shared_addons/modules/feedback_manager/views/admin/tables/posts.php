@@ -33,7 +33,3 @@
 </table>
 
 <?php $this->load->view('admin/partials/pagination') ?>
-<br>
-<div class="table_action_buttons">
-    <?php $this->load->view('admin/partials/buttons', array('buttons' => array('delete'))) ?>
-</div>
