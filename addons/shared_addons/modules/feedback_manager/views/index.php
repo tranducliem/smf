@@ -26,3 +26,5 @@
         <?php endforeach?>
     </div>
 <?  } else { echo "Current No Post"; }   ?>
+<?php //$this->load->view('admin/partials/pagination') ?>
+<?php echo $this->pagination->create_links(); ?>

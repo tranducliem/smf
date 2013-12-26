@@ -78,18 +78,31 @@ class Feedback_manager extends Public_Controller
             $base_where['title'] = $this->input->post('f_keywords');
         }
 
-        // Create pagination links
+        if ($this->uri->segment(3) === null)
+        {
+            $current_page = 1;
+        }
+        else
+        {
+            $current_page = $this->uri->segment(3);
+        }
         $total_rows = $this->feedback_manager_m->count_by($base_where);
-        $pagination = create_pagination('feedback_manager/index', $total_rows);
+        $this->load->library('pagination');
 
-        $post = $this->feedback_manager_m->get_feedback_manager_list($pagination['limit'], $pagination['offset'], $base_where);
-        $this->input->is_ajax_request() and $this->template->set_layout(false);
+        $config['base_url'] = base_url().'feedback_manager/page/';
+        $config['total_rows'] = $total_rows;
+        $config['per_page'] = 10;
+        $config['uri_segment'] = 3;
+        $config['use_page_numbers'] = true;
+
+        $offset = ($current_page - 1) * $config['per_page'];
+
+        $this->pagination->initialize($config);
+
+        $post = $this->feedback_manager_m->get_feedback_manager_list($config['per_page'], $offset, $base_where);
 
         $this->template
             ->title($this->module_details['name'])
-            ->append_js('module::filter.js')
-            ->set_partial('filters', 'admin/partials/filters')
-            ->set('pagination', $pagination)
             ->set('post', $post);
             $this->template->build('index');
     }
