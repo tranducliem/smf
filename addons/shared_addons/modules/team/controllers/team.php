@@ -11,8 +11,6 @@
 
 class Question extends Public_Controller {
 
-    private $_data = array();
-
     public function __construct(){
         parent::__construct();
         $this->load->driver('Streams');
