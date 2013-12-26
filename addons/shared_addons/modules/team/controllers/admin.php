@@ -34,8 +34,9 @@ class Admin extends Admin_Controller
     public function __construct() {
         parent::__construct();
         $this->load->library(array('keywords/keywords', 'form_validation'));
-        $this->load->model('team_m');
+        $this->load->model(array('team_m','company_m'));
         $this->lang->load('team');
+        
     }
 
     /**
@@ -83,7 +84,7 @@ class Admin extends Admin_Controller
     public function create(){
         $post = new stdClass();
         // Get all company
-        $company = $this->team_m->get_company_list();
+        $company = $this->company_m->get_all();
         // Get the team stream.
         $this->load->driver('Streams');
         $stream = $this->streams->streams->get_stream('team', 'teams');
@@ -152,7 +153,7 @@ class Admin extends Admin_Controller
         $id or redirect('admin/team');
         $post = $this->team_m->get($id);
         // Get all company
-        $company = $this->team_m->get_company_list();
+        $company = $this->company_m->get_all();
         $this->load->driver('Streams');
         $stream = $this->streams->streams->get_stream('team', 'teams');
         $stream_fields = $this->streams_m->get_stream_fields($stream->id, $stream->stream_namespace);
