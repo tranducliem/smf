@@ -18,18 +18,16 @@ class Team_m extends MY_Model {
     }
 
     public function get_team_list($limit, $offset, $base_where = array()) {
+        $this->db
+            ->select('team.*,company.title as company')
+            ->join('company', 'team.company_id = company.id');
         if (!empty($base_where)) {
             if ($base_where['title'] != '') {
-                $this->db->like('title', $base_where['title']);
+                $this->db->like('team.title', $base_where['title']);
             }
         }
         parent::limit($limit, $offset);
         return parent::get_all();
-    }
-
-    public function get_company_list() {
-        return $this->db->get('company')
-                 ->result();
     }
 
 }

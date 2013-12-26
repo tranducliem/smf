@@ -101,7 +101,7 @@ $autoload['config'] = array('language');
 |
 */
 
-$autoload['language'] = array('errors');
+$autoload['language'] = array('global', 'buttons', 'errors');
 
 
 /*

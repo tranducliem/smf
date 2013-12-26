@@ -87,6 +87,17 @@ var App = function () {
         }
     }
 
+    function handleSearchForm(){
+        $('form.filter_form').ajaxForm({
+            beforeSend: function() {},
+            uploadProgress: function(event, position, total, percentComplete) {},
+            success: function(data) {
+                $('#filter-result').html(data);
+            },
+            complete: function(xhr) {}
+        });
+    }
+
     return {
         init: function () {
             handleBootstrap();
@@ -94,6 +105,7 @@ var App = function () {
             handleMisc();
             handleSearch();
             handleSwitcher();
+            handleSearchForm();
         },
 
         initSliders: function () {
