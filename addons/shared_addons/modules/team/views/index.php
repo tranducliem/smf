@@ -4,8 +4,8 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th>{{ helper:lang line="team:title" }}</th>
-                <th>Description</th>
+                <th>{{ helper:lang line="team:form_title" }}</th>
+                <th>{{ helper:lang line="team:form_description" }}</th>
                 <th>Company</th>
             </tr>
         </thead>

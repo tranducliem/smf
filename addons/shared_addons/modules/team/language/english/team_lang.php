@@ -32,5 +32,5 @@ $lang['team:delete_error']                          = 'No team were deleted.';
 $lang['team:form_title']                            = 'Title';
 $lang['team:form_description']                      = 'Description';
 $lang['team:description']                           = 'Description';
-$lang['team:company_id']                            = 'Company ID';
-$lang['team:form_company_id']                       = 'Company ID';
+$lang['team:company_id']                            = 'Company';
+$lang['team:form_company_id']                       = 'Company';
