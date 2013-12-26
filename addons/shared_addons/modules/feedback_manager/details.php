@@ -18,7 +18,7 @@ class Module_Feedback_manager extends Module
                 'en' => 'Feedback Manager',
             ),
             'description' => array(
-                'en' => 'Post book entries.',
+                'en' => 'Post feedback_manager entries.',
             ),
             'frontend' => true,
             'backend' => true,
@@ -49,7 +49,6 @@ class Module_Feedback_manager extends Module
     {
         $this->load->driver('Streams');
         $this->streams->utilities->remove_namespace('feedback_managers');
-
         // Just in case.
         $this->dbforge->drop_table('feedback_manager');
 
@@ -75,9 +74,11 @@ class Module_Feedback_manager extends Module
             'require'       => array('type' => 'SMALLINT', 'constraint' => 1,'null' => true),
             'status'        => array('type' => 'SMALLINT', 'constraint' => 1, 'null' => true),
         );
+
         if ($this->dbforge->add_column('feedback_manager', $feedback_manager_fields) AND
             is_dir($this->upload_path . 'feedback_manager') OR @mkdir($this->upload_path . 'feedback_manager', 0777, TRUE)
-        ) {
+         )
+        {
             return TRUE;
         }
     }

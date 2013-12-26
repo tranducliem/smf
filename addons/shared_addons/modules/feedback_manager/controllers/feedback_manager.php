@@ -56,6 +56,8 @@ class Feedback_manager extends Public_Controller
         $this->load->library(array('keywords/keywords', 'form_validation'));
         $this->load->model('feedback_manager_m');
         $this->lang->load('feedback_manager');
+        $this->lang->load('global');
+        $this->lang->load('buttons');
     }
 
     /**
@@ -88,9 +90,10 @@ class Feedback_manager extends Public_Controller
             ->set('pagination', $pagination)
             ->set('post', $post);
 
-        $this->input->is_ajax_request()
-            ? $this->template->build('admin/tables/posts')
-            : $this->template->build('admin/index');
+//        $this->input->is_ajax_request()
+//            ? $this->template->build('admin/tables/posts')
+//            : $this->template->build('admin/index');
+            $this->template->build('index');
     }
 
     /**
@@ -160,7 +163,8 @@ class Feedback_manager extends Public_Controller
             ->set('stream_fields', $this->streams->fields->get_stream_fields($stream->stream_slug, $stream->stream_namespace, $values))
             ->set('post', $post)
             ->append_js('module::datapicker.js')
-            ->build('admin/form');
+            ->build('form');
+//            ->build('admin/form');
     }
 
 
