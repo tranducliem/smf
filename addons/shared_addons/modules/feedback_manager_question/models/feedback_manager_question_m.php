@@ -8,15 +8,15 @@
  * @Update: 12/25/2013
  */
 
-class Feedback_manager_m extends MY_Model {
+class Feedback_manager_question_m extends MY_Model {
 
-    protected $_table = "feedback_manager";
+    protected $_table = "feedback_manager_question";
 
     public function __construct(){
         parent::__construct();
     }
 
-    public function get_feedback_manager_list($limit, $offset, $base_where = array()){
+    public function get_feedback_manager_question_list($limit, $offset, $base_where = array()){
         if(!empty($base_where)){
             if($base_where['title'] != ''){
                 $this->db->like('title', $base_where['title']);
