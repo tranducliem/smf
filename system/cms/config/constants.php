@@ -183,4 +183,7 @@ define('CMS_EDITION', 'Community');
 
 define('CMS_DATE', '08/13/2013');
 
+// Sets a constant to use throughout ALL of CI.
+define('AUTO_LANGUAGE', 'en');
+
 /* End of file constants.php */
