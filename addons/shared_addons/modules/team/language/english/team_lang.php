@@ -12,6 +12,7 @@ $lang['team:posted_label']                          = 'Posted';
 $lang['team:read_more_label']                       = 'Read more';
 $lang['team:detail_label']                          = 'Detail';
 $lang['team:written_by_label']                      = 'Created by';
+$lang['team:list_title']                            = 'List Team';
 
 //Action title
 $lang['team:create_title']                          = 'Add team';
@@ -30,8 +31,7 @@ $lang['team:delete_error']                          = 'No team were deleted.';
 
 //Form
 $lang['team:form_title']                            = 'Title';
-$lang['team:title']                            = 'Title';
-$lang['team:form_description']                           = 'Description';
+$lang['team:form_description']                      = 'Description';
 $lang['team:description']                           = 'Description';
-$lang['team:company_id']                            = 'Company ID';
-$lang['team:form_company_id']                           = 'Company ID';
+$lang['team:company_id']                            = 'Company';
+$lang['team:form_company_id']                       = 'Company';

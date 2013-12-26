@@ -14,8 +14,10 @@ class Team extends Public_Controller {
     public function __construct(){
         parent::__construct();
         $this->load->driver('Streams');
+        $this->load->library(array('keywords/keywords', 'form_validation'));
         $this->stream = $this->streams_m->get_stream('team', true, 'teams');
-        $this->load->model('team_m');
+        $this->load->model(array('team_m', 'company_m'));
+        $this->lang->load('team');
     }
 
     /**
@@ -27,22 +29,17 @@ class Team extends Public_Controller {
      * @Update: 11/21/13
      */
     public function index(){
-        // Get the latest question posts
-        $posts = $this->streams->entries->get_entries(array(
-            'stream'		=> 'team',
-            'namespace'		=> 'teams',
-            'limit'         => Settings::get('records_per_page'),
-            'where'		    => "",
-            'paginate'		=> 'yes',
-            'pag_base'		=> site_url('team/page'),
-            'pag_segment'   => 3
-        ));
-
-        // Process posts
-        foreach ($posts['entries'] as &$post) {
-            $this->_process_post($post);
+        $base_where = array();
+        if ($this->input->post('f_keywords')) {
+            $base_where['title'] = $this->input->post('f_keywords');
         }
-        $meta = $this->_posts_metadata($posts['entries']);
+
+        // Create pagination links
+        $total_rows = $this->team_m->count_by($base_where);
+        $pagination = create_pagination('team/index', $total_rows);
+        $posts = $this->team_m->get_team_list($pagination['limit'], $pagination['offset'], $base_where);
+        $this->input->is_ajax_request() and $this->template->set_layout(false);
+        $meta = $this->_posts_metadata($posts);
 
         $this->template
             ->title($this->module_details['name'])
@@ -53,10 +50,13 @@ class Team extends Public_Controller {
             ->set_metadata('og:description', $meta['description'], 'og')
             ->set_metadata('description', $meta['description'])
             ->set_metadata('keywords', $meta['keywords'])
-            ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
-            ->set('posts', $posts['entries'])
-            ->set('pagination', $posts['pagination'])
-            ->build('index');
+            ->set_partial('filters', 'partials/filters')
+            ->set('posts', $posts)
+            ->set('pagination', $pagination);
+
+        $this->input->is_ajax_request()
+            ? $this->template->build('tables/posts')
+            : $this->template->build('index');
     }
 
 
@@ -76,7 +76,7 @@ class Team extends Public_Controller {
         foreach ($posts['entries'] as &$post) {
             $this->_process_post($post);
         }
-        $meta = $this->_posts_metadata($posts['entries']);
+        $meta = $this->_posts_metadata($posts['entries2']);
 
         $this->template
             ->title($this->module_details['name'])
@@ -102,7 +102,9 @@ class Team extends Public_Controller {
      * @Update: 11/21/13
      */
     private function _process_post(&$post) {
-        $post['url'] = site_url('team/'.date('Y/m', $post['created']).'/'.$post['name']);
+        $post['company'] = $this->company_m->get($post->company_id)->title;
+        $post['edit_url'] = site_url('team/edit/'.$post->id);
+        $post['delete_url'] = site_url('team/delete/'.$post->id);
     }
 
     /**
@@ -119,8 +121,8 @@ class Team extends Public_Controller {
 
         if (!empty($posts)) {
             foreach ($posts as &$post){
-                $keywords[] = $post['name'];
-                $description[] = $post['desc'];
+                $keywords[] = $post->title;
+                $description[] = $post->description;
             }
         }
 
@@ -147,7 +149,7 @@ class Team extends Public_Controller {
             'stream'		=> 'question',
             'namespace'		=> 'questions',
             'limit'			=> 1,
-            'where'			=> "`name` = '{$slug}'"
+            'where'			=> "`title` = '{$slug}'"
         );
         $data = $this->streams->entries->get_entries($params);
         $post = (isset($data['entries'][0])) ? $data['entries'][0] : null;
@@ -168,33 +170,33 @@ class Team extends Public_Controller {
         $this->_process_post($post);
 
         $this->template
-            ->title($post['name'], lang('question:question_title'))
+            ->title($post['title'], lang('question:question_title'))
             ->set_metadata('og:type', 'article', 'og')
             ->set_metadata('og:url', current_url(), 'og')
-            ->set_metadata('og:title', $post['name'], 'og')
+            ->set_metadata('og:title', $post['title'], 'og')
             ->set_metadata('og:site_name', Settings::get('site_name'), 'og')
-            ->set_metadata('og:description', $post['desc'], 'og')
+            ->set_metadata('og:description', $post['description'], 'og')
             ->set_metadata('article:published_time', date(DATE_ISO8601, $post['created']), 'og')
             ->set_metadata('article:modified_time', date(DATE_ISO8601, $post['updated']), 'og')
-            ->set_metadata('description', $post['desc'])
-            ->set_metadata('keywords', $post['name'])
-            ->set_breadcrumb($post['name'])
+            ->set_metadata('description', $post['description'])
+            ->set_metadata('keywords', $post['title'])
+            ->set_breadcrumb($post['title'])
             ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
             ->set('post', array($post))
             ->build('view');
     }
     public function view_file(){
         $this->load->model('files/file_m');
-        $arr['images_1_6']=$this->file_m->order_by('name')
+        $arr['images_1_6']=$this->file_m->order_by('title')
                 ->get_many_by_folder_id_limits('1','6','0');
-        $arr['images_7_12']=$this->file_m->order_by('name')
+        $arr['images_7_12']=$this->file_m->order_by('title')
                 ->get_many_by_folder_id_limits('1','6','6');
         foreach ($arr['images_1_6'] as $item) {
-            $path=$this->file_m->get_by_folder_id_and_name('5',$item->name)->path;
+            $path=$this->file_m->get_by_folder_id_and_name('5',$item->title)->path;
             $item->thumb_path= $path;
         }
         foreach ($arr['images_7_12'] as $item) {
-            $path=$this->file_m->get_by_folder_id_and_name('5',$item->name)->path;
+            $path=$this->file_m->get_by_folder_id_and_name('5',$item->title)->path;
             $item->thumb_path= $path;
         }
         $this->load->view('show_img',$arr);
