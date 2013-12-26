@@ -5,6 +5,7 @@ $lang['feedback_manager:description']                           = 'Description';
 $lang['feedback_manager:start_date']                            = 'Start date';
 $lang['feedback_manager:end_date']                              = 'End date';
 $lang['feedback_manager:type_id']                               = 'Type id';
+$lang['feedback_manager:type']                               = 'Type';
 $lang['feedback_manager:status']                                = 'Status';
 $lang['feedback_manager:book_title']                            = 'Feedback Manager';
 $lang['feedback_manager:posts_title']                           = 'Feedback Manager';

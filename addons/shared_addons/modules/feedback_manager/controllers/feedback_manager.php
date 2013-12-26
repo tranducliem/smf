@@ -56,6 +56,8 @@ class Feedback_manager extends Public_Controller
         parent::__construct();
         $this->load->library(array('keywords/keywords', 'form_validation'));
         $this->load->model('feedback_manager_m');
+        $this->load->model('feedbacktype/feedbacktype_m');
+        $this->load->model('users/user_m');
         $this->lang->load('feedback_manager');
         $this->lang->load('buttons');
     }
@@ -89,10 +91,6 @@ class Feedback_manager extends Public_Controller
             ->set_partial('filters', 'admin/partials/filters')
             ->set('pagination', $pagination)
             ->set('post', $post);
-
-//        $this->input->is_ajax_request()
-//            ? $this->template->build('admin/tables/posts')
-//            : $this->template->build('admin/index');
             $this->template->build('index');
     }
 
@@ -105,6 +103,7 @@ class Feedback_manager extends Public_Controller
      * @Update: 12/25/13
      */
     public function create(){
+        $this->_data['test'] = $this->feedbacktype_m->get_all();
         $post = new stdClass();
 
         // Get the blog stream.
@@ -163,7 +162,7 @@ class Feedback_manager extends Public_Controller
             ->set('stream_fields', $this->streams->fields->get_stream_fields($stream->stream_slug, $stream->stream_namespace, $values))
             ->set('post', $post)
             /*->append_js('module::datapicker.js')*/
-            ->build('form');
+            ->build('form',$this->_data);
 //            ->build('admin/form');
     }
 
@@ -178,6 +177,7 @@ class Feedback_manager extends Public_Controller
      * @Update:
      */
     public function edit($id = 0){
+        $this->_data['test'] = $this->feedbacktype_m->get_all();
         $id or redirect('feedback_manager');
         $post = $this->feedback_manager_m->get($id);
 
@@ -232,8 +232,7 @@ class Feedback_manager extends Public_Controller
             ->title($this->module_details['name'], sprintf(lang('feedback_manager:edit_title_label'), $post->title))
             ->set('stream_fields', $this->streams->fields->get_stream_fields($stream->stream_slug, $stream->stream_namespace, $values, $post->id))
             ->set('post', $post)
-            ->append_js('module::datapicker.js')
-            ->build('admin/form');
+            ->build('form',$this->_data);
     }
 
     /**
@@ -325,6 +324,10 @@ class Feedback_manager extends Public_Controller
     public function view($id)
     {
         $this->_data['post'] = $this->feedback_manager_m->get($id);
+        $user_id = $this->_data['post']->created_by;
+        $type_id = $this->_data['post']->type_id;
+        $this->_data['user'] = $this->user_m->get_by(array('id'=>$user_id));
+        $this->_data['type'] = $this->feedbacktype_m->get_by(array('id'=>$type_id));
         $this->template->build('view',$this->_data);
     }
 }

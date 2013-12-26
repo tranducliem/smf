@@ -44,7 +44,13 @@
 
                         <li>
                             <label for="slug"><?php echo lang('feedback_manager:form_type_id') ?> <span>*</span></label>
-                            <div class="input"><?php echo form_input('type_id', $post->type_id, 'maxlength="100" class="width-20"') ?></div>
+                            <div class="input">
+                                <select name="type_id">
+                                    <?php foreach ($test as $item): ?>
+                                    <option id="A" value="<?php echo $item->id?>"><?php echo $item->title?></option>
+                                    <?php endforeach ?>
+                                </select>
+                            </div>
                         </li>
 
                         <li>
@@ -64,13 +70,14 @@
 
         <input type="hidden" name="row_edit_id" value="<?php if ($this->method != 'create'): echo $post->id; endif; ?>" />
         <div class="buttons">
-            <?php $this->load->view('admin/partials/buttons', array('buttons' => array('save', 'save_exit', 'cancel'))) ?>
+            <?php $this->load->view('admin/partials/buttons', array('buttons' => array('save_exit'))) ?>
         </div>
         <?php echo form_close() ?>
     </div>
 </section>
 
 <script type="text/javascript">
+
     (function($){
         $(function(){
             $( "#datepicker1" ).datepicker(

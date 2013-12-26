@@ -41,7 +41,9 @@
 
                             <li>
                                 <label for="slug"><?php echo lang('feedback_manager:form_type_id') ?> <span>*</span></label>
-                                <div class="input"><?php echo form_input('type_id', $post->type_id, 'maxlength="100" class="width-20"') ?></div>
+                                <div class="input">
+                                    <?php echo form_input('type_id', $post->type_id, 'maxlength="100" class="width-20"') ?>
+                                </div>
                             </li>
 
                             <li>
