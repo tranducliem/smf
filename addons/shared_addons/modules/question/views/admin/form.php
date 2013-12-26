@@ -42,6 +42,7 @@
             <input type="hidden" name="row_edit_id" value="<?php if ($this->method != 'create'): echo $post->id; endif; ?>" />
             <div class="buttons">
                 <?php $this->load->view('admin/partials/buttons', array('buttons' => array('save', 'save_exit', 'cancel'))) ?>
+
             </div>
         <?php echo form_close() ?>
     </div>
