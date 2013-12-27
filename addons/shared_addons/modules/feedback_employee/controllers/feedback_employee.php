@@ -33,17 +33,17 @@ class Feedback_employee extends Public_Controller
         'apply_id'    => array(
             'field'     => 'apply_id',
             'label'     => 'lang:feedback_employee:apply_id',
-            'rules'     => 'numeric'
+            'rules'     => 'required'
         ),
         'department_id'    => array(
             'field'     => 'department_id',
             'label'     => 'lang:feedback_employee:department_id',
-            'rules'     => 'numeric'
+            'rules'     => 'required'
         ),
         'status'    => array(
             'field'     => 'status',
             'label'     => 'lang:feedback_employee:status',
-            'rules'     => 'numeric'
+            'rules'     => ''
         ),
     );
 

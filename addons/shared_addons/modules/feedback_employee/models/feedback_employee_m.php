@@ -19,16 +19,14 @@ class Feedback_employee_m extends MY_Model {
     public function get_feedback_employee_list($limit, $offset, $base_where = array()){
         if(!empty($base_where)){
             if($base_where['title'] != ''){
-                $this->db->like('title', $base_where['title']);
+                $this->db->like('feedback_employee.title', $base_where['title']);
             }
         }
+        $this->db->select('feedback_employee.*,users.username, department.title as d_title');
+        $this->db->join('users', 'users.id = feedback_employee.apply_id');
+        $this->db->join('department', 'department.id = feedback_employee.department_id');
+        $this->db->order_by('created','DESC');
         parent::limit($limit, $offset);
-        return parent::get_all();
-    }
-
-    public function get_desc_all()
-    {
-        $this->db->order_by('created');
         return parent::get_all();
     }
 } 

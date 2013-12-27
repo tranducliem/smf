@@ -21,8 +21,8 @@
                             <div class="input"><?php echo form_input('title', htmlspecialchars_decode($post->title), 'maxlength="100" id="title"') ?></div>
                         </div>
                         <div class="control-group">
-                            <label class="control-label"><?php echo lang('feedback_employee:form_description') ?> <span>*</span></label>
-                            <div class="input"><?php echo form_input('description', $post->description, 'maxlength="100" class="width-20"') ?></div>
+                            <label class="control-label"><?php echo lang('feedback_employee:form_description') ?></label>
+                            <div class="input"><?php echo form_textarea('description', $post->description) ?></div>
                         </div>
 
                         <div class="control-group">
@@ -53,7 +53,7 @@
                         </div>
 
                         <div class="control-group">
-                            <label class="control-label"><?php echo lang('feedback_employee:form_status') ?> <span>*</span></label>
+                            <label class="control-label"><?php echo lang('feedback_employee:form_status') ?></label>
                             <div class="input"><?php echo form_input('status', $post->status, 'maxlength="100" class="width-20"') ?></div>
                         </div>
                     </fieldset>
