@@ -12,9 +12,11 @@ $lang['question:posted_label']                          = 'Posted';
 $lang['question:read_more_label']                       = 'Read more';
 $lang['question:detail_label']                          = 'Detail';
 $lang['question:written_by_label']                      = 'Created by';
+$lang['question:list_title']                         = 'List Question';
 
 //Action title
 $lang['question:create_title']                          = 'Add question';
+$lang['question:create_new_title']                          = 'Create new question';
 $lang['question:edit_title']                            = 'Edit question';
 $lang['question:edit_title_label']                      = 'Edit question "%s"';
 

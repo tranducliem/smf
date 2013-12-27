@@ -24,8 +24,8 @@ function form_validate(){
 }
 
 function form_reset(){
-    $('#tab_form a').html('Create new team');
-    $('#btnSubmit').html('Create team');
+    $('#tab_form a').html('Create new department');
+    $('#btnSubmit').html('Create department');
     $('#title').val("");
     $('#company_id').val("");
     $('#description').val("");
@@ -36,19 +36,19 @@ function edit_record(id){
     $('#row_edit_id').val(id);
     //Set action for submit
     $('#action').val('edit');
-    $('#tab_form a').html('Edit team');
-    $('#btnSubmit').html('Edit team');
+    $('#tab_form a').html('Edit department');
+    $('#btnSubmit').html('Edit department');
     //Bidding data
     $.ajax({
         type: "POST",
-        url: BASE_URL + "team/get_team_by_id/"+id,
+        url: BASE_URL + "department/get_department_by_id/"+id,
         data: {},
         success: function(data){
             var response = $.parseJSON(data);
             $('#title').val(response.title);
             $('#company_id').val(response.company_id);
             $('#description').val(response.description);
-            //Show tab form team
+            //Show tab form department
             $('#tab-1').removeClass('active');
             $('#tab_list').removeClass('active');
             $('#tab_form').addClass('active');
@@ -65,7 +65,7 @@ function delete_record(id){
     if(con){
         $.ajax({
             type: "POST",
-            url: BASE_URL + "team/delete/"+id,
+            url: BASE_URL + "department/delete/"+id,
             data: {},
             success: function(data){
                 var response = $.parseJSON(data);
@@ -90,7 +90,7 @@ function form_success(data){
     if(response.status == "success"){
         open_message_block("success", response.message);
         form_reset();
-        //Show tab list team
+        //Show tab list department
         $('#tab-2').removeClass('active');
         $('#tab_form').removeClass('active');
         $('#tab_list').addClass('active');
@@ -105,7 +105,7 @@ function form_success(data){
 function list_refresh(){
     $.ajax({
         type: "POST",
-        url: BASE_URL + "team",
+        url: BASE_URL + "department",
         data: {},
         success: function(data){
             $('#filter-result').html(data);
