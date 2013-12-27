@@ -8,15 +8,15 @@ function form_validate(){
     var description = $('#description');
 
     if(title.val() == ""){
-        open_message_block("error", "Title is require!");
+        open_message_block("error", "Title is required!");
         title.focus();
         return false;
     } else if(company_id.val() == ""){
-        open_message_block("error", "Title is require!");
+        open_message_block("error", "Company is required!");
         company_id.focus();
         return false;
     } else if(description.val() == ""){
-        open_message_block("error", "Description is require!");
+        open_message_block("error", "Description is required!");
         description.focus();
         return false;
     }
