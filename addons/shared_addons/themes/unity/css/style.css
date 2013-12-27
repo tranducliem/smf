@@ -1893,3 +1893,7 @@ i.style-switcher-btn-option:hover {
 .filter_wrapper form input{
     float: right !important;
 }
+
+.tab-content {
+    padding: 20px 0px 10px;
+}

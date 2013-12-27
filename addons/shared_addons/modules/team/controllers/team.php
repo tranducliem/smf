@@ -29,54 +29,28 @@ class Team extends Public_Controller {
      * @Update: 11/21/13
      */
     public function index(){
-        $base_where = array();
+        $where = "";
         if ($this->input->post('f_keywords')) {
-            $base_where['title'] = $this->input->post('f_keywords');
+            $where .= "`title` LIKE '%".$this->input->post('f_keywords')."%' ";
         }
 
-        // Create pagination links
-        $total_rows = $this->team_m->count_by($base_where);
-        $pagination = create_pagination('team/index', $total_rows);
-        $posts = $this->team_m->get_team_list($pagination['limit'], $pagination['offset'], $base_where);
-        $this->input->is_ajax_request() and $this->template->set_layout(false);
-        $meta = $this->_posts_metadata($posts);
-
-        $this->template
-            ->title($this->module_details['name'])
-            ->set_breadcrumb(lang('team:team_title'))
-            ->set_metadata('og:title', $this->module_details['name'], 'og')
-            ->set_metadata('og:type', 'team', 'og')
-            ->set_metadata('og:url', current_url(), 'og')
-            ->set_metadata('og:description', $meta['description'], 'og')
-            ->set_metadata('description', $meta['description'])
-            ->set_metadata('keywords', $meta['keywords'])
-            ->set_partial('filters', 'partials/filters')
-            ->set('posts', $posts)
-            ->set('pagination', $pagination);
-
-        $this->input->is_ajax_request()
-            ? $this->template->build('tables/posts')
-            : $this->template->build('index');
-    }
-
-
-    public function show(){
         // Get the latest team posts
         $posts = $this->streams->entries->get_entries(array(
             'stream'		=> 'team',
             'namespace'		=> 'teams',
-            'limit'             => Settings::get('records_per_page'),
-            'where'		=> "",
+            'limit'         => Settings::get('records_per_page'),
+            'where'		    => $where,
             'paginate'		=> 'yes',
             'pag_base'		=> site_url('team/page'),
-            'pag_segment'       => 3
+            'pag_segment'   => 3
         ));
 
         // Process posts
         foreach ($posts['entries'] as &$post) {
             $this->_process_post($post);
         }
-        $meta = $this->_posts_metadata($posts['entries2']);
+        $meta = $this->_posts_metadata($posts['entries']);
+        $this->input->is_ajax_request() and $this->template->set_layout(false);
 
         $this->template
             ->title($this->module_details['name'])
@@ -89,8 +63,11 @@ class Team extends Public_Controller {
             ->set_metadata('keywords', $meta['keywords'])
             ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
             ->set('posts', $posts['entries'])
-            ->set('pagination', $posts['pagination'])
-            ->build('index');
+            ->set('pagination', $posts['pagination']);
+
+        $this->input->is_ajax_request()
+            ? $this->template->build('tables/posts')
+            : $this->template->build('index');
     }
 
     /**
@@ -102,9 +79,9 @@ class Team extends Public_Controller {
      * @Update: 11/21/13
      */
     private function _process_post(&$post) {
-        $post['company'] = $this->company_m->get($post->company_id)->title;
-        $post['edit_url'] = site_url('team/edit/'.$post->id);
-        $post['delete_url'] = site_url('team/delete/'.$post->id);
+        $post['company'] = $this->company_m->get($post['company_id'])->title;
+        $post['url_edit'] = site_url('team/edit/'.$post['id']);
+        $post['url_delete'] = site_url('team/delete/'.$post['id']);
     }
 
     /**
@@ -121,8 +98,8 @@ class Team extends Public_Controller {
 
         if (!empty($posts)) {
             foreach ($posts as &$post){
-                $keywords[] = $post->title;
-                $description[] = $post->description;
+                $keywords[] = $post['title'];
+                $description[] = $post['description'];
             }
         }
 
