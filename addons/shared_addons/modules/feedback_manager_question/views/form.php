@@ -1,3 +1,4 @@
+<div class="control-group">
 <section class="title">
     <?php if ($this->method == 'create'): ?>
         <h4><?php echo lang('feedback_manager_question:create_title'); ?></h4>
@@ -11,15 +12,10 @@
         <?php echo form_open_multipart() ?>
         <div class="tabs">
 
-            <ul class="tab-menu">
-                <li><a href="#book-content-tab"><span><?php echo lang('feedback_manager_question:content_label') ?></span></a></li>
-            </ul>
-
             <!-- Content tab -->
             <div class="form_inputs" id="book-content-tab">
                 <fieldset>
-                    <ul>
-                        <li>
+                    <div class="control-group">
                             <label for="slug"><?php echo lang('feedback_manager_question:form_feedback_manager') ?> <span>*</span></label>
                             <div class="input">
                                 <select name="feedback_manager_id">
@@ -28,9 +24,9 @@
                                     <?php endforeach ?>
                                 </select>
                             </div>
-                        </li>
+                        </div>
 
-                        <li>
+                    <div class="control-group">
                             <label for="slug"><?php echo lang('feedback_manager_question:form_question') ?> <span>*</span></label>
                             <div class="input">
                                 <select name="question_id">
@@ -39,8 +35,7 @@
                                     <?php endforeach ?>
                                 </select>
                             </div>
-                        </li>
-                    </ul>
+                    </div>
                 </fieldset>
             </div>
 
@@ -53,3 +48,4 @@
         <?php echo form_close() ?>
     </div>
 </section>
+</div>
