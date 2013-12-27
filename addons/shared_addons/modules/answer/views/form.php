@@ -18,8 +18,8 @@
                             <div class="input"><?php echo form_input('title', htmlspecialchars_decode($post->title), 'maxlength="100" id="title"') ?></div>
                         </div>
                         <div class="control-group">
-                            <label class="control-label"><?php echo lang('answer:form_description') ?> <span>*</span></label>
-                            <div class="input"><?php echo form_input('description', $post->description, 'maxlength="100" class="width-20"') ?></div>
+                            <label class="control-label"><?php echo lang('answer:form_description') ?></label>
+                            <div class="input"><?php echo form_textarea('description', $post->description) ?></div>
                         </div>
 
                         <div class="control-group">

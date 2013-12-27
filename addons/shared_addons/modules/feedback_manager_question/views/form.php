@@ -1,9 +1,10 @@
+<div class="span9">
 <div class="control-group">
-<section class="title">
+<section class="headline">
     <?php if ($this->method == 'create'): ?>
-        <h4><?php echo lang('feedback_manager_question:create_title'); ?></h4>
+        <h3><?php echo lang('feedback_manager_question:create_title'); ?></h3>
     <?php else: ?>
-        <h4><?php echo lang('feedback_manager_question:edit_title'); ?></h4>
+        <h3><?php echo lang('feedback_manager_question:edit_title'); ?></h3>
     <?php endif ?>
 </section>
 
@@ -48,4 +49,5 @@
         <?php echo form_close() ?>
     </div>
 </section>
+</div>
 </div>

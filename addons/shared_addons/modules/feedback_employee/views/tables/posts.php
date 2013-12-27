@@ -1,6 +1,6 @@
 <a class="btn-u" href="<?php echo site_url('feedback_employee/create') ?>" title="<?php echo lang('global:create')?>" class="button">Create Feedback</a>
 <br/><br/>
-<table cellspacing="0" border="1px">
+<table class="table table-striped">
     <thead>
     <tr>
         <th>Id</th>

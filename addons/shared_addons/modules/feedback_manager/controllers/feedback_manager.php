@@ -23,7 +23,7 @@ class Feedback_manager extends Public_Controller
         'description'   => array(
             'field'     => 'description',
             'label'     => 'lang:feedback_manager:description',
-            'rules'     => 'trim|htmlspecialchars|required|max_length[200]'
+            'rules'     => 'trim|htmlspecialchars|'
         ),
         'start_date'    => array(
             'field'     => 'start_date',
@@ -38,17 +38,17 @@ class Feedback_manager extends Public_Controller
         'type_id'    => array(
             'field'     => 'type_id',
             'label'     => 'lang:feedback_manager:type_id',
-            'rules'     => 'numeric'
+            'rules'     => ''
         ),
         'require'       => array(
             'field'     => 'require',
             'label'     => 'lang:feedback_manager:require',
-            'rules'     => 'numeric'
+            'rules'     => ''
         ),
         'status'    => array(
             'field'     => 'status',
             'label'     => 'lang:feedback_manager:status',
-            'rules'     => 'numeric'
+            'rules'     => ''
         ),
     );
 
@@ -331,7 +331,6 @@ class Feedback_manager extends Public_Controller
             ->set('pagination', $pagination)
             ->set('post', $post);
 
-//        $this->template->build('manage');
         $this->input->is_ajax_request()
             ? $this->template->build('tables/posts')
             : $this->template->build('manage');
