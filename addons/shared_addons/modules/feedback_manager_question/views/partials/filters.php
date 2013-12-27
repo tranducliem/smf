@@ -2,8 +2,8 @@
     <legend><?php echo lang('global:filters') ?></legend>
     <?php echo form_open('', array('class' => 'filter_form'))?>
     <div class="control-group">
-        <input type="text" name="f_keywords" placeholder="<?php echo lang('feedback_manager_question:feedback_manager_id').' '.lang('global:keywords');?>">
-        <input type="submit" name="btnSubmit" value="Submit" />
+        <input type="text" name="f_keywords" placeholder="<?php echo lang('global:keywords');?>">
+        <input class="btn-u" type="submit" name="btnSubmit" value="Submit" />
     </div>
     <?php echo form_close() ?>
 </fieldset>

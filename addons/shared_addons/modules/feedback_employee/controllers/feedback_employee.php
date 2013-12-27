@@ -33,17 +33,17 @@ class Feedback_employee extends Public_Controller
         'apply_id'    => array(
             'field'     => 'apply_id',
             'label'     => 'lang:feedback_employee:apply_id',
-            'rules'     => 'numeric'
+            'rules'     => 'required'
         ),
         'department_id'    => array(
             'field'     => 'department_id',
             'label'     => 'lang:feedback_employee:department_id',
-            'rules'     => 'numeric'
+            'rules'     => 'required'
         ),
         'status'    => array(
             'field'     => 'status',
             'label'     => 'lang:feedback_employee:status',
-            'rules'     => 'numeric'
+            'rules'     => ''
         ),
     );
 
@@ -331,11 +331,13 @@ class Feedback_employee extends Public_Controller
 
     public function view($id)
     {
-        $this->_data['post'] = $this->feedback_manager_m->get($id);
+        $this->_data['post'] = $this->feedback_employee_m->get($id);
         $user_id = $this->_data['post']->created_by;
-        $type_id = $this->_data['post']->type_id;
+        $apply_id = $this->_data['post']->apply_id;
+        $department_id = $this->_data['post']->department_id;
         $this->_data['user'] = $this->user_m->get_by(array('id'=>$user_id));
-        $this->_data['type'] = $this->feedbacktype_m->get_by(array('id'=>$type_id));
+        $this->_data['apply'] = $this->user_m->get_by(array('id'=>$apply_id));
+        $this->_data['department'] = $this->department_m->get_by(array('id'=>$department_id));
         $this->template->build('view',$this->_data);
     }
 }

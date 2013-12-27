@@ -36,3 +36,4 @@ $lang['answer:delete_error']                          = 'No answer were deleted.
 $lang['answer:form_title']                            = 'Title';
 $lang['answer:form_description']                      = 'Description';
 $lang['answer:form_question_id']                      = 'Question id';
+$lang['answer:form_question']                         = 'Question';
