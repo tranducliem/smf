@@ -43,12 +43,12 @@ class Feedback_manager extends Public_Controller
         'require'       => array(
             'field'     => 'require',
             'label'     => 'lang:feedback_manager:require',
-            'rules'     => 'trim|htmlspecialchars|'
+            'rules'     => ''
         ),
         'status'    => array(
             'field'     => 'status',
             'label'     => 'lang:feedback_manager:status',
-            'rules'     => 'trim|htmlspecialchars|'
+            'rules'     => ''
         ),
     );
 
