@@ -23,12 +23,12 @@ class Answer extends Public_Controller
         'description'   => array(
             'field'     => 'description',
             'label'     => 'lang:answer:description',
-            'rules'     => 'trim|htmlspecialchars|required|max_length[200]'
+            'rules'     => 'trim|htmlspecialchars|'
         ),
         'question_id'    => array(
             'field'     => 'question_id',
             'label'     => 'lang:answer:question_id',
-            'rules'     => 'numeric'
+            'rules'     => ''
         ),
 
     );

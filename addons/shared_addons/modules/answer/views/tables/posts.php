@@ -1,12 +1,12 @@
 <a class="btn-u" href="<?php echo site_url('answer/create') ?>" title="<?php echo lang('global:create')?>" class="button">Create answer</a>
 <br/><br/>
-<table cellspacing="0" border="1px">
+<table class="table table-striped">
     <thead>
     <tr>
         <th>Id</th>
         <th><?php echo lang('answer:form_title') ?></th>
         <th class="collapse"><?php echo lang('answer:form_description') ?></th>
-        <th><?php echo lang('answer:form_question_id') ?></th>
+        <th><?php echo lang('answer:form_question') ?></th>
         <th width="180"><?php echo lang('global:actions') ?></th>
     </tr>
     </thead>
@@ -16,7 +16,7 @@
             <td><?php echo $item->id ?></td>
             <td><?php echo $item->title ?></td>
             <td class="collapse"><?php echo $item->description ?></td>
-            <td class="collapse"><?php echo $item->question_id ?></td>
+            <td class="collapse"><?php echo $item->q_title ?></td>
             <td style="padding-top:10px;">
                 <a class="btn-u" href="<?php echo site_url('answer/edit/' . $item->id) ?>" title="<?php echo lang('global:edit')?>" class="button">
                     <?php echo lang('global:edit')?>
