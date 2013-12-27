@@ -70,37 +70,6 @@ class Team extends Public_Controller {
             : $this->template->build('index');
     }
 
-    public function show(){
-        $base_where = array();
-        if ($this->input->post('f_keywords')) {
-            $base_where['title'] = $this->input->post('f_keywords');
-        }
-
-        // Create pagination links
-        $total_rows = $this->team_m->count_by($base_where);
-        $pagination = create_pagination('team/index', $total_rows);
-        $posts = $this->team_m->get_team_list($pagination['limit'], $pagination['offset'], $base_where);
-        $this->input->is_ajax_request() and $this->template->set_layout(false);
-        $meta = $this->_posts_metadata($posts);
-
-        $this->template
-            ->title($this->module_details['name'])
-            ->set_breadcrumb(lang('team:team_title'))
-            ->set_metadata('og:title', $this->module_details['name'], 'og')
-            ->set_metadata('og:type', 'team', 'og')
-            ->set_metadata('og:url', current_url(), 'og')
-            ->set_metadata('og:description', $meta['description'], 'og')
-            ->set_metadata('description', $meta['description'])
-            ->set_metadata('keywords', $meta['keywords'])
-            ->set_partial('filters', 'partials/filters')
-            ->set('posts', $posts)
-            ->set('pagination', $pagination);
-
-        $this->input->is_ajax_request()
-            ? $this->template->build('tables/posts')
-            : $this->template->build('index');
-    }
-
     /**
      * The process_post function
      * @Description: This is process_post function
