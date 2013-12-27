@@ -16,6 +16,7 @@ $lang['team:list_title']                            = 'List Team';
 
 //Action title
 $lang['team:create_title']                          = 'Add team';
+$lang['team:create_new_title']                      = 'Create new team';
 $lang['team:edit_title']                            = 'Edit team';
 $lang['team:edit_title_label']                      = 'Edit team "%s"';
 
