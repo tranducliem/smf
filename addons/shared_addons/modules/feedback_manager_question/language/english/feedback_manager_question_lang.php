@@ -3,7 +3,7 @@
 
 $lang['feedback_manager_question:feedback_manager_id']                  = 'Feedback Manager Id';
 $lang['feedback_manager_question:question_id']                          = 'Question Id';
-
+$lang['feedback_manager_question:title']                                = 'Feedback Manager Question';
 
 //Label
 $lang['feedback_manager_question:post_label']                            = 'Feedback Manager Question';
