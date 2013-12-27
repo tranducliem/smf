@@ -284,7 +284,7 @@ class Feedback_manager_question extends Public_Controller
         }
 
         // Create pagination links
-        $total_rows = $this->feedback_manager_question_m->count_by($base_where);
+        $total_rows = $this->feedback_manager_question_m->get_feedback_manager_question_count($base_where);
         $pagination = create_pagination('feedback_manager_question/manage/index', $total_rows);
 
         $post = $this->feedback_manager_question_m->get_feedback_manager_question_list($pagination['limit'], $pagination['offset'], $base_where);

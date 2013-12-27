@@ -9,8 +9,8 @@
         <div class="mmm">
             <?php foreach ($post as $item): ?>
                 <div class="test" style="border: solid 1px; margin: 10px; padding: 10px; width: 500px">
-                    <h5>Feedback Manager Id: <?php echo $item->feedback_manager_id?></h5>
-                    <h5>Question Id: <?php echo $item->question_id;?> </h5>
+                    <h5>Feedback Manager: <?php echo $item->title?></h5>
+                    <h5>Question: <?php echo $item->q_title;?> </h5>
                 </div>
             <?php endforeach?>
         </div>

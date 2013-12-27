@@ -1,11 +1,11 @@
 <a class="btn-u" href="<?php echo site_url('feedback_manager_question/create') ?>" title="<?php echo lang('global:create')?>" class="button">Create Feedback Question</a>
 <br/><br/>
-<table cellspacing="0" border="1px">
+<table class="table table-striped">
     <thead>
     <tr>
         <th>Id</th>
-        <th><?php echo lang('feedback_manager_question:form_feedback_manager_id') ?></th>
-        <th class="collapse"><?php echo lang('feedback_manager_question:form_question_id') ?></th>
+        <th><?php echo lang('feedback_manager_question:form_feedback_manager') ?></th>
+        <th class="collapse"><?php echo lang('feedback_manager_question:form_question') ?></th>
         <th width="180"><?php echo lang('global:actions') ?></th>
     </tr>
     </thead>
@@ -13,8 +13,8 @@
     <?php foreach ($post as $item) : ?>
         <tr>
             <td><?php echo $item->id ?></td>
-            <td><?php echo $item->feedback_manager_id ?></td>
-            <td class="collapse"><?php echo $item->question_id ?></td>
+            <td><?php echo $item->title ?></td>
+            <td class="collapse"><?php echo $item->q_title ?></td>
 
             <td style="padding-top:10px;">
                 <a class="btn-u" href="<?php echo site_url('feedback_manager_question/edit/' . $item->id) ?>" title="<?php echo lang('global:edit')?>" class="button">
