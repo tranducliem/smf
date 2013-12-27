@@ -8,15 +8,15 @@
  * @Update: 12/25/2013
  */
 
-class Feedbackuser_m extends MY_Model {
+class Answeruser_m extends MY_Model {
 
-    protected $_table = "feedback_manager_user";
+    protected $_table = "answer_user";
 
     public function __construct(){
         parent::__construct();
     }
 
-    public function get_feedbackusers_list($limit, $offset, $base_where = array()){
+    public function get_answerusers_list($limit, $offset, $base_where = array()){
         if (!empty($base_where)) {
             if ($base_where['name'] != '') {
                 $CI = & get_instance();
@@ -33,9 +33,9 @@ class Feedbackuser_m extends MY_Model {
                 }
             }
         }
-        $this->db->join('users', 'users.id = feedback_manager_user.user_id');
-        $this->db->join('feedback_manager', 'feedback_manager.id = feedback_manager_user.feedback_manager_id');
-        $this->db->select('feedback_manager_user.*, users.username, feedback_manager.title');
+        $this->db->join('users', 'users.id = answer_user.user_id');
+        $this->db->join('answer', 'answer.id = answer_user.answer_id');
+        $this->db->select('answer_user.*, users.username, answer.title');
         parent::limit($limit, $offset);
         return parent::get_all();
     }
