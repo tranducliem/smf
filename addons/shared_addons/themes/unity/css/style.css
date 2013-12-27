@@ -1893,3 +1893,24 @@ i.style-switcher-btn-option:hover {
 .filter_wrapper form input{
     float: right !important;
 }
+
+.tab-content {
+    padding: 20px 0px 10px;
+}
+
+.form_field{
+    width: 60%;
+    float: left;
+}
+
+.hidden{
+    display: none;
+}
+
+#message_block h4{
+    display: none;
+}
+
+label span.require{
+    color: #ff0a27;
+}

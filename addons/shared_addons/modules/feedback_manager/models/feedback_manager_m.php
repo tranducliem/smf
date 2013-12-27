@@ -19,16 +19,19 @@ class Feedback_manager_m extends MY_Model {
     public function get_feedback_manager_list($limit, $offset, $base_where = array()){
         if(!empty($base_where)){
             if($base_where['title'] != ''){
-                $this->db->like('title', $base_where['title']);
+                $this->db->like('feedback_manager.title', $base_where['title']);
             }
         }
+        $this->db->select('feedback_manager.*,feedback_manager_type.title as type_title');
+        $this->db->join('feedback_manager_type', 'feedback_manager_type.id = feedback_manager.type_id');
+        $this->db->order_by('created', 'DESC');
         parent::limit($limit, $offset);
         return parent::get_all();
     }
 
     public function get_desc_all()
     {
-        $this->db->order_by('created');
+        $this->db->order_by('created','DESC');
         return parent::get_all();
     }
 } 

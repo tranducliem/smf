@@ -23,7 +23,7 @@ class Feedback_manager extends Public_Controller
         'description'   => array(
             'field'     => 'description',
             'label'     => 'lang:feedback_manager:description',
-            'rules'     => 'trim|htmlspecialchars|required|max_length[200]'
+            'rules'     => 'trim|htmlspecialchars|'
         ),
         'start_date'    => array(
             'field'     => 'start_date',
@@ -38,17 +38,17 @@ class Feedback_manager extends Public_Controller
         'type_id'    => array(
             'field'     => 'type_id',
             'label'     => 'lang:feedback_manager:type_id',
-            'rules'     => 'numeric'
+            'rules'     => ''
         ),
         'require'       => array(
             'field'     => 'require',
             'label'     => 'lang:feedback_manager:require',
-            'rules'     => 'numeric'
+            'rules'     => ''
         ),
         'status'    => array(
             'field'     => 'status',
             'label'     => 'lang:feedback_manager:status',
-            'rules'     => 'numeric'
+            'rules'     => ''
         ),
     );
 
@@ -319,7 +319,7 @@ class Feedback_manager extends Public_Controller
 
         // Create pagination links
         $total_rows = $this->feedback_manager_m->count_by($base_where);
-        $pagination = create_pagination('feedback_manager/index', $total_rows);
+        $pagination = create_pagination('feedback_manager/manage/index', $total_rows);
 
         $post = $this->feedback_manager_m->get_feedback_manager_list($pagination['limit'], $pagination['offset'], $base_where);
         $this->input->is_ajax_request() and $this->template->set_layout(false);
@@ -327,11 +327,13 @@ class Feedback_manager extends Public_Controller
         $this->template
             ->title($this->module_details['name'])
             ->append_js('module::filter.js')
-            ->set_partial('filters', 'admin/partials/filters')
+            ->set_partial('filters', 'partials/filters')
             ->set('pagination', $pagination)
             ->set('post', $post);
 
-        $this->template->build('manage');
+        $this->input->is_ajax_request()
+            ? $this->template->build('tables/posts')
+            : $this->template->build('manage');
     }
 
     public function view($id)

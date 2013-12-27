@@ -284,8 +284,8 @@ class Feedback_manager_question extends Public_Controller
         }
 
         // Create pagination links
-        $total_rows = $this->feedback_manager_question_m->count_by($base_where);
-        $pagination = create_pagination('feedback_manager_question/index', $total_rows);
+        $total_rows = $this->feedback_manager_question_m->get_feedback_manager_question_count($base_where);
+        $pagination = create_pagination('feedback_manager_question/manage/index', $total_rows);
 
         $post = $this->feedback_manager_question_m->get_feedback_manager_question_list($pagination['limit'], $pagination['offset'], $base_where);
         $this->input->is_ajax_request() and $this->template->set_layout(false);
@@ -293,11 +293,13 @@ class Feedback_manager_question extends Public_Controller
         $this->template
             ->title($this->module_details['name'])
             ->append_js('module::filter.js')
-            ->set_partial('filters', 'admin/partials/filters')
+            ->set_partial('filters', 'partials/filters')
             ->set('pagination', $pagination)
             ->set('post', $post);
 
-        $this->template->build('manage');
+        $this->input->is_ajax_request()
+            ? $this->template->build('tables/posts')
+            : $this->template->build('manage');
     }
 
 }

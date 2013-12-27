@@ -1,3 +1,4 @@
+<div class="span9">
 <style>
     h4{color: palevioletred}
 </style>
@@ -19,7 +20,7 @@
     <p><?php echo $post->description;?></p>
     <h4>Start date: </h4> <?php echo $post->start_date;?>
     <h4>End date: </h4> <?php echo $post->end_date;?>
-    <h4>Type_id: </h4> <?php echo $type->title;?>
+    <h4>Type: </h4> <?php echo $type->title;?>
     <h4>Require: </h4> <?php
         if($post->require == 0) echo "Not require";
         else echo "Require";
@@ -30,5 +31,6 @@
         else if($post->status == 1) echo "Processing";
         else echo "Done";
     ?>
+</div>
 </div>
 

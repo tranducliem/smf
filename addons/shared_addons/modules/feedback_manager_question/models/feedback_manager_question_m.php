@@ -17,13 +17,32 @@ class Feedback_manager_question_m extends MY_Model {
     }
 
     public function get_feedback_manager_question_list($limit, $offset, $base_where = array()){
+
         if(!empty($base_where)){
             if($base_where['title'] != ''){
-                $this->db->like('title', $base_where['title']);
+                $this->db->like('feedback_manager.title', $base_where['title']);
             }
         }
+        $this->db->select('feedback_manager_question.*,feedback_manager.title as title, question.title as q_title');
+        $this->db->join('feedback_manager', 'feedback_manager.id = feedback_manager_question.feedback_manager_id');
+        $this->db->join('question', 'question.id = feedback_manager_question.question_id');
+        $this->db->order_by('created', 'DESC');
         parent::limit($limit, $offset);
         return parent::get_all();
+    }
+
+    public function get_feedback_manager_question_count($base_where = array()){
+
+        if(!empty($base_where)){
+            if($base_where['title'] != ''){
+                $this->db->like('feedback_manager.title', $base_where['title']);
+            }
+        }
+        $this->db->select('feedback_manager_question.*,feedback_manager.title as title, question.title as q_title');
+        $this->db->join('feedback_manager', 'feedback_manager.id = feedback_manager_question.feedback_manager_id');
+        $this->db->join('question', 'question.id = feedback_manager_question.question_id');
+
+        return parent::count_all();
     }
 
     public function get_desc_all()

@@ -114,5 +114,9 @@ $lang['global:plugin']					= 'Plugin';
 
 $lang['global:options']					= 'Options';
 $lang['global:plain-text']				= 'Plain Text';
+$lang['global:warning']				    = 'Warning!';
+$lang['global:success']				    = 'Successfully!';
+$lang['global:error']				    = 'Error!';
+$lang['global:info']				    = 'Information!';
 
 /* End of file global_lang.php */
