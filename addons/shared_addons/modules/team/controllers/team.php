@@ -11,13 +11,43 @@
 
 class Team extends Public_Controller {
 
+    protected $validation_rules = array(
+        'title' => array(
+            'field' => 'title',
+            'label' => 'lang:team:title',
+            'rules' => 'trim|htmlspecialchars|required|max_length[150]'
+        ),
+        'description' => array(
+            'field' => 'description',
+            'label' => 'lang:team:description',
+            'rules' => 'trim|htmlspecialchars|max_length[255]'
+        ),
+        'company_id' => array(
+            'field' => 'company_id',
+            'label' => 'lang:team:company_id',
+            'rules' => 'integer|required|less_than[1000000000]'
+        )
+    );
+
     public function __construct(){
         parent::__construct();
+        $this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
         $this->load->driver('Streams');
         $this->load->library(array('keywords/keywords', 'form_validation'));
         $this->stream = $this->streams_m->get_stream('team', true, 'teams');
         $this->load->model(array('team_m', 'company_m'));
         $this->lang->load('team');
+
+        if ( ! $companies = $this->cache->get('companies')){
+            $companies = array(
+                ''  => lang('team:select_company')
+            );
+            $rows = $this->company_m->get_all();
+            foreach($rows as $row){
+                $companies[$row->id] = $row->title;
+            }
+            $this->cache->save('companies', $companies, 300);
+        }
     }
 
     /**
@@ -61,13 +91,198 @@ class Team extends Public_Controller {
             ->set_metadata('og:description', $meta['description'], 'og')
             ->set_metadata('description', $meta['description'])
             ->set_metadata('keywords', $meta['keywords'])
+            ->append_js('module::team_form.js')
             ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
             ->set('posts', $posts['entries'])
-            ->set('pagination', $posts['pagination']);
+            ->set('pagination', $posts['pagination'])
+            ->set('companies', $this->cache->get('companies'));
 
         $this->input->is_ajax_request()
             ? $this->template->build('tables/posts')
             : $this->template->build('index');
+    }
+
+    /**
+     * The process function
+     * @Description: This is process function
+     * @Parameter:
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    public function process(){
+        if(!$this->input->is_ajax_request()) redirect('team');
+        if($this->input->post('action') == 'create'){
+            $this->create();
+        }else if($this->input->post('action') == 'edit'){
+            $this->edit();
+        }
+    }
+
+    /**
+     * The delete function
+     * @Description: This is delete function
+     * @Parameter:
+     *      1. $id int The ID of the team post to delete
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    public function delete($id = 0) {
+        $ids = ($id) ? array($id) : $this->input->post('action_to');
+        if (!empty($ids)){
+            $post_names = array();
+            $deleted_ids = array();
+            foreach ($ids as $id){
+                if ($post = $this->team_m->get($id)){
+                    if ($this->team_m->delete($id)){
+                        $this->pyrocache->delete('team_m');
+                        $post_names[] = $post->title;
+                        $deleted_ids[] = $id;
+                    }
+                }
+            }
+            Events::trigger('team_deleted', $deleted_ids);
+        }
+        $message = array();
+        if (!empty($post_names)){
+            if (count($post_names) == 1) {
+                $message['status']  = 'success';
+                $message['message']  = str_replace("%s", $post_names[0], lang('team:delete_success'));
+            } else {
+                $message['status']  = 'success';
+                $message['message']  = str_replace("%s", implode('", "', $post_names), lang('team:mass_delete_success'));
+            }
+        } else {
+            $message['status']  = 'warning';
+            $message['message']  = lang('team:delete_error');
+        }
+        echo json_encode($message);
+    }
+
+    /**
+     * The action function
+     * @Description: This is action function
+     * @Parameter:
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    public function action()
+    {
+        switch ($this->input->post('btnAction'))
+        {
+            case 'delete':
+                $this->delete();
+                break;
+            default:
+                echo '';
+                break;
+        }
+    }
+
+    /**
+     * The get_team_by_id function
+     * @Description: This is edit function
+     * @Parameter:
+     *      1. $id int The ID of the team post to get
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    public function get_team_by_id($id){
+        if(!$this->input->is_ajax_request()) redirect('team');
+        if($id != null && $id != ""){
+            $item = $this->team_m->get($id);
+            echo json_encode($item);
+        }else{
+            echo "";
+        }
+    }
+
+    /**
+     * The create function
+     * @Description: This is create function
+     * @Parameter:
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    private function create(){
+        $message = array();
+        $stream = $this->streams->streams->get_stream('team', 'teams');
+        // Get the validation for our custom blog fields.
+        $team_validation = $this->streams->streams->validation_array($stream->stream_slug, $stream->stream_namespace, 'new');
+        $rules = array_merge($this->validation_rules, $team_validation);
+        $this->form_validation->set_rules($rules);
+
+        if ($this->form_validation->run()){
+            $extra = array(
+                'title'            => $this->input->post('title'),
+                'description'      => $this->input->post('description'),
+                'company_id'       => $this->input->post('company_id'),
+                'created'		   => date('Y-m-d H:i:s', now()),
+                'created_by'       => $this->current_user->id
+            );
+
+            if ($id = $this->streams->entries->insert_entry($_POST, 'team', 'teams', array('created'), $extra)) {
+                $this->pyrocache->delete_all('team_m');
+                $message['status']  = 'success';
+                $message['message']  = str_replace("%s", $this->input->post('title'), lang('team:post_add_success'));
+                Events::trigger('team_created', $id);
+            } else {
+                $message['status']  = 'error';
+                $message['message']  = lang('team:post_add_error');
+            }
+        } else {
+            $message['status']  = 'error';
+            $message['message']  = lang('team:validate_error');
+        }
+        echo json_encode($message);
+    }
+
+    /**
+     * The edit function
+     * @Description: This is edit function
+     * @Parameter:
+     *      1. $id int The ID of the team post to edit
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    private function edit(){
+        $id = $this->input->post('row_edit_id');
+        $post = $this->team_m->get($id);
+        $message = array();
+        // Get all company
+        $stream = $this->streams->streams->get_stream('team', 'teams');
+        $team_validation = $this->streams->streams->validation_array($stream->stream_slug, $stream->stream_namespace, 'new');
+        $rules = array_merge($this->validation_rules, $team_validation);
+        $this->form_validation->set_rules($rules);
+
+        if ($this->form_validation->run()){
+            $author_id = empty($post->created_by) ? $this->current_user->id : $post->created_by;
+            $extra = array(
+                'title'            => $this->input->post('title'),
+                'description'      => $this->input->post('description'),
+                'company_id'       => $this->input->post('company_id'),
+                'updated'		   => date('Y-m-d H:i:s', now()),
+                'created_by'       => $author_id
+            );
+
+            if ($this->streams->entries->update_entry($id, $_POST, 'team', 'teams', array('updated'), $extra)) {
+                $message['status']  = 'success';
+                $message['message']  = str_replace("%s", $this->input->post('title'), lang('team:edit_success'));
+                Events::trigger('team_updated', $id);
+            } else {
+                $message['status']  = 'error';
+                $message['message']  = lang('team:edit_error');
+            }
+        } else {
+            $message['status']  = 'error';
+            $message['message']  = lang('team:validate_error');
+        }
+        echo json_encode($message);
     }
 
     /**
@@ -108,7 +323,6 @@ class Team extends Public_Controller {
             'description' => implode(', ', $description)
         );
     }
-
 
     /**
      * The view function
@@ -161,23 +375,6 @@ class Team extends Public_Controller {
             ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
             ->set('post', array($post))
             ->build('view');
-    }
-    public function view_file(){
-        $this->load->model('files/file_m');
-        $arr['images_1_6']=$this->file_m->order_by('title')
-                ->get_many_by_folder_id_limits('1','6','0');
-        $arr['images_7_12']=$this->file_m->order_by('title')
-                ->get_many_by_folder_id_limits('1','6','6');
-        foreach ($arr['images_1_6'] as $item) {
-            $path=$this->file_m->get_by_folder_id_and_name('5',$item->title)->path;
-            $item->thumb_path= $path;
-        }
-        foreach ($arr['images_7_12'] as $item) {
-            $path=$this->file_m->get_by_folder_id_and_name('5',$item->title)->path;
-            $item->thumb_path= $path;
-        }
-        $this->load->view('show_img',$arr);
-        
     }
 
 } 

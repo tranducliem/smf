@@ -2,8 +2,8 @@
     <div class="headline"><h3>{{ helper:lang line="team:title" }}</h3></div>
     <!-- Tabs Widget -->
     <ul class="nav nav-tabs tabs">
-        <li class="active"><a href="#tab-1" data-toggle="tab">{{ helper:lang line="team:list_title" }}</a></li>
-        <li><a href="#tab-2" data-toggle="tab">{{ helper:lang line="team:create_new_title" }}</a></li>
+        <li id="tab_list" class="active"><a href="#tab-1" data-toggle="tab">{{ helper:lang line="team:list_title" }}</a></li>
+        <li id="tab_form" ><a href="#tab-2" data-toggle="tab">{{ helper:lang line="team:create_new_title" }}</a></li>
     </ul>
     <!--/Tabs Widget-->
 
@@ -23,7 +23,9 @@
             {{ endif }}
         </div>
         <div class="tab-pane" id="tab-2">
-            <p>Vivamus imperdiet condimentum diam, eget placerat felis consectetur id. Donec eget orci metus, ac adipiscing nunc.</p>
+            <div class="form_field">
+                <?php echo $this->load->view('partials/form') ?>
+            </div>
         </div>
     </div>
     <!--/tab-content-->
