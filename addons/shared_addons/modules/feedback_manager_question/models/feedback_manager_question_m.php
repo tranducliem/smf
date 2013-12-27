@@ -19,7 +19,7 @@ class Feedback_manager_question_m extends MY_Model {
     public function get_feedback_manager_question_list($limit, $offset, $base_where = array()){
         if(!empty($base_where)){
             if($base_where['title'] != ''){
-                $this->db->like('title', $base_where['title']);
+                $this->db->like('feedback_manager_id', $base_where['title']);
             }
         }
         parent::limit($limit, $offset);
