@@ -33,7 +33,7 @@
                         <div class="control-group">
                             <label class="control-label"><?php echo lang('feedback_employee:form_apply_id') ?> <span>*</span></label>
                             <div class="input">
-                                <select name="type_id">
+                                <select name="apply_id">
                                     <?php foreach ($apply as $item): ?>
                                         <option id="A" value="<?php echo $item->id?>"><?php echo $item->username?></option>
                                     <?php endforeach ?>
@@ -44,7 +44,7 @@
                         <div class="control-group">
                             <label class="control-label"><?php echo lang('feedback_employee:form_department_id') ?> <span>*</span></label>
                             <div class="input">
-                                <select name="type_id">
+                                <select name="department_id">
                                     <?php foreach ($department as $item2): ?>
                                         <option id="A" value="<?php echo $item2->id?>"><?php echo $item2->title?></option>
                                     <?php endforeach ?>

@@ -17,13 +17,11 @@
     <div class="blog-img"></div>
     <h4>Desciption:</h4>
     <p><?php echo $post->description;?></p>
-    <h4>Start date: </h4> <?php echo $post->start_date;?>
-    <h4>End date: </h4> <?php echo $post->end_date;?>
-    <h4>Type_id: </h4> <?php echo $type->title;?>
-    <h4>Require: </h4> <?php
-        if($post->require == 0) echo "Not require";
-        else echo "Require";
+    <h4>Date: </h4> <?php echo $post->date;?>
+    <h4>Apply user: </h4> <?php
+        if($apply)  echo $apply->username;
     ?>
+    <h4>Department: </h4> <?php if($department) echo $department->title;?>
     <h4>Status: </h4>
     <?php
         if($post->status == 0) echo "Not start";
