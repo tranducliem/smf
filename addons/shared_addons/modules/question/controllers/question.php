@@ -11,13 +11,27 @@
 
 class Question extends Public_Controller {
 
-    private $_data = array();
+    protected $validation_rules = array(
+        'title' => array(
+            'field' => 'title',
+            'label' => 'lang:question:title',
+            'rules' => 'trim|htmlspecialchars|required|max_length[150]'
+        ),
+        'description' => array(
+            'field' => 'description',
+            'label' => 'lang:question:description',
+            'rules' => 'trim|htmlspecialchars|max_length[255]'
+        )
+    );
 
     public function __construct(){
         parent::__construct();
+        $this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
         $this->load->driver('Streams');
+        $this->load->library(array('keywords/keywords', 'form_validation'));
         $this->stream = $this->streams_m->get_stream('question', true, 'questions');
         $this->load->model('question_m');
+        $this->lang->load('question');
     }
 
     /**
@@ -29,15 +43,20 @@ class Question extends Public_Controller {
      * @Update: 11/21/13
      */
     public function index(){
+        $where = "";
+        if ($this->input->post('f_keywords')) {
+            $where .= "`title` LIKE '%".$this->input->post('f_keywords')."%' ";
+        }
+
         // Get the latest question posts
         $posts = $this->streams->entries->get_entries(array(
             'stream'		=> 'question',
             'namespace'		=> 'questions',
-            'limit'             => Settings::get('records_per_page'),
-            'where'		=> "",
+            'limit'         => Settings::get('records_per_page'),
+            'where'		    => $where,
             'paginate'		=> 'yes',
             'pag_base'		=> site_url('question/page'),
-            'pag_segment'       => 3
+            'pag_segment'   => 3
         ));
 
         // Process posts
@@ -45,6 +64,7 @@ class Question extends Public_Controller {
             $this->_process_post($post);
         }
         $meta = $this->_posts_metadata($posts['entries']);
+        $this->input->is_ajax_request() and $this->template->set_layout(false);
 
         $this->template
             ->title($this->module_details['name'])
@@ -55,10 +75,194 @@ class Question extends Public_Controller {
             ->set_metadata('og:description', $meta['description'], 'og')
             ->set_metadata('description', $meta['description'])
             ->set_metadata('keywords', $meta['keywords'])
+            ->append_js('module::question_form.js')
             ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
             ->set('posts', $posts['entries'])
-            ->set('pagination', $posts['pagination'])
-            ->build('index');
+            ->set('pagination', $posts['pagination']);
+
+        $this->input->is_ajax_request()
+            ? $this->template->build('tables/posts')
+            : $this->template->build('index');
+    }
+
+    /**
+     * The process function
+     * @Description: This is process function
+     * @Parameter:
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    public function process(){
+        if(!$this->input->is_ajax_request()) redirect('question');
+        if($this->input->post('action') == 'create'){
+            $this->create();
+        }else if($this->input->post('action') == 'edit'){
+            $this->edit();
+        }
+    }
+
+    /**
+     * The delete function
+     * @Description: This is delete function
+     * @Parameter:
+     *      1. $id int The ID of the question post to delete
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    public function delete($id = 0) {
+        $ids = ($id) ? array($id) : $this->input->post('action_to');
+        if (!empty($ids)){
+            $post_names = array();
+            $deleted_ids = array();
+            foreach ($ids as $id){
+                if ($post = $this->question_m->get($id)){
+                    if ($this->question_m->delete($id)){
+                        $this->pyrocache->delete('question_m');
+                        $post_names[] = $post->title;
+                        $deleted_ids[] = $id;
+                    }
+                }
+            }
+            Events::trigger('question_deleted', $deleted_ids);
+        }
+        $message = array();
+        if (!empty($post_names)){
+            if (count($post_names) == 1) {
+                $message['status']  = 'success';
+                $message['message']  = str_replace("%s", $post_names[0], lang('question:delete_success'));
+            } else {
+                $message['status']  = 'success';
+                $message['message']  = str_replace("%s", implode('", "', $post_names), lang('question:mass_delete_success'));
+            }
+        } else {
+            $message['status']  = 'warning';
+            $message['message']  = lang('question:delete_error');
+        }
+        echo json_encode($message);
+    }
+
+    /**
+     * The action function
+     * @Description: This is action function
+     * @Parameter:
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    public function action()
+    {
+        switch ($this->input->post('btnAction'))
+        {
+            case 'delete':
+                $this->delete();
+                break;
+            default:
+                echo '';
+                break;
+        }
+    }
+
+    /**
+     * The get_question_by_id function
+     * @Description: This is edit function
+     * @Parameter:
+     *      1. $id int The ID of the question post to get
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    public function get_question_by_id($id){
+        if(!$this->input->is_ajax_request()) redirect('question');
+        if($id != null && $id != ""){
+            $item = $this->question_m->get($id);
+            echo json_encode($item);
+        }else{
+            echo "";
+        }
+    }
+
+    /**
+     * The create function
+     * @Description: This is create function
+     * @Parameter:
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    private function create(){
+        $message = array();
+        $stream = $this->streams->streams->get_stream('question', 'questions');
+        // Get the validation for our custom blog fields.
+        $question_validation = $this->streams->streams->validation_array($stream->stream_slug, $stream->stream_namespace, 'new');
+        $rules = array_merge($this->validation_rules, $question_validation);
+        $this->form_validation->set_rules($rules);
+
+        if ($this->form_validation->run()){
+            $extra = array(
+                'title'            => $this->input->post('title'),
+                'description'      => $this->input->post('description'),
+                'created'		   => date('Y-m-d H:i:s', now()),
+                'created_by'       => $this->current_user->id
+            );
+
+            if ($id = $this->streams->entries->insert_entry($_POST, 'question', 'questions', array('created'), $extra)) {
+                $this->pyrocache->delete_all('question_m');
+                $message['status']  = 'success';
+                $message['message']  = str_replace("%s", $this->input->post('title'), lang('question:post_add_success'));
+                Events::trigger('question_created', $id);
+            } else {
+                $message['status']  = 'error';
+                $message['message']  = lang('question:post_add_error');
+            }
+        } else {
+            $message['status']  = 'error';
+            $message['message']  = lang('question:validate_error');
+        }
+        echo json_encode($message);
+    }
+
+    /**
+     * The edit function
+     * @Description: This is edit function
+     * @Parameter:
+     *      1. $id int The ID of the question post to edit
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    private function edit(){
+        $id = $this->input->post('row_edit_id');
+        $post = $this->question_m->get($id);
+        $message = array();
+        $stream = $this->streams->streams->get_stream('question', 'questions');
+        $question_validation = $this->streams->streams->validation_array($stream->stream_slug, $stream->stream_namespace, 'new');
+        $rules = array_merge($this->validation_rules, $question_validation);
+        $this->form_validation->set_rules($rules);
+
+        if ($this->form_validation->run()){
+            $author_id = empty($post->created_by) ? $this->current_user->id : $post->created_by;
+            $extra = array(
+                'title'            => $this->input->post('title'),
+                'description'      => $this->input->post('description'),
+                'updated'		   => date('Y-m-d H:i:s', now()),
+                'created_by'       => $author_id
+            );
+
+            if ($this->streams->entries->update_entry($id, $_POST, 'question', 'questions', array('updated'), $extra)) {
+                $message['status']  = 'success';
+                $message['message']  = str_replace("%s", $this->input->post('title'), lang('question:edit_success'));
+                Events::trigger('question_updated', $id);
+            } else {
+                $message['status']  = 'error';
+                $message['message']  = lang('question:edit_error');
+            }
+        } else {
+            $message['status']  = 'error';
+            $message['message']  = lang('question:validate_error');
+        }
+        echo json_encode($message);
     }
 
     /**
@@ -70,7 +274,8 @@ class Question extends Public_Controller {
      * @Update: 11/21/13
      */
     private function _process_post(&$post) {
-        $post['url'] = site_url('question/'.date('Y/m', $post['created']).'/'.$post['name']);
+        $post['url_edit'] = site_url('question/edit/'.$post['id']);
+        $post['url_delete'] = site_url('question/delete/'.$post['id']);
     }
 
     /**
@@ -87,8 +292,8 @@ class Question extends Public_Controller {
 
         if (!empty($posts)) {
             foreach ($posts as &$post){
-                $keywords[] = $post['name'];
-                $description[] = $post['desc'];
+                $keywords[] = $post['title'];
+                $description[] = $post['description'];
             }
         }
 
@@ -97,76 +302,4 @@ class Question extends Public_Controller {
             'description' => implode(', ', $description)
         );
     }
-
-
-    /**
-     * The view function
-     * @Description: This is view function
-     * @Parameter:
-     * @Return: null
-     * @Date: 11/21/13
-     * @Update: 11/21/13
-     */
-    public function view($slug = ''){
-        if (!$slug){
-            redirect('question');
-        }
-        $params = array(
-            'stream'		=> 'question',
-            'namespace'		=> 'questions',
-            'limit'			=> 1,
-            'where'			=> "`name` = '{$slug}'"
-        );
-        $data = $this->streams->entries->get_entries($params);
-        $post = (isset($data['entries'][0])) ? $data['entries'][0] : null;
-        $this->_single_view($post);
-    }
-
-    /**
-     * The single_view function
-     * @Description: This is single_view function
-     * @Parameter:
-     * @Return: null
-     * @Date: 11/21/13
-     * @Update: 11/21/13
-     */
-    private function _single_view($post){
-        $this->session->set_flashdata(array('referrer' => $this->uri->uri_string()));
-        $this->template->set_breadcrumb(lang('question:question_title'), 'question');
-        $this->_process_post($post);
-
-        $this->template
-            ->title($post['name'], lang('question:question_title'))
-            ->set_metadata('og:type', 'article', 'og')
-            ->set_metadata('og:url', current_url(), 'og')
-            ->set_metadata('og:title', $post['name'], 'og')
-            ->set_metadata('og:site_name', Settings::get('site_name'), 'og')
-            ->set_metadata('og:description', $post['desc'], 'og')
-            ->set_metadata('article:published_time', date(DATE_ISO8601, $post['created']), 'og')
-            ->set_metadata('article:modified_time', date(DATE_ISO8601, $post['updated']), 'og')
-            ->set_metadata('description', $post['desc'])
-            ->set_metadata('keywords', $post['name'])
-            ->set_breadcrumb($post['name'])
-            ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
-            ->set('post', array($post))
-            ->build('view');
-    }
-    public function view_file(){
-        $this->load->model('files/file_m');
-        $arr['images_1_6']=$this->file_m->order_by('name')
-                ->get_many_by_folder_id_limits('1','6','0');
-        $arr['images_7_12']=$this->file_m->order_by('name')
-                ->get_many_by_folder_id_limits('1','6','6');
-        foreach ($arr['images_1_6'] as $item) {
-            $path=$this->file_m->get_by_folder_id_and_name('5',$item->name)->path;
-            $item->thumb_path= $path;
-        }
-        foreach ($arr['images_7_12'] as $item) {
-            $path=$this->file_m->get_by_folder_id_and_name('5',$item->name)->path;
-            $item->thumb_path= $path;
-        }
-        $this->load->view('show_img',$arr);
-        
-    }
-
 } 

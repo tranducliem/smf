@@ -12,11 +12,13 @@ $lang['department:posted_label']                          = 'Posted';
 $lang['department:read_more_label']                       = 'Read more';
 $lang['department:detail_label']                          = 'Detail';
 $lang['department:written_by_label']                      = 'Created by';
+$lang['department:list_title']                         = 'List Department';
 
 //Action title
 $lang['department:create_title']                          = 'Add department';
 $lang['department:edit_title']                            = 'Edit department';
 $lang['department:edit_title_label']                      = 'Edit department "%s"';
+$lang['department:create_new_title']                          = 'Create new department';
 
 //Message
 $lang['department:currently_no_posts']                    = 'There are no posts at the moment.';
