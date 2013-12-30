@@ -220,6 +220,49 @@ class Feedbacktype extends Public_Controller {
         echo json_encode($message);
     }
     
+        /**
+     * The edit function
+     * @Description: This is edit function
+     * @Parameter:
+     *      1. $id int The ID of the feedbacktype to edit
+     * @Return: null
+     * @Date: 11/30/13
+     * @Update: 11/30/13
+     */
+    private function edit(){
+        $id = $this->input->post('row_edit_id');
+        $post = $this->team_m->get($id);
+        $message = array();
+        // Get all company
+        $stream = $this->streams->streams->get_stream('feedback_manager_type', 'feedback_manager_types');
+        $team_validation = $this->streams->streams->validation_array($stream->stream_slug, $stream->stream_namespace, 'new');
+        $rules = array_merge($this->validation_rules, $team_validation);
+        $this->form_validation->set_rules($rules);
+
+        if ($this->form_validation->run()){
+            $author_id = empty($post->created_by) ? $this->current_user->id : $post->created_by;
+            $extra = array(
+                'title'            => $this->input->post('title'),
+                'description'      => $this->input->post('description'),
+                'updated'          => date('Y-m-d H:i:s', now()),
+                'created_by'       => $author_id
+            );
+
+            if ($this->streams->entries->update_entry($id, $_POST, 'feedback_manager_type', 'feedback_manager_types', array('updated'), $extra)) {
+                $message['status']  = 'success';
+                $message['message']  = str_replace("%s", $this->input->post('title'), lang('feedbacktype:edit_success'));
+                Events::trigger('feedback_type_updated', $id);
+            } else {
+                $message['status']  = 'error';
+                $message['message']  = lang('feedbacktype:edit_error');
+            }
+        } else {
+            $message['status']  = 'error';
+            $message['message']  = lang('feedbacktype:validate_error');
+        }
+        echo json_encode($message);
+    }
+    
     /**
      * The process_post function
      * @Description: This is process_post function

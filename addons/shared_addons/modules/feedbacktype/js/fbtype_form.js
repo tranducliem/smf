@@ -102,6 +102,8 @@ function list_refresh(){
         data: {},
         success: function(data){
             $('#filter-result').html(data);
+            //Init
+            App.initDeleteButton();
         },
         error: function(xhr){
             console.log("Error: " + xhr.message);
