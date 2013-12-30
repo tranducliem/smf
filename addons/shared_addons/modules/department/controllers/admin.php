@@ -84,12 +84,12 @@ class Admin extends Admin_Controller
         $post = new stdClass();
         // Get all company
         $company = $this->company_m->get_all();
-        // Get the blog stream.
+        // Get the department stream.
         $this->load->driver('Streams');
         $stream = $this->streams->streams->get_stream('department', 'departments');
         $stream_fields = $this->streams_m->get_stream_fields($stream->id, $stream->stream_namespace);
 
-        // Get the validation for our custom blog fields.
+        // Get the validation for our custom department fields.
         $department_validation = $this->streams->streams->validation_array($stream->stream_slug, $stream->stream_namespace, 'new');
         $rules = array_merge($this->validation_rules, $department_validation);
         $this->form_validation->set_rules($rules);
