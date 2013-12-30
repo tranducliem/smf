@@ -20,7 +20,7 @@ class Module_Feedbackuser extends Module
             'description' => array(
                 'en' => 'Feedback manager user.',
             ),
-            'frontend'  => false,
+            'frontend'  => true,
             'backend'   => true,
             'skip_xss'  => true,
             'menu'      => 'content',
