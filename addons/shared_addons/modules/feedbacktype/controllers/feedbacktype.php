@@ -82,7 +82,7 @@ class Feedbacktype extends Public_Controller {
             : $this->template->build('index');
     }
     
-        /**
+    /**
      * The delete function
      * @Description: This is delete function
      * @Parameter:
@@ -220,7 +220,7 @@ class Feedbacktype extends Public_Controller {
         echo json_encode($message);
     }
     
-        /**
+    /**
      * The edit function
      * @Description: This is edit function
      * @Parameter:
@@ -231,7 +231,7 @@ class Feedbacktype extends Public_Controller {
      */
     private function edit(){
         $id = $this->input->post('row_edit_id');
-        $post = $this->team_m->get($id);
+        $post = $this->feedbacktype_m->get($id);
         $message = array();
         // Get all company
         $stream = $this->streams->streams->get_stream('feedback_manager_type', 'feedback_manager_types');
