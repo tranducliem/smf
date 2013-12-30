@@ -86,10 +86,17 @@ function delete_record(id){
 }
 
 function form_success(data){
-    var response = $.parseJSON(data);
-    if(response.status == "success"){
-        open_message_block("success", response.message);
-        form_reset();
+    try{
+        var response = $.parseJSON(data);
+        if(response.status == "success"){
+            open_message_block("success", response.message);
+            form_reset();
+        }else if(response.status == "error"){
+            open_message_block("error", response.message);
+        }
+    }catch (xhr){
+        console.error("Exception: " + xhr.message);
+    }finally{
         //Show tab list team
         $('#tab-2').removeClass('active');
         $('#tab_form').removeClass('active');
@@ -97,8 +104,6 @@ function form_success(data){
         $('#tab-1').addClass('active');
         //Refresh data
         list_refresh();
-    }else if(response.status == "error"){
-        open_message_block("error", response.message);
     }
 }
 
@@ -109,6 +114,8 @@ function list_refresh(){
         data: {},
         success: function(data){
             $('#filter-result').html(data);
+            //Init
+            App.initDeleteButton();
         },
         error: function(xhr){
             console.log("Error: " + xhr.message);
