@@ -39,7 +39,7 @@ function edit_record(id){
     //Set action for submit
     $('#action').val('edit');
     $('#tab_form a').html('Edit team');
-    $('#btnSubmit').html('Edit team');
+    $('#btnSubmit').html('Update team');
     //Bidding data
     $.ajax({
         type: "POST",
