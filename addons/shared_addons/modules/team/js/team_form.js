@@ -26,6 +26,8 @@ function form_validate(){
 function form_reset(){
     $('#tab_form a').html('Create new team');
     $('#btnSubmit').html('Create team');
+    $('#action').val("create");
+    $('#row_edit_id').val("");
     $('#title').val("");
     $('#company_id').val("");
     $('#description').val("");
