@@ -59,10 +59,6 @@ class Team extends Public_Controller {
      * @Update: 11/21/13
      */
     public function index(){
-
-        $per = $this->permissions;
-        print_r($per);
-
         $where = "";
         if ($this->input->post('f_keywords')) {
             $where .= "`title` LIKE '%".$this->input->post('f_keywords')."%' ";
