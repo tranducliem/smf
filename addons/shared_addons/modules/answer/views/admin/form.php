@@ -1,8 +1,16 @@
+<?php
+$op_company = array();
+if ($company != '') {
+    foreach ($company as $item) {
+       $op_company+=array($item->id => $item->title);
+    }
+}
+?>
 <section class="title">
     <?php if ($this->method == 'create'): ?>
-        <h4><?php echo lang('feedback_manager:create_title') ?></h4>
+        <h4><?php echo lang('team:create_title') ?></h4>
     <?php else: ?>
-        <h4><?php echo sprintf(lang('feedback_manager:edit_title'), $post->title) ?></h4>
+        <h4><?php echo sprintf(lang('team:edit_title'), $post->title) ?></h4>
     <?php endif ?>
 </section>
 
@@ -12,48 +20,31 @@
             <div class="tabs">
 
                 <ul class="tab-menu">
-                    <li><a href="#book-content-tab"><span><?php echo lang('feedback_manager:content_label') ?></span></a></li>
+                    <li><a href="#team-content-tab"><span><?php echo lang('team:content_label') ?></span></a></li>
                 </ul>
 
                 <!-- Content tab -->
-                <div class="form_inputs" id="book-content-tab">
+                <div class="form_inputs" id="team-content-tab">
                     <fieldset>
                         <ul>
                             <li>
-                                <label for="title"><?php echo lang('feedback_manager:form_title') ?> <span>*</span></label>
-                                <div class="input"><?php echo form_input('title', htmlspecialchars_decode($post->title), 'maxlength="100" id="title"') ?></div>
-                            </li>
-
-                            <li>
-                                <label for="slug"><?php echo lang('feedback_manager:form_description') ?> <span>*</span></label>
-                                <div class="input"><?php echo form_input('description', $post->description, 'maxlength="100" class="width-20"') ?></div>
-                            </li>
-
-                            <li>
-                                <label for="slug"><?php echo lang('feedback_manager:form_start_date') ?> <span>*</span></label>
-                                <div class="input"><input type="text" name="start_date" id="datepicker1"></div>
-                            </li>
-
-                            <li>
-                                <label for="slug"><?php echo lang('feedback_manager:form_end_date') ?> <span>*</span></label>
-                                <div class="input"><input type="text" name="end_date" id="datepicker2"></div>
-                            </li>
-
-                            <li>
-                                <label for="slug"><?php echo lang('feedback_manager:form_type_id') ?> <span>*</span></label>
+                                <label for="title"><?php echo lang('team:form_title') ?> <span>*</span></label>
                                 <div class="input">
-                                    <?php echo form_input('type_id', $post->type_id, 'maxlength="100" class="width-20"') ?>
-                                </div>
+                                    <?php echo form_input(array('id'=>'title',
+                                                                'value'=> htmlspecialchars_decode($post->title),
+                                                                'maxlength'=>"150",
+                                                                'name'=>"title",
+                                                                $this->method == 'create'?'':'readonly')) ?></div>
                             </li>
-
+                            
                             <li>
-                                <label for="slug"><?php echo lang('feedback_manager:form_require') ?> <span>*</span></label>
-                                <div class="input"><?php echo form_input('require', $post->require, 'maxlength="100" class="width-20"') ?></div>
+                                <label for="description"><?php echo lang('team:form_description') ?> </label>
+                                <div class="input"><?php echo form_input('description', $post->description, 'maxlength="255" class="width-20"') ?></div>
                             </li>
-
+                            
                             <li>
-                                <label for="slug"><?php echo lang('feedback_manager:form_status') ?> <span>*</span></label>
-                                <div class="input"><?php echo form_input('status', $post->status, 'maxlength="100" class="width-20"') ?></div>
+                                <label for="company_id"><?php echo lang('team:form_company_id') ?> </label>
+                                <div class="input"><?php echo form_dropdown('company_id', $op_company, $post->company_id); ?></div>
                             </li>
                         </ul>
                     </fieldset>

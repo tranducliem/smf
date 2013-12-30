@@ -9,7 +9,7 @@
  */
 class Module_Answer extends Module
 {
-    public $version = '1.0.0';
+    public $version = '1.0.2';
 
     public function info()
     {
