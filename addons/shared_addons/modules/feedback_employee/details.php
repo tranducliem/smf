@@ -76,7 +76,7 @@ class Module_Feedback_employee extends Module
 
         if ($this->dbforge->add_column('feedback_employee', $feedback_employee_fields) AND
             is_dir($this->upload_path . 'feedback_employee') OR @mkdir($this->upload_path . 'feedback_employee', 0777, TRUE)
-         )
+        )
         {
             return TRUE;
         }
@@ -86,7 +86,7 @@ class Module_Feedback_employee extends Module
     public function uninstall()
     {
 //        if ($this->dbforge->drop_table('feedback_employee')) {
-            return TRUE;
+        return TRUE;
 //        }
     }
 

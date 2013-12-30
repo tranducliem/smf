@@ -1,35 +1,25 @@
-<a class="btn-u" href="<?php echo site_url('feedback_manager_question/create') ?>" title="<?php echo lang('global:create')?>" class="button">Create Feedback Question</a>
-<br/><br/>
 <table class="table table-striped">
     <thead>
     <tr>
-        <th>Id</th>
-        <th><?php echo lang('feedback_manager_question:form_feedback_manager') ?></th>
-        <th class="collapse"><?php echo lang('feedback_manager_question:form_question') ?></th>
-        <th width="180"><?php echo lang('global:actions') ?></th>
+        <th><input class="check-all" type="checkbox" value="" name="action_to_all"></th>
+        <th>{{ helper:lang line="feedback_manager_question:form_feedback_manager_id" }}</th>
+        <th>{{ helper:lang line="feedback_manager_question:form_question_id" }}</th>
+        <th>{{ helper:lang line="global:action" }}</th>
     </tr>
     </thead>
     <tbody>
-    <?php foreach ($post as $item) : ?>
+    {{ posts }}
         <tr>
-            <td><?php echo $item->id ?></td>
-            <td><?php echo $item->title ?></td>
-            <td class="collapse"><?php echo $item->q_title ?></td>
-
-            <td style="padding-top:10px;">
-                <a class="btn-u" href="<?php echo site_url('feedback_manager_question/edit/' . $item->id) ?>" title="<?php echo lang('global:edit')?>" class="button">
-                    <?php echo lang('global:edit')?>
-                </a>
-                <a class="btn-u" href="<?php echo site_url('feedback_manager_question/delete/' . $item->id) ?>" title="<?php echo lang('global:delete')?>" class="button confirm">
-                    <?php echo lang('global:delete')?></a>
+            <td><input type="checkbox" value="{{ id }}" name="action_to[]"></td>
+            <td>{{ feedback_manager }}</td>
+            <td>{{ question }}</td>
+            <td>
+                <a href="javascript:void(0);" onclick="edit_record({{ id }})" title="{{ helper:lang line="global:edit" }}" class="button">{{ helper:lang line="global:edit" }}</a> |
+                <a href="javascript:void(0);" onclick="delete_record({{ id }})" title="{{ helper:lang line="global:delete" }}" class="button confirm">{{ helper:lang line="global:delete" }}</a>
             </td>
         </tr>
-    <?php endforeach ?>
+    {{ /posts }}
     </tbody>
 </table>
-
-<?php if(!empty($pagination['links'])): ?>
-    <div class="paginate">
-        <?php echo $pagination['links'];?>
-    </div>
-<?php endif; ?>
+<button type="submit" name="btnAction" class="btn-u btn-u-red" value="delete" disabled="disabled">Delete</button>
+{{ pagination }}

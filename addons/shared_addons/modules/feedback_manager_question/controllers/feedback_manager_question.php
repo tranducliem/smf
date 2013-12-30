@@ -9,33 +9,52 @@
  * @Update:
  */
 
-class Feedback_manager_question extends Public_Controller
-{
-    private $_data = Array();
-    protected $section = 'posts';
+class Feedback_manager_question extends Public_Controller {
 
     protected $validation_rules = array(
         'feedback_manager_id'    => array(
             'field'     => 'feedback_manager_id',
             'label'     => 'lang:feedback_manager_question:feedback_manager_id',
-            'rules'     => 'numeric'
+            'rules'     => ''
         ),
         'question_id'    => array(
             'field'     => 'question_id',
             'label'     => 'lang:feedback_manager_question:question_id',
-            'rules'     => 'numeric'
+            'rules'     => ''
         ),
     );
 
-    public function __construct() {
+    public function __construct(){
         parent::__construct();
+        if(!check_user_permission($this->current_user, $this->module, $this->permissions)) redirect();
+        $this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
+        $this->load->driver('Streams');
         $this->load->library(array('keywords/keywords', 'form_validation'));
-        $this->load->model('feedback_manager_question_m');
-        $this->load->model('feedback_manager/feedback_manager_m');
-        $this->load->model('question/question_m');
-        $this->load->model('users/user_m');
+        $this->stream = $this->streams_m->get_stream('feedback_manager_question', true, 'feedback_manager_questions');
+        $this->load->model(array('feedback_manager_question_m', 'feedback_manager/feedback_manager_m', 'question/question_m'));
         $this->lang->load('feedback_manager_question');
-        $this->lang->load('buttons');
+
+        if ( ! $feedback_managers = $this->cache->get('feedback_managers')){
+            $feedback_managers = array(
+                ''  => lang('team:select_feedback_manager')
+            );
+            $rows = $this->feedback_manager_m->get_all();
+            foreach($rows as $row){
+                $feedback_managers[$row->id] = $row->title;
+            }
+            $this->cache->save('feedback_managers', $feedback_managers, 300);
+        }
+
+        if ( ! $questions = $this->cache->get('questions')){
+            $questions = array(
+                ''  => lang('team:select_question')
+            );
+            $rows = $this->question_m->get_all();
+            foreach($rows as $row){
+                $questions[$row->id] = $row->title;
+            }
+            $this->cache->save('questions', $questions, 300);
+        }
     }
 
     /**
@@ -43,44 +62,151 @@ class Feedback_manager_question extends Public_Controller
      * @Description: This is index function
      * @Parameter:
      * @Return: null
-     * @Date: 11/20/13
-     * @Update:
+     * @Date: 11/21/13
+     * @Update: 11/21/13
      */
-    public function index()
-    {
-        $base_where = array();
-        if ($this->input->post('f_keywords'))
-        {
-            $base_where['title'] = $this->input->post('f_keywords');
+    public function index(){
+        $where = "";
+        if ($this->input->post('f_keywords')) {
+            $where .= "`title` LIKE '%".$this->input->post('f_keywords')."%' ";
         }
 
-        if ($this->uri->segment(3) === null)
-        {
-            $current_page = 1;
+        // Get the latest team posts
+        $posts = $this->streams->entries->get_entries(array(
+            'stream'		=> 'feedback_manager_question',
+            'namespace'		=> 'feedback_manager_questions',
+            'limit'         => Settings::get('records_per_page'),
+            'where'		    => $where,
+            'paginate'		=> 'yes',
+            'pag_base'		=> site_url('feedback_manager_question/page'),
+            'pag_segment'   => 3
+        ));
+
+        // Process posts
+        foreach ($posts['entries'] as &$post) {
+            $this->_process_post($post);
         }
-        else
-        {
-            $current_page = $this->uri->segment(3);
-        }
-        $total_rows = $this->feedback_manager_question_m->count_by($base_where);
-        $this->load->library('pagination');
-
-        $config['base_url'] = base_url().'feedback_manager_question/page/';
-        $config['total_rows'] = $total_rows;
-        $config['per_page'] = 10;
-        $config['uri_segment'] = 3;
-        $config['use_page_numbers'] = true;
-
-        $offset = ($current_page - 1) * $config['per_page'];
-
-        $this->pagination->initialize($config);
-
-        $post = $this->feedback_manager_question_m->get_feedback_manager_question_list($config['per_page'], $offset, $base_where);
+        $meta = $this->_posts_metadata($posts['entries']);
+        $this->input->is_ajax_request() and $this->template->set_layout(false);
 
         $this->template
             ->title($this->module_details['name'])
-            ->set('post', $post);
-            $this->template->build('index');
+            ->set_breadcrumb(lang('feedback_manager_question:feedback_manager_question_title'))
+            ->set_metadata('og:title', $this->module_details['name'], 'og')
+            ->set_metadata('og:type', 'feedback_manager_question', 'og')
+            ->set_metadata('og:url', current_url(), 'og')
+//            ->set_metadata('og:description', $meta['description'], 'og')
+//            ->set_metadata('description', $meta['description'])
+            ->set_metadata('keywords', $meta['keywords'])
+            ->append_js('module::feedback_manager_question_form.js')
+            ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
+            ->set('posts', $posts['entries'])
+            ->set('pagination', $posts['pagination'])
+            ->set('feedback_managers', $this->cache->get('feedback_managers'))
+            ->set('questions', $this->cache->get('questions'))
+        ;
+
+        $this->input->is_ajax_request()
+            ? $this->template->build('tables/posts')
+            : $this->template->build('index');
+    }
+
+    /**
+     * The process function
+     * @Description: This is process function
+     * @Parameter:
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    public function process(){
+        if(!$this->input->is_ajax_request()) redirect('feedback_manager_question');
+        if($this->input->post('action') == 'create'){
+            $this->create();
+        }else if($this->input->post('action') == 'edit'){
+            $this->edit();
+        }
+    }
+
+    /**
+     * The delete function
+     * @Description: This is delete function
+     * @Parameter:
+     *      1. $id int The ID of the team post to delete
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    public function delete($id = 0) {
+        $ids = ($id) ? array($id) : $this->input->post('action_to');
+        if (!empty($ids)){
+            $post_names = array();
+            $deleted_ids = array();
+            foreach ($ids as $id){
+                if ($post = $this->feedback_manager_question_m->get($id)){
+                    if ($this->feedback_manager_question_m->delete($id)){
+                        $this->pyrocache->delete('feedback_manager_question_m');
+                        $post_names[] = $post->title;
+                        $deleted_ids[] = $id;
+                    }
+                }
+            }
+            Events::trigger('feedback_manager_question_deleted', $deleted_ids);
+        }
+        $message = array();
+        if (!empty($post_names)){
+            if (count($post_names) == 1) {
+                $message['status']  = 'success';
+                $message['message']  = str_replace("%s", $post_names[0], lang('feedback_manager_question:delete_success'));
+            } else {
+                $message['status']  = 'success';
+                $message['message']  = str_replace("%s", implode('", "', $post_names), lang('feedback_manager_question:mass_delete_success'));
+            }
+        } else {
+            $message['status']  = 'warning';
+            $message['message']  = lang('feedback_manager_question:delete_error');
+        }
+        echo json_encode($message);
+    }
+
+    /**
+     * The action function
+     * @Description: This is action function
+     * @Parameter:
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    public function action()
+    {
+        switch ($this->input->post('btnAction'))
+        {
+            case 'delete':
+                $this->delete();
+                break;
+            default:
+                echo '';
+                break;
+        }
+    }
+
+    /**
+     * The get_team_by_id function
+     * @Description: This is edit function
+     * @Parameter:
+     *      1. $id int The ID of the team post to get
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    public function get_feedback_manager_question_by_id($id){
+        if(!$this->input->is_ajax_request()) redirect('feedback_manager_question');
+        if($id != null && $id != ""){
+            $item = $this->feedback_manager_question_m->get($id);
+            echo json_encode($item);
+        }else{
+            echo "";
+        }
     }
 
     /**
@@ -88,26 +214,18 @@ class Feedback_manager_question extends Public_Controller
      * @Description: This is create function
      * @Parameter:
      * @Return: null
-     * @Date: 12/25/13
-     * @Update: 12/25/13
+     * @Date: 11/21/13
+     * @Update: 11/21/13
      */
-    public function create(){
-        $this->_data['fm'] = $this->feedback_manager_m->get_all();
-        $this->_data['question'] = $this->question_m->get_all();
-        $post = new stdClass();
-
-        // Get the blog stream.
-        $this->load->driver('Streams');
+    private function create(){
+        $message = array();
         $stream = $this->streams->streams->get_stream('feedback_manager_question', 'feedback_manager_questions');
-        $stream_fields = $this->streams_m->get_stream_fields($stream->id, $stream->stream_namespace);
-
         // Get the validation for our custom blog fields.
         $feedback_manager_question_validation = $this->streams->streams->validation_array($stream->stream_slug, $stream->stream_namespace, 'new');
         $rules = array_merge($this->validation_rules, $feedback_manager_question_validation);
         $this->form_validation->set_rules($rules);
 
-        if ($this->form_validation->run())
-        {
+        if ($this->form_validation->run()){
             $extra = array(
                 'feedback_manager_id'   => $this->input->post('feedback_manager_id'),
                 'question_id'           => $this->input->post('question_id'),
@@ -117,66 +235,41 @@ class Feedback_manager_question extends Public_Controller
 
             if ($id = $this->streams->entries->insert_entry($_POST, 'feedback_manager_question', 'feedback_manager_questions', array('created'), $extra)) {
                 $this->pyrocache->delete_all('feedback_manager_question_m');
-                $this->session->set_flashdata('success', $this->lang->line('feedback_manager_question:post_add_success'));
-                Events::trigger('post_created', $id);
+                $message['status']  = 'success';
+                $message['message']  = "Success";//str_replace("%s", $this->input->post('title'), lang('feedback_manager_question:post_add_success'));
+                Events::trigger('feedback_manager_question_created', $id);
             } else {
-                $this->session->set_flashdata('error', lang('feedback_manager_question:post_add_error'));
+                $message['status']  = 'error';
+                $message['message']  = lang('feedback_manager_question:post_add_error');
             }
-
-            ($this->input->post('btnAction') == 'save_exit')
-                ? redirect('feedback_manager_question')
-                : redirect('feedback_manager_question/edit/'.$id);
-
         } else {
-            $post = new stdClass;
-            foreach ($this->validation_rules as $key => $field)
-            {
-                $post->$field['field'] = set_value($field['field']);
-            }
-            $post->created_on = now();
+            $message['status']  = 'error';
+            $message['message']  = lang('feedback_manager_question:validate_error');
         }
-
-        // Set Values
-        $values = $this->fields->set_values($stream_fields, null, 'new');
-
-        // Run stream field events
-        $this->fields->run_field_events($stream_fields, array(), $values);
-
-        $this->template
-            ->title($this->module_details['name'], lang('feedback_manager_question:create_title'))
-            ->set('stream_fields', $this->streams->fields->get_stream_fields($stream->stream_slug, $stream->stream_namespace, $values))
-            ->set('post', $post)
-            ->build('form',$this->_data);
+        echo json_encode($message);
     }
-
 
     /**
      * The edit function
      * @Description: This is edit function
      * @Parameter:
-     *      1. $id int The ID of the feedback_manager post to edit
+     *      1. $id int The ID of the team post to edit
      * @Return: null
-     * @Date: 12/25/13
-     * @Update:
+     * @Date: 11/21/13
+     * @Update: 11/21/13
      */
-    public function edit($id = 0){
-        $this->_data['fm'] = $this->feedback_manager_m->get_all();
-        $this->_data['question'] = $this->question_m->get_all();
-        $id or redirect('feedback_manager_question');
+    private function edit(){
+        $id = $this->input->post('row_edit_id');
         $post = $this->feedback_manager_question_m->get($id);
-
-        $this->load->driver('Streams');
+        $message = array();
+        // Get all company
         $stream = $this->streams->streams->get_stream('feedback_manager_question', 'feedback_manager_questions');
-        $stream_fields = $this->streams_m->get_stream_fields($stream->id, $stream->stream_namespace);
-
-        $feedback_manager_validation = $this->streams->streams->validation_array($stream->stream_slug, $stream->stream_namespace, 'new');
-        $rules = array_merge($this->validation_rules, $feedback_manager_validation);
+        $feedback_manager_question_validation = $this->streams->streams->validation_array($stream->stream_slug, $stream->stream_namespace, 'new');
+        $rules = array_merge($this->validation_rules, $feedback_manager_question_validation);
         $this->form_validation->set_rules($rules);
 
-        if ($this->form_validation->run())
-        {
+        if ($this->form_validation->run()){
             $author_id = empty($post->created_by) ? $this->current_user->id : $post->created_by;
-
             $extra = array(
                 'feedback_manager_id'   => $this->input->post('feedback_manager_id'),
                 'question_id'           => $this->input->post('question_id'),
@@ -185,121 +278,57 @@ class Feedback_manager_question extends Public_Controller
             );
 
             if ($this->streams->entries->update_entry($id, $_POST, 'feedback_manager_question', 'feedback_manager_questions', array('updated'), $extra)) {
-                $this->session->set_flashdata(array('success' => lang('feedback_manager_question:edit_success'), $this->input->post('title')));
-                Events::trigger('post_updated', $id);
+                $message['status']  = 'success';
+                $message['message']  = "Success";//str_replace("%s", $this->input->post('title'), lang('team:edit_success'));
+                Events::trigger('feedback_manager_question_updated', $id);
             } else {
-                $this->session->set_flashdata('error', lang('feedback_manager_manager:edit_error'));
-            }
-
-            ($this->input->post('btnAction') == 'save_exit')
-                ? redirect('feedback_manager_question')
-                : redirect('feedback_manager_question/edit/'.$id);
-        }
-
-        foreach ($this->validation_rules as $key => $field)
-        {
-            if (isset($_POST[$field['field']]))
-            {
-                $post->$field['field'] = set_value($field['field']);
-            }
-        }
-
-        $values = $this->fields->set_values($stream_fields, $post, 'edit');
-        $this->fields->run_field_events($stream_fields, array(), $values);
-
-        $this->template
-            ->title($this->module_details['name'], lang('feedback_manager_question:edit_title_label'))
-            ->set('stream_fields', $this->streams->fields->get_stream_fields($stream->stream_slug, $stream->stream_namespace, $values, $post->id))
-            ->set('post', $post)
-            ->build('form',$this->_data);
-    }
-
-    /**
-     * The delete function
-     * @Description: This is delete function
-     * @Parameter:
-     *      1. $id int The ID of the feedback_manager post to delete
-     * @Return: null
-     * @Date: 12/25/13
-     * @Update:
-     */
-    public function delete($id = 0)
-    {
-        $ids = ($id) ? array($id) : $this->input->post('action_to');
-        if (!empty($ids)){
-            $post_titles = array();
-            $deleted_ids = array();
-            foreach ($ids as $id){
-                if ($post = $this->feedback_manager_question_m->get($id)){
-                    if ($this->feedback_manager_question_m->delete($id)){
-                        $this->pyrocache->delete('feedback_manager_question_m');
-                        $post_titles[] = $post->title;
-                        $deleted_ids[] = $id;
-                    }
-                }
-            }
-            Events::trigger('post_deleted', $deleted_ids);
-        }
-
-        if (!empty($post_titles)){
-            if (count($post_titles) == 1) {
-                $this->session->set_flashdata('success', $this->lang->line('feedback_manager_question:delete_success'));
-            } else {
-                $this->session->set_flashdata('success', $this->lang->line('feedback_manager_question:mass_delete_success'));
+                $message['status']  = 'error';
+                $message['message']  = lang('feedback_manager_question:edit_error');
             }
         } else {
-            $this->session->set_flashdata('notice', lang('feedback_manager_question:delete_error'));
+            $message['status']  = 'error';
+            $message['message']  = lang('feedback_manager_question:validate_error');
         }
-        redirect('feedback_manager_question');
+        echo json_encode($message);
     }
 
     /**
-     * The action function
-     * @Description: This is action function
+     * The process_post function
+     * @Description: This is process_post function
      * @Parameter:
      * @Return: null
-     * @Date: 12/5/13
-     * @Update:
+     * @Date: 11/21/13
+     * @Update: 11/21/13
      */
-    public function action()
-    {
-        switch ($this->input->post('btnAction'))
-        {
-            case 'delete':
-                $this->delete();
-                break;
-
-            default:
-                redirect('feedback_manager_question');
-                break;
-        }
+    private function _process_post(&$post) {
+        $post['feedback_manager'] = $this->feedback_manager_m->get($post['feedback_manager_id'])->title;
+        $post['question'] = $this->question_m->get($post['question_id'])->title;
+        $post['url_edit'] = site_url('feedback_manager_question/edit/'.$post['id']);
+        $post['url_delete'] = site_url('feedback_manager_question/delete/'.$post['id']);
     }
 
-    public function manage()
-    {
-        $base_where = array();
-        if ($this->input->post('f_keywords'))
-        {
-            $base_where['title'] = $this->input->post('f_keywords');
+    /**
+     * The posts_metadata function
+     * @Description: This is posts_metadata function
+     * @Parameter:
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    private function _posts_metadata(&$posts = array()) {
+        $keywords = array();
+        $description = array();
+
+        if (!empty($posts)) {
+            foreach ($posts as &$post){
+                $keywords[] = $post['feedback_manager'];
+                //$description[] = $post['description'];
+            }
         }
 
-        // Create pagination links
-        $total_rows = $this->feedback_manager_question_m->get_feedback_manager_question_count($base_where);
-        $pagination = create_pagination('feedback_manager_question/manage/index', $total_rows);
-
-        $post = $this->feedback_manager_question_m->get_feedback_manager_question_list($pagination['limit'], $pagination['offset'], $base_where);
-        $this->input->is_ajax_request() and $this->template->set_layout(false);
-
-        $this->template
-            ->title($this->module_details['name'])
-            ->append_js('module::filter.js')
-            ->set_partial('filters', 'partials/filters')
-            ->set('pagination', $pagination)
-            ->set('post', $post);
-
-        $this->input->is_ajax_request()
-            ? $this->template->build('tables/posts')
-            : $this->template->build('manage');
+        return array(
+            'keywords' => implode(', ', $keywords),
+            //'description' => implode(', ', $description)
+        );
     }
-
-}
+} 

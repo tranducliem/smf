@@ -1,23 +1,32 @@
 <div class="span9">
-    <a class="btn-u" href="<?php echo base_url();?>answer/create">
-        Create answer
-    </a>
-    <a class="btn-u" href="<?php echo base_url();?>answer/manage">Manage answer</a>
-    <br/><br/>
-    <?php if($post){    ?>
-        <h3>List answer </h3>
-        <div class="mmm">
-            <?php foreach ($post as $item): ?>
-                <div class="test" style="border: solid 1px; margin: 10px; padding: 10px; width: 500px">
-                    <a href="<?php echo base_url();?>answer/view/<?php echo $item->id?>">
-                        <h4><?php echo $item->title?></h4>
-                    </a>
-                    <div class="date">
-                        <span><?php echo $item->created;?></span>
+    <div class="headline"><h3>{{ helper:lang line="answer:title" }}</h3></div>
+    <!-- Tabs Widget -->
+    <ul class="nav nav-tabs tabs">
+        <li id="tab_list" class="active"><a href="#tab-1" data-toggle="tab">{{ helper:lang line="answer:list_title" }}</a></li>
+        <li id="tab_form" ><a href="#tab-2" data-toggle="tab">{{ helper:lang line="answer:create_new_title" }}</a></li>
+    </ul>
+    <!--/Tabs Widget-->
+
+    <!--tab-content-->
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab-1">
+            {{ if posts }}
+                <?php echo $this->load->view('partials/filters') ?>
+                <div class="clear"></div>
+                <?php echo form_open('answer/action', array('class' => 'ajax_delete_form')) ?>
+                    <div id="filter-result">
+                        <?php echo $this->load->view('tables/posts') ?>
                     </div>
-                </div>
-            <?php endforeach?>
+                <?php echo form_close(); ?>
+            {{ else }}
+                {{ helper:lang line="answer:currently_no_posts" }}
+            {{ endif }}
         </div>
-    <?  } else { echo "Current No Post"; }   ?>
-    <?php echo $this->pagination->create_links(); ?>
+        <div class="tab-pane" id="tab-2">
+            <div class="form_field">
+                <?php echo $this->load->view('partials/form') ?>
+            </div>
+        </div>
+    </div>
+    <!--/tab-content-->
 </div>

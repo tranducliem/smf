@@ -1,30 +1,32 @@
 <div class="span9">
-    <a href="<?php echo base_url();?>feedback_employee/create">
-        <button class="btn-u">Create feedback</button>
-    </a>
-    <a href="<?php echo base_url();?>feedback_employee/manage"><button class="btn-u">Manage feedback</button></a>
-    <br/><br/>
-    <?php if($post){    ?>
-        <h3>List feedback </h3>
-        <div class="mmm">
-            <?php foreach ($post as $item): ?>
-                <div class="test" style="border: solid 1px; margin: 10px; padding: 10px; width: 500px">
-                    <a href="<?php echo base_url();?>feedback_employee/view/<?php echo $item->id?>">
-                        <h4><?php echo $item->title?></h4>
-                    </a>
-                    <div class="date">
-                        <span><?php echo $item->created;?></span>
-                    </div>
-                    <button class="btn-u" style="float: right; margin-top: -30px">
-                        <?php
-                        if($item->status == 0) echo "Not start";
-                        else if($item->status == 1) echo "Processing";
-                        else if($item->status == 2) echo "Done";
-                        ?>
-                    </button>
-                </div>
-            <?php endforeach?>
+    <div class="headline"><h3>{{ helper:lang line="feedback_employee:title" }}</h3></div>
+    <!-- Tabs Widget -->
+    <ul class="nav nav-tabs tabs">
+        <li id="tab_list" class="active"><a href="#tab-1" data-toggle="tab">{{ helper:lang line="feedback_employee:list_title" }}</a></li>
+        <li id="tab_form" ><a href="#tab-2" data-toggle="tab">{{ helper:lang line="feedback_employee:create_new_title" }}</a></li>
+    </ul>
+    <!--/Tabs Widget-->
+
+    <!--tab-content-->
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab-1">
+            {{ if posts }}
+            <?php echo $this->load->view('partials/filters') ?>
+            <div class="clear"></div>
+            <?php echo form_open('feedback_employee/action', array('class' => 'ajax_delete_form')) ?>
+            <div id="filter-result">
+                <?php echo $this->load->view('tables/posts') ?>
+            </div>
+            <?php echo form_close(); ?>
+            {{ else }}
+            {{ helper:lang line="feedback_employee:currently_no_posts" }}
+            {{ endif }}
         </div>
-    <?  } else { echo "Current No Post"; }   ?>
-    <?php echo $this->pagination->create_links(); ?>
+        <div class="tab-pane" id="tab-2">
+            <div class="form_field">
+                <?php echo $this->load->view('partials/form') ?>
+            </div>
+        </div>
+    </div>
+    <!--/tab-content-->
 </div>
