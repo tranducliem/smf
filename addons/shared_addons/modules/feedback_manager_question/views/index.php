@@ -1,19 +1,32 @@
 <div class="span9">
-    <a href="<?php echo base_url();?>feedback_manager_question/create">
-        <button class="btn-u">Create feedback question</button>
-    </a>
-    <a href="<?php echo base_url();?>feedback_manager_question/manage"><button class="btn-u">Manage feedback question</button></a>
-    <br/><br/>
-    <?php if($post){    ?>
-        <h3>List feedback manager question</h3>
-        <div class="mmm">
-            <?php foreach ($post as $item): ?>
-                <div class="test" style="border: solid 1px; margin: 10px; padding: 10px; width: 500px">
-                    <h5>Feedback Manager: <?php echo $item->title?></h5>
-                    <h5>Question: <?php echo $item->q_title;?> </h5>
-                </div>
-            <?php endforeach?>
+    <div class="headline"><h3>{{ helper:lang line="feedback_manager_question:title" }}</h3></div>
+    <!-- Tabs Widget -->
+    <ul class="nav nav-tabs tabs">
+        <li id="tab_list" class="active"><a href="#tab-1" data-toggle="tab">{{ helper:lang line="feedback_manager_question:list_title" }}</a></li>
+        <li id="tab_form" ><a href="#tab-2" data-toggle="tab">{{ helper:lang line="feedback_manager_question:create_new_title" }}</a></li>
+    </ul>
+    <!--/Tabs Widget-->
+
+    <!--tab-content-->
+    <div class="tab-content">
+        <div class="tab-pane active" id="tab-1">
+            {{ if posts }}
+                <?php echo $this->load->view('partials/filters') ?>
+                <div class="clear"></div>
+                <?php echo form_open('feedback_manager_question/action', array('class' => 'ajax_delete_form')) ?>
+                    <div id="filter-result">
+                        <?php echo $this->load->view('tables/posts') ?>
+                    </div>
+                <?php echo form_close(); ?>
+            {{ else }}
+                {{ helper:lang line="feedback_manager_question:currently_no_posts" }}
+            {{ endif }}
         </div>
-    <?  } else { echo "Current No Post"; }   ?>
-    <?php echo $this->pagination->create_links(); ?>
+        <div class="tab-pane" id="tab-2">
+            <div class="form_field">
+                <?php echo $this->load->view('partials/form') ?>
+            </div>
+        </div>
+    </div>
+    <!--/tab-content-->
 </div>

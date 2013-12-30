@@ -72,7 +72,7 @@ class Module_Feedback_manager_question extends Module
 
         if ($this->dbforge->add_column('feedback_manager_question', $feedback_manager_question_fields) AND
             is_dir($this->upload_path . 'feedback_manager_question') OR @mkdir($this->upload_path . 'feedback_manager_question', 0777, TRUE)
-         )
+        )
         {
             return TRUE;
         }
@@ -82,7 +82,7 @@ class Module_Feedback_manager_question extends Module
     public function uninstall()
     {
 //        if ($this->dbforge->drop_table('feedback_manager_question')) {
-            return TRUE;
+        return TRUE;
 //        }
     }
 
