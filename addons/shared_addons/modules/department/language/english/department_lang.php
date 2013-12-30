@@ -19,7 +19,7 @@ $lang['department:create_title']                          = 'Add department';
 $lang['department:edit_title']                            = 'Edit department';
 $lang['department:edit_title_label']                      = 'Edit department "%s"';
 $lang['department:create_new_title']                          = 'Create new department';
-
+$lang['department:select_company']                        = 'Select company';
 //Message
 $lang['department:currently_no_posts']                    = 'There are no posts at the moment.';
 $lang['department:post_add_success']                      = 'The department "%s" was added.';

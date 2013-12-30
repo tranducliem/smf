@@ -13,7 +13,7 @@
             {{ if posts }}
                 <?php echo $this->load->view('partials/filters') ?>
                 <div class="clear"></div>
-                <?php echo form_open('department/action') ?>
+                <?php echo form_open('department/action', array('class' => 'ajax_delete_form')) ?>
                     <div id="filter-result">
                         <?php echo $this->load->view('tables/posts') ?>
                     </div>
