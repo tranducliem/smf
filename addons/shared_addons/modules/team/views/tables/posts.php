@@ -23,5 +23,5 @@
     {{ /posts }}
     </tbody>
 </table>
-<button type="submit" name="btnAction" class="btn-u btn-u-red confirm" value="delete" disabled="disabled">Delete</button>
+<button type="submit" name="btnAction" class="btn-u btn-u-red" value="delete" disabled="disabled">Delete</button>
 {{ pagination }}
