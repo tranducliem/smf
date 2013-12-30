@@ -1,50 +1,34 @@
-<a class="btn-u" href="<?php echo site_url('feedback_employee/create') ?>" title="<?php echo lang('global:create')?>" class="button">Create Feedback</a>
-<br/><br/>
+
 <table class="table table-striped">
     <thead>
     <tr>
-        <th>Id</th>
-        <th><?php echo lang('feedback_employee:form_title') ?></th>
-        <th class="collapse"><?php echo lang('feedback_employee:form_description') ?></th>
-        <th><?php echo lang('feedback_employee:form_date') ?></th>
-        <th><?php echo lang('feedback_employee:form_apply_id') ?></th>
-        <th><?php echo lang('feedback_employee:form_department_id') ?></th>
-        <th><?php echo lang('feedback_employee:form_status') ?></th>
-        <th width="180"><?php echo lang('global:actions') ?></th>
+        <th><input class="check-all" type="checkbox" value="" name="action_to_all"></th>
+        <th>{{ helper:lang line="feedback_employee:form_title" }}</th>
+        <th>{{ helper:lang line="feedback_employee:form_description" }}</th>
+        <th>{{ helper:lang line="feedback_employee:form_date" }}</th>
+        <th>{{ helper:lang line="feedback_employee:form_apply_id" }}</th>
+        <th>{{ helper:lang line="feedback_employee:form_department_id" }}</th>
+        <th>{{ helper:lang line="feedback_employee:form_status" }}</th>
+        <th>{{ helper:lang line="global:action" }}</th>
     </tr>
     </thead>
     <tbody>
-    <?php foreach ($post as $item) : ?>
-        <tr>
-            <td><?php echo $item->id ?></td>
-            <td><?php echo $item->title ?></td>
-            <td class="collapse"><?php echo $item->description ?></td>
-            <td class="collapse"><?php echo $item->date ?></td>
-            <td class="collapse"><?php echo $item->apply_id ?></td>
-            <td class="collapse"><?php echo $item->department_id ?></td>
-            <td class="collapse">
-                <a href="" class="btn-u">
-                    <?php
-                    if($item->status == 0) echo "Not start";
-                    else if($item->status == 1) echo "Processing";
-                    else echo "Done";
-                    ?>
-                </a>
-            </td>
-            <td style="padding-top:10px;">
-                <a class="btn-u" href="<?php echo site_url('feedback_employee/edit/' . $item->id) ?>" title="<?php echo lang('global:edit')?>" class="button">
-                    <?php echo lang('global:edit')?>
-                </a>
-                <a class="btn-u" href="<?php echo site_url('feedback_employee/delete/' . $item->id) ?>" title="<?php echo lang('global:delete')?>" class="button confirm">
-                    <?php echo lang('global:delete')?></a>
-            </td>
-        </tr>
-    <?php endforeach ?>
+    {{ posts }}
+    <tr>
+        <td><input type="checkbox" value="{{ id }}" name="action_to[]"></td>
+        <td>{{ title }}</td>
+        <td>{{ description }}</td>
+        <td>{{ date }}</td>
+        <td>{{ apply }}</td>
+        <td>{{ department }}</td>
+        <td>{{ status }}</td>
+        <td>
+            <a href="javascript:void(0);" onclick="edit_record({{ id }})" title="{{ helper:lang line="global:edit" }}" class="button">{{ helper:lang line="global:edit" }}</a> |
+            <a href="javascript:void(0);" onclick="delete_record({{ id }})" title="{{ helper:lang line="global:delete" }}" class="button confirm">{{ helper:lang line="global:delete" }}</a>
+        </td>
+    </tr>
+    {{ /posts }}
     </tbody>
 </table>
-
-<?php if(!empty($pagination['links'])): ?>
-    <div class="paginate">
-        <?php echo $pagination['links'];?>
-    </div>
-<?php endif; ?>
+<button type="submit" name="btnAction" class="btn-u btn-u-red" value="delete" disabled="disabled">Delete</button>
+{{ pagination }}
