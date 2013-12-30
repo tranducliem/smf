@@ -20,7 +20,7 @@ class Module_Feedbacktype extends Module
             'description' => array(
                 'en' => 'Feedback type manager!',
             ),
-            'frontend' => false,
+            'frontend' => true,
             'backend' => true,
             'skip_xss' => true,
             'menu' => 'content',
