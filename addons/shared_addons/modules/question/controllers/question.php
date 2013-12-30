@@ -26,6 +26,7 @@ class Question extends Public_Controller {
 
     public function __construct(){
         parent::__construct();
+        if(!check_user_permission($this->current_user, $this->module, $this->permissions)) redirect();
         $this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
         $this->load->driver('Streams');
         $this->load->library(array('keywords/keywords', 'form_validation'));
