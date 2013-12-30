@@ -1914,3 +1914,10 @@ i.style-switcher-btn-option:hover {
 label span.require{
     color: #ff0a27;
 }
+
+button[disabled="disabled"]:hover,
+button[disabled="disabled"]{
+    cursor: not-allowed;
+    color: #FFFFFF;
+    background-color: #D5D5D5 !important;
+}

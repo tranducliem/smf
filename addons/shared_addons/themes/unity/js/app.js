@@ -114,6 +114,71 @@ var App = function () {
         });
     }
 
+    function handleAjaxDeleteForm(){
+        $('form.ajax_delete_form').ajaxForm({
+            beforeSend: function() {
+                var con = confirm('Are you sure ?');
+                if(con){
+                    return true;
+                }else{
+                    return false;
+                }
+            },
+            uploadProgress: function(event, position, total, percentComplete) {},
+            success: function(data) {
+                form_success(data);
+            },
+            error: function(xhr){
+                console.error(xhr.message);
+            },
+            complete: function(xhr) {}
+        });
+    }
+
+    function handleAjaxActionForm(){
+        $('#filter-result input[type=checkbox]').change(function(){
+            if($(this).hasClass('check-all')){
+                var checkboxes = $(this).closest('#filter-result').find(':checkbox');
+                if($(this).is(':checked')) {
+                    checkboxes.attr('checked', 'checked');
+                } else {
+                    checkboxes.removeAttr('checked');
+                }
+            }else{
+                if($(this).is(':checked')) {
+                    var check = true;
+                    var chks = $('#filter-result').find(':checkbox');
+                    for(var i = 0; i < chks.length; i++){
+                        if((!$(chks[i]).hasClass('check-all')) && (!$(chks[i]).is(':checked'))){
+                            check = false;
+                            break;
+                        }
+                    }
+                    if(check){
+                        $('#filter-result').find(':checkbox').attr('checked', 'checked');
+                    }
+                } else {
+                    $('.check-all').removeAttr('checked');
+                }
+            }
+
+            var check_delete = false;
+            var chks_delete = $('#filter-result').find(':checkbox');
+            for(var i = 0; i < chks_delete.length; i++){
+                if((!$(chks_delete[i]).hasClass('check-all')) && ($(chks_delete[i]).is(':checked'))){
+                    check_delete = true;
+                    break;
+                }
+            }
+
+            if(check_delete){
+                $('button[name=btnAction]').removeAttr('disabled');
+            }else{
+                $('button[name=btnAction]').attr('disabled', 'disabled');
+            }
+        });
+    }
+
     return {
         init: function () {
             handleBootstrap();
@@ -123,6 +188,8 @@ var App = function () {
             handleSwitcher();
             handleSearchForm();
             handleAjaxSubmitForm();
+            handleAjaxDeleteForm();
+            handleAjaxActionForm();
         },
 
         initSliders: function () {
@@ -182,6 +249,10 @@ var App = function () {
                 slideWidth: 360,
                 slideMargin: 10
             });            
+        },
+
+        initDeleteButton: function(){
+            handleAjaxActionForm();
         }
 
     };
