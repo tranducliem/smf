@@ -48,3 +48,19 @@ if (!function_exists('truncate')) {
     }
 }
 
+if (!function_exists('check_user_permission')) {
+    function check_user_permission($current_user, $module, $permissions){
+        if ($current_user){
+            // Admins can go straight in
+            if ($current_user->group === 'admin'){
+                return true;
+            }else if(array_key_exists($module, $permissions)){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+}
