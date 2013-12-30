@@ -26,6 +26,8 @@ function form_validate(){
 function form_reset(){
     $('#tab_form a').html('Create new team');
     $('#btnSubmit').html('Create team');
+    $('#action').val("create");
+    $('#row_edit_id').val("");
     $('#title').val("");
     $('#company_id').val("");
     $('#description').val("");
@@ -37,7 +39,7 @@ function edit_record(id){
     //Set action for submit
     $('#action').val('edit');
     $('#tab_form a').html('Edit team');
-    $('#btnSubmit').html('Edit team');
+    $('#btnSubmit').html('Update team');
     //Bidding data
     $.ajax({
         type: "POST",
