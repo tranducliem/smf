@@ -3,6 +3,7 @@
 $lang['feedbacktype:title']                     = 'title';
 $lang['feedbacktype:description']               = 'description';
 $lang['feedbacktype:types_title']               = 'FeedbackType';
+$lang['feedbacktype:list_title']                = 'List Feedback Type';
 
 // Action title
 $lang['feedbacktype:create_title']              = 'Add type';
@@ -14,11 +15,14 @@ $lang['feedbacktype:content_label']                         = 'Content';
 // Message
 $lang['feedbacktype:currently_no_type']         = 'There are no Feedback types at the moment.';
 $lang['feedbacktype:feedbacktype_add_success']  = 'The feedback type "%s" was added.';
+$lang['feedbacktype:add_success']               = 'Add successful';
 $lang['feedbacktype:feedbacktype_add_error']    = 'Add feedback type was failed.';
 $lang['feedbacktype:edit_success']              = 'The feedback type "%s" was updated.';
 $lang['feedbacktype:edit_error']                = 'Edit feedback type was failed.';
 $lang['feedbacktype:delete_success']            = 'The feedback type "%s" has been deleted.';
 $lang['feedbacktype:mass_delete_success']       = 'The feedback types "%s" have been deleted.';
+$lang['feedbacktype:delete_error']              = 'No feedbacktype were deleted.';
+$lang['feedbacktype:validate_error']            = 'Please enter the correct value.';
 
 // Action title
 $lang['feedbacktype:create_title']              = 'Add feedback type';

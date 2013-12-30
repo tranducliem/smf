@@ -3,34 +3,27 @@
  */
 
 function form_validate(){
-    var title = $('#title');
-    var company_id = $('#company_id');
-    var description = $('#description');
+    var feedback_manager_id = $('#feedback_manager_id');
+    var user_id = $('#user_id');
 
-    if(title.val() == ""){
-        open_message_block("error", "Title is required!");
-        title.focus();
+    if(feedback_manager_id.val() == ""){
+        open_message_block("error", "Feedback manager is required!");
+        feedback_manager_id.focus();
         return false;
-    } else if(company_id.val() == ""){
-        open_message_block("error", "Company is required!");
-        company_id.focus();
-        return false;
-    } else if(description.val() == ""){
-        open_message_block("error", "Description is required!");
-        description.focus();
+    }
+    if(user_id.val() == ""){
+        open_message_block("error", "User is required!");
+        user_id.focus();
         return false;
     }
     return true;
 }
 
 function form_reset(){
-    $('#tab_form a').html('Create new team');
-    $('#btnSubmit').html('Create team');
-    $('#action').val("create");
-    $('#row_edit_id').val("");
-    $('#title').val("");
-    $('#company_id').val("");
-    $('#description').val("");
+    $('#tab_form a').html('Create new Feedback User');
+    $('#btnSubmit').html('Create Feedback User');
+    $('#feedback_manager_id').val("");
+    $('#user_id').val("");
 }
 
 function edit_record(id){
@@ -38,18 +31,17 @@ function edit_record(id){
     $('#row_edit_id').val(id);
     //Set action for submit
     $('#action').val('edit');
-    $('#tab_form a').html('Edit team');
-    $('#btnSubmit').html('Update team');
+    $('#tab_form a').html('Edit Feedback User');
+    $('#btnSubmit').html('Edit Feedback User');
     //Bidding data
     $.ajax({
         type: "POST",
-        url: BASE_URL + "team/get_team_by_id/"+id,
+        url: BASE_URL + "feedbackuser/get_fbuser_by_id/"+id,
         data: {},
         success: function(data){
             var response = $.parseJSON(data);
-            $('#title').val(response.title);
-            $('#company_id').val(response.company_id);
-            $('#description').val(response.description);
+            $('#feedback_manager_id').val(response.feedback_manager_id);
+            $('#user_id').val(response.user_id);
             //Show tab form team
             $('#tab-1').removeClass('active');
             $('#tab_list').removeClass('active');
@@ -67,7 +59,7 @@ function delete_record(id){
     if(con){
         $.ajax({
             type: "POST",
-            url: BASE_URL + "team/delete/"+id,
+            url: BASE_URL + "feedbackuser/delete/"+id,
             data: {},
             success: function(data){
                 var response = $.parseJSON(data);
@@ -88,17 +80,10 @@ function delete_record(id){
 }
 
 function form_success(data){
-    try{
-        var response = $.parseJSON(data);
-        if(response.status == "success"){
-            open_message_block("success", response.message);
-            form_reset();
-        }else if(response.status == "error"){
-            open_message_block("error", response.message);
-        }
-    }catch (xhr){
-        console.error("Exception: " + xhr.message);
-    }finally{
+    var response = $.parseJSON(data);
+    if(response.status == "success"){
+        open_message_block("success", response.message);
+        form_reset();
         //Show tab list team
         $('#tab-2').removeClass('active');
         $('#tab_form').removeClass('active');
@@ -106,13 +91,15 @@ function form_success(data){
         $('#tab-1').addClass('active');
         //Refresh data
         list_refresh();
+    }else if(response.status == "error"){
+        open_message_block("error", response.message);
     }
 }
 
 function list_refresh(){
     $.ajax({
         type: "POST",
-        url: BASE_URL + "team",
+        url: BASE_URL + "feedbackuser",
         data: {},
         success: function(data){
             $('#filter-result').html(data);
