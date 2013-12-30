@@ -15,7 +15,8 @@ if (!function_exists('get_username_by_id')) {
     function get_username_by_id($id){
         $CI = & get_instance();
         $CI->load->model('users/user_m');
-        $usn = $CI->user_m->get($id);
+        $param = array('id'=>$id);
+        $usn = $CI->user_m->get($param);
         if(!empty($usn->username)){
             return $usn->username;
         }else{
@@ -28,7 +29,8 @@ if (!function_exists('get_email_by_id')) {
     function get_email_by_id($id){
         $CI = & get_instance();
         $CI->load->model('users/user_m');
-        $ttt = $CI->user_m->get($id);
+        $param = array('id'=>$id);
+        $ttt = $CI->user_m->get($param);
         if(!empty($ttt->email)){
             return $ttt->email;
         }else{
