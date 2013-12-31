@@ -27,6 +27,8 @@ class Answeruser extends Public_Controller {
 
     public function __construct(){
         parent::__construct();
+        if(!check_user_permission($this->current_user, $this->module, $this->permissions)) redirect();
+        $this->template->set_layout('feedback_layout.html');
         $this->load->driver('Streams');
         $this->load->library(array('keywords/keywords', 'form_validation'));
         $this->stream = $this->streams_m->get_stream('answer_user', true, 'answer_users');
