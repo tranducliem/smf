@@ -1921,3 +1921,81 @@ button[disabled="disabled"]{
     color: #FFFFFF;
     background-color: #D5D5D5 !important;
 }
+
+/*Side bar navigator*/
+.nav_sidebar {
+    /*margin-top:30px;
+    margin-left:420px;*/
+    width: 100%;
+}
+
+.nav_sidebar ul {
+    margin:0px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.nav_sidebar ul li {
+    background:#555;
+    height:35px;
+    width: 85%;
+    line-height:35px;
+    list-style:none;
+    padding-left:35px;
+    cursor:pointer;
+    margin-top:1px !important;
+}
+
+.nav_sidebar ul li.current,
+.nav_sidebar ul li.has_current {
+    background-color: #C8C8C8;
+}
+
+.nav_sidebar ul li a {
+    color: #ffffff;
+    text-decoration:none;
+    text-transform:uppercase;
+    line-height: 35px;
+    font-weight: 500;
+}
+.nav_sidebar ul li:hover {
+    background-color:#687074;
+    position:relative;
+}
+.nav_sidebar ul ul {
+    display:none;
+    position:absolute;
+    left:82%;
+    top:5px;
+    padding-left: 50px !important;
+}
+.nav_sidebar ul li:hover ul {
+    display:block;
+}
+.nav_sidebar ul ul li {
+    width:150px;
+    float:left;
+    display:inline;
+    border:none;
+    margin-top:0px !important;
+    border-bottom: 1px solid #EEEEEE;
+}
+.nav_sidebar ul ul li:hover {
+    text-decoration:none;
+}
+
+.nav_sidebar ul li{
+    background: #72C02C url("../img/item.png") no-repeat;
+    background-size: 35px 35px;
+    color: #FFF;
+    padding: 0 0 0 40px !important;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.nav_sidebar ul li ul li {
+    background: url("../img/plus.png") no-repeat scroll 5px 8px / 20px 20px #72C02C;
+    height: 35px;
+    padding-left: 30px !important;
+    padding-top: 5px;
+}
