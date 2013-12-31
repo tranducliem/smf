@@ -4,6 +4,7 @@
     <ul class="nav nav-tabs tabs">
         <li id="tab_list" class="active"><a href="#tab-1" data-toggle="tab">{{ helper:lang line="question:list_title" }}</a></li>
         <li id="tab_form" ><a href="#tab-2" data-toggle="tab">{{ helper:lang line="question:create_new_title" }}</a></li>
+        <li id="tab_statistics"><a href="#tab-3" data-toggle="tab">{{ helper:lang line="question:statistics" }}</a></li>
     </ul>
     <!--/Tabs Widget-->
 
@@ -26,6 +27,9 @@
             <div class="form_field">
                 <?php echo $this->load->view('partials/form') ?>
             </div>
+        </div>
+        <div class="tab-pane" id="tab-3">
+            <?php echo $this->load->view('partials/statistics') ?>
         </div>
     </div>
     <!--/tab-content-->
