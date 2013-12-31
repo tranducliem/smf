@@ -105,6 +105,7 @@ class Feedbackuser extends Public_Controller {
         $this->template
             ->title($this->module_details['name'])
             ->set_breadcrumb(lang('feedbackuser:types_title'))
+            ->set('breadcrumb_title', $this->module_details['name'])
             ->append_js('module::fbuser_form.js')
             ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
             ->set('posts', $posts['entries'])

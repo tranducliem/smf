@@ -93,6 +93,7 @@ class Feedback_manager_question extends Public_Controller {
         $this->template
             ->title($this->module_details['name'])
             ->set_breadcrumb(lang('feedback_manager_question:feedback_manager_question_title'))
+            ->set('breadcrumb_title', $this->module_details['name'])
             ->set_metadata('og:title', $this->module_details['name'], 'og')
             ->set_metadata('og:type', 'feedback_manager_question', 'og')
             ->set_metadata('og:url', current_url(), 'og')

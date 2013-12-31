@@ -87,6 +87,7 @@ class Answer extends Public_Controller {
         $this->template
             ->title($this->module_details['name'])
             ->set_breadcrumb(lang('answer:answer_title'))
+            ->set('breadcrumb_title', $this->module_details['name'])
             ->set_metadata('og:title', $this->module_details['name'], 'og')
             ->set_metadata('og:type', 'answer', 'og')
             ->set_metadata('og:url', current_url(), 'og')

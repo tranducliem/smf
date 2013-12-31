@@ -107,6 +107,7 @@ class Feedback_manager extends Public_Controller {
         $this->template
             ->title($this->module_details['name'])
             ->set_breadcrumb(lang('feedback_manager:feedback_manager_title'))
+            ->set('breadcrumb_title', $this->module_details['name'])
             ->set_metadata('og:title', $this->module_details['name'], 'og')
             ->set_metadata('og:type', 'feedback_manager', 'og')
             ->set_metadata('og:url', current_url(), 'og')
