@@ -1957,8 +1957,8 @@ button[disabled="disabled"]{
     font-weight: 500;
 }
 .nav_sidebar ul li:hover {
-    background-color:#687074;
-    position:relative;
+    background-color:#687074 !important;
+    position:relative !important;
 }
 .nav_sidebar ul ul {
     display:none;

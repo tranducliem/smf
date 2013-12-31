@@ -23,7 +23,7 @@ a.read-more:hover {
 }
 
 .nav_sidebar ul li{
-    background: #bdc3c7 url("../../img/item.png") no-repeat !important;
+    background: #787D80 url("../../img/item.png") no-repeat !important;
     background-size: 35px 35px;
     color: #FFF;
     padding: 0 0 0 40px !important;
@@ -32,7 +32,7 @@ a.read-more:hover {
 }
 
 .nav_sidebar ul li ul li {
-    background: url("../../img/plus.png") no-repeat scroll 5px 8px / 20px 20px #bdc3c7 !important;
+    background: url("../../img/plus.png") no-repeat scroll 5px 8px / 20px 20px #787D80 !important;
     height: 35px;
     padding-left: 30px !important;
     padding-top: 5px;
@@ -41,7 +41,7 @@ a.read-more:hover {
 ------------------------------------*/
 .purchase a.btn-buy {
 	background:#bdc3c7;
-	text-shadow:0 1px 0 #9c9fa1;		
+	text-shadow:0 1px 0 #9c9fa1;
 }
 .purchase a.btn-buy:hover {
 	background:#9c9fa1;

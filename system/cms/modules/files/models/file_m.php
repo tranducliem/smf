@@ -52,6 +52,12 @@ class File_m extends MY_Model {
 
 		return $this->get_all();
 	}
+
+    public function get_file_by_folder($folderId){
+        $this->db
+            ->where('files.folder_id', $folderId);
+        return $this->get_all();
+    }
 }
 
 /* End of file file_m.php */

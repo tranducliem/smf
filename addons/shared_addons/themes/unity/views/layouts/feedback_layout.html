@@ -40,15 +40,26 @@
         {{ theme:partial name="home_content" }}
         <!--=== End Home Content Part ===-->
     {{ else }}
-
         <!--=== Breadcrumbs ===-->
         {{ theme:partial name="breadcrumbs" }}
         <!--=== End Breadcrumbs ===-->
 
         <!--=== Content Part ===-->
-        {{ template:body }}
-        <!--=== End Content Part ===-->
+        <div class="container">
+            <!-- Message Bar -->
+            {{ theme:partial name="message_bar" }}
+            <!-- /Message Bar -->
+            <div class="row-fluid blog-page">
+                <!-- Left Sidebar -->
+                {{ theme:partial name="left_sidebar" }}
+                <!-- /Left Sidebar -->
 
+                <!-- Right Sidebar -->
+                {{ template:body }}
+                <!-- /Right Sidebar -->
+            </div><!--/row-fluid-->
+        </div><!--/container-->
+        <!--=== End Content Part ===-->
     {{ endif }}
 
     <!--=== Footer ===-->

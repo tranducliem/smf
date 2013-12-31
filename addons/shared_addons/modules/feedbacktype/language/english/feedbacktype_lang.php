@@ -10,7 +10,7 @@ $lang['feedbacktype:create_title']              = 'Add type';
 $lang['feedbacktype:edit_title_label']          = 'Edit feedback type "%s"';
 
 // Label
-$lang['feedbacktype:content_label']                         = 'Content';
+$lang['feedbacktype:content_label']             = 'Content';
 
 // Message
 $lang['feedbacktype:currently_no_type']         = 'There are no Feedback types at the moment.';
