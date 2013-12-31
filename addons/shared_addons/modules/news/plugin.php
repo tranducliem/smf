@@ -1,11 +1,11 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 /**
- * Blog Plugin
+ * news Plugin
  *
  * Create lists of posts
  * 
  * @author   PyroCMS Dev Team
- * @package  PyroCMS\Core\Modules\Blog\Plugins
+ * @package  PyroCMS\Core\Modules\news\Plugins
  */
 class Plugin_News extends Plugin
 {
@@ -13,7 +13,7 @@ class Plugin_News extends Plugin
 	public $version = '1.0.0';
 	public $name = array(
 		'en' => 'News',
-        'fa' => 'بلاگ',
+            'fa' => 'بلاگ',
 	);
 	public $description = array(
 		'en' => 'A plugin to display information such as news categories and posts.',

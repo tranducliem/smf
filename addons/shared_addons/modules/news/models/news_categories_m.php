@@ -4,7 +4,7 @@
  *
  * @author  Phil Sturgeon
  * @author  PyroCMS Dev Team
- * @package PyroCMS\Core\Modules\news\Models
+ * @package PyroCMS\Core\Modules\Blog\Models
  */
 class News_categories_m extends MY_Model
 {
@@ -55,7 +55,7 @@ class News_categories_m extends MY_Model
 	{
 		return (bool)$this->db->where('title', $title)
 			->where('id != ', $id)
-			->from('news_categories')
+			->from('blog_categories')
 			->count_all_results();
 	}
 
@@ -71,7 +71,7 @@ class News_categories_m extends MY_Model
 	{
 		return (bool)$this->db->where('slug', $slug)
 			->where('id != ', $id)
-			->from('news_categories')
+			->from('blog_categories')
 			->count_all_results();
 	}
 

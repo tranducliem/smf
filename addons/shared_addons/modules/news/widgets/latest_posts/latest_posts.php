@@ -1,7 +1,7 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
- * Show Latest news in your site with a widget.
+ * Show Latest blog in your site with a widget.
  *
  * Intended for use on cms pages. Usage :
  * on a CMS page add:
@@ -13,7 +13,7 @@
  *
  * @author  Erik Berman
  * @author  PyroCMS Dev Team
- * @package PyroCMS\Core\Modules\news\Widgets
+ * @package PyroCMS\Core\Modules\Blog\Widgets
  */
 class Widget_Latest_posts extends Widgets
 {
@@ -26,9 +26,9 @@ class Widget_Latest_posts extends Widgets
 
 	public $title = array(
 		'en' => 'Latest posts',
-		'br' => 'Artigos recentes do news',
+		'br' => 'Artigos recentes do Blog',
             'fa' => 'آخرین ارسال ها',
-		'pt' => 'Artigos recentes do news',
+		'pt' => 'Artigos recentes do Blog',
 		'el' => 'Τελευταίες αναρτήσεις ιστολογίου',
 		'fr' => 'Derniers articles',
 		'ru' => 'Последние записи',
@@ -36,14 +36,14 @@ class Widget_Latest_posts extends Widgets
 	);
 
 	public $description = array(
-		'en' => 'Display latest news posts with a widget',
-		'br' => 'Mostra uma lista de navegação para abrir os últimos artigos publicados no news',
+		'en' => 'Display latest blog posts with a widget',
+		'br' => 'Mostra uma lista de navegação para abrir os últimos artigos publicados no Blog',
             'fa' => 'نمایش آخرین پست های وبلاگ در یک ویجت',
-		'pt' => 'Mostra uma lista de navegação para abrir os últimos artigos publicados no news',
+		'pt' => 'Mostra uma lista de navegação para abrir os últimos artigos publicados no Blog',
 		'el' => 'Προβάλει τις πιο πρόσφατες αναρτήσεις στο ιστολόγιό σας',
-		'fr' => 'Permet d\'afficher la liste des derniers posts du news dans un Widget',
+		'fr' => 'Permet d\'afficher la liste des derniers posts du blog dans un Widget',
 		'ru' => 'Выводит список последних записей блога внутри виджета',
-		'id' => 'Menampilkan posting news terbaru menggunakan widget',
+		'id' => 'Menampilkan posting blog terbaru menggunakan widget',
 	);
 
 	// build form fields for the backend
@@ -66,19 +66,19 @@ class Widget_Latest_posts extends Widgets
 
 	public function run($options)
 	{
-		// load the news module's model
-		class_exists('news_m') OR $this->load->model('news/news_m');
+		// load the blog module's model
+		class_exists('Blog_m') OR $this->load->model('blog/blog_m');
 
 		// sets default number of posts to be shown
 		$options['limit'] = ( ! empty($options['limit'])) ? $options['limit'] : 5;
 
-		// retrieve the records using the news module's model
-		$news_widget = $this->news_m
+		// retrieve the records using the blog module's model
+		$blog_widget = $this->blog_m
 			->limit($options['limit'])
 			->get_many_by(array('status' => 'live'));
 
 		// returns the variables to be used within the widget's view
-		return array('news_widget' => $news_widget);
+		return array('blog_widget' => $blog_widget);
 	}
 
 }

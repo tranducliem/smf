@@ -57,7 +57,7 @@ class News extends Public_Controller
 				AND entry_id=".$this->db->protect_identifiers('news.id', true).") as `comment_count`";
 
 		// Get the latest news posts
-		$params = array(
+		$posts = $this->streams->entries->get_entries(array(
 			'stream'		=> 'news',
 			'namespace'		=> 'newss',
 			'limit'			=> Settings::get('records_per_page'),
@@ -65,8 +65,7 @@ class News extends Public_Controller
 			'paginate'		=> 'yes',
 			'pag_base'		=> site_url('news/page'),
 			'pag_segment'   => 3
-		);
-		$posts = $this->streams->entries->get_entries($params);
+		));
 
 		// Process posts
 		foreach ($posts['entries'] as &$post)

@@ -1,42 +1,42 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 /**
  * @author  PyroCMS Dev Team
- * @package PyroCMS\Core\Modules\news\Models
+ * @package PyroCMS\Core\Modules\Blog\Models
  */
 class News_m extends MY_Model
 {
-	protected $_table = 'news';
+	protected $_table = 'blog';
 
 	public function get_all()
 	{
 		$this->db
-			->select('news.*, news_categories.title AS category_title, news_categories.slug AS category_slug')
+			->select('blog.*, blog_categories.title AS category_title, blog_categories.slug AS category_slug')
 			->select('users.username, profiles.display_name')
-			->join('news_categories', 'news.category_id = news_categories.id', 'left')
-			->join('profiles', 'profiles.user_id = news.author_id', 'left')
-			->join('users', 'news.author_id = users.id', 'left')
+			->join('blog_categories', 'blog.category_id = blog_categories.id', 'left')
+			->join('profiles', 'profiles.user_id = blog.author_id', 'left')
+			->join('users', 'blog.author_id = users.id', 'left')
 			->order_by('created_on', 'DESC');
 
-		return $this->db->get('news')->result();
+		return $this->db->get('blog')->result();
 	}
 
 	public function get($id)
 	{
 		return $this->db
-			->select('news.*, users.username, profiles.display_name')
-			->join('profiles', 'profiles.user_id = news.author_id', 'left')
-			->join('users', 'news.author_id = users.id', 'left')
-			->where('news.id', $id)
-			->get('news')
+			->select('blog.*, users.username, profiles.display_name')
+			->join('profiles', 'profiles.user_id = blog.author_id', 'left')
+			->join('users', 'blog.author_id = users.id', 'left')
+			->where('blog.id', $id)
+			->get('blog')
 			->row();
 	}
 
 	public function get_by($key = null, $value = null)
 	{
 		$this->db
-			->select('news.*, users.username, profiles.display_name')
-			->join('profiles', 'profiles.user_id = news.author_id', 'left')
-			->join('users', 'news.author_id = users.id', 'left');
+			->select('blog.*, users.username, profiles.display_name')
+			->join('profiles', 'profiles.user_id = blog.author_id', 'left')
+			->join('users', 'blog.author_id = users.id', 'left');
 
 		if (is_array($key))
 		{
@@ -56,28 +56,28 @@ class News_m extends MY_Model
 		{
 			if (is_numeric($params['category']))
 			{
-				$this->db->where('news_categories.id', $params['category']);
+				$this->db->where('blog_categories.id', $params['category']);
 			}
 			else
 			{
-				$this->db->where('news_categories.slug', $params['category']);
+				$this->db->where('blog_categories.slug', $params['category']);
 			}
 		}
 
 		if ( ! empty($params['month']))
 		{
-			$this->db->where('MONTH(FROM_UNIXTIME('.$this->db->dbprefix('news').'.created_on))', $params['month']);
+			$this->db->where('MONTH(FROM_UNIXTIME('.$this->db->dbprefix('blog').'.created_on))', $params['month']);
 		}
 
 		if ( ! empty($params['year']))
 		{
-			$this->db->where('YEAR(FROM_UNIXTIME('.$this->db->dbprefix('news').'.created_on))', $params['year']);
+			$this->db->where('YEAR(FROM_UNIXTIME('.$this->db->dbprefix('blog').'.created_on))', $params['year']);
 		}
 
 		if ( ! empty($params['keywords']))
 		{
 			$this->db
-				->like('news.title', trim($params['keywords']))
+				->like('blog.title', trim($params['keywords']))
 				->or_like('profiles.display_name', trim($params['keywords']));
 		}
 
@@ -101,7 +101,7 @@ class News_m extends MY_Model
 		// By default, dont show future posts
 		if ( ! isset($params['show_future']) || (isset($params['show_future']) && $params['show_future'] == false))
 		{
-			$this->db->where('news.created_on <=', now());
+			$this->db->where('blog.created_on <=', now());
 		}
 
 		// Limit the results based on 1 number or 2 (2nd is offset)
@@ -120,8 +120,8 @@ class News_m extends MY_Model
 	public function count_tagged_by($tag, $params)
 	{
 		return $this->select('*')
-			->from('news')
-			->join('keywords_applied', 'keywords_applied.hash = news.keywords')
+			->from('blog')
+			->join('keywords_applied', 'keywords_applied.hash = blog.keywords')
 			->join('keywords', 'keywords.id = keywords_applied.keyword_id')
 			->where('keywords.name', str_replace('-', ' ', $tag))
 			->where($params)
@@ -130,12 +130,12 @@ class News_m extends MY_Model
 
 	public function get_tagged_by($tag, $params)
 	{
-		return $this->db->select('news.*, news.title title, news.slug slug, news_categories.title category_title, news_categories.slug category_slug, profiles.display_name')
-			->from('news')
-			->join('keywords_applied', 'keywords_applied.hash = news.keywords')
+		return $this->db->select('blog.*, blog.title title, blog.slug slug, blog_categories.title category_title, blog_categories.slug category_slug, profiles.display_name')
+			->from('blog')
+			->join('keywords_applied', 'keywords_applied.hash = blog.keywords')
 			->join('keywords', 'keywords.id = keywords_applied.keyword_id')
-			->join('news_categories', 'news_categories.id = news.category_id', 'left')
-			->join('profiles', 'profiles.user_id = news.author_id', 'left')
+			->join('blog_categories', 'blog_categories.id = blog.category_id', 'left')
+			->join('profiles', 'profiles.user_id = blog.author_id', 'left')
 			->where('keywords.name', str_replace('-', ' ', $tag))
 			->where($params)
 			->get()
@@ -144,36 +144,36 @@ class News_m extends MY_Model
 
 	public function count_by($params = array())
 	{
-		$this->db->join('news_categories', 'news.category_id = news_categories.id', 'left')
+		$this->db->join('blog_categories', 'blog.category_id = blog_categories.id', 'left')
 		// we need the display name joined so we can get an accurate count when searching
-			->join('profiles', 'profiles.user_id = news.author_id');
+			->join('profiles', 'profiles.user_id = blog.author_id');
 
 		if ( ! empty($params['category']))
 		{
 			if (is_numeric($params['category']))
 			{
-				$this->db->where('news_categories.id', $params['category']);
+				$this->db->where('blog_categories.id', $params['category']);
 			}
 			else
 			{
-				$this->db->where('news_categories.slug', $params['category']);
+				$this->db->where('blog_categories.slug', $params['category']);
 			}
 		}
 
 		if ( ! empty($params['month']))
 		{
-			$this->db->where('MONTH(FROM_UNIXTIME('.$this->db->dbprefix('news').'.created_on))', $params['month']);
+			$this->db->where('MONTH(FROM_UNIXTIME('.$this->db->dbprefix('blog').'.created_on))', $params['month']);
 		}
 
 		if ( ! empty($params['year']))
 		{
-			$this->db->where('YEAR(FROM_UNIXTIME('.$this->db->dbprefix('news').'.created_on))', $params['year']);
+			$this->db->where('YEAR(FROM_UNIXTIME('.$this->db->dbprefix('blog').'.created_on))', $params['year']);
 		}
 
 		if ( ! empty($params['keywords']))
 		{
 			$this->db
-				->like('news.title', trim($params['keywords']))
+				->like('blog.title', trim($params['keywords']))
 				->or_like('profiles.display_name', trim($params['keywords']));
 		}
 
@@ -194,7 +194,7 @@ class News_m extends MY_Model
 			$this->db->where('status', 'live');
 		}
 
-		return $this->db->count_all_results('news');
+		return $this->db->count_all_results('blog');
 	}
 
 	public function update($id, $input, $skip_validation = false)
@@ -217,9 +217,9 @@ class News_m extends MY_Model
 	public function get_archive_months()
 	{
 		$this->db->select('UNIX_TIMESTAMP(DATE_FORMAT(FROM_UNIXTIME(t1.created_on), "%Y-%m-02")) AS `date`', false);
-		$this->db->from('news t1');
+		$this->db->from('blog t1');
 		$this->db->distinct();
-		$this->db->select('(SELECT count(id) FROM '.$this->db->dbprefix('news').' t2
+		$this->db->select('(SELECT count(id) FROM '.$this->db->dbprefix('blog').' t2
 							WHERE MONTH(FROM_UNIXTIME(t1.created_on)) = MONTH(FROM_UNIXTIME(t2.created_on))
 								AND YEAR(FROM_UNIXTIME(t1.created_on)) = YEAR(FROM_UNIXTIME(t2.created_on))
 								AND status = "live"
@@ -252,7 +252,7 @@ class News_m extends MY_Model
 	}
 
 	/**
-	 * Searches news posts based on supplied data array
+	 * Searches blog posts based on supplied data array
 	 *
 	 * @param $data array
 	 *
@@ -299,15 +299,15 @@ class News_m extends MY_Model
 			{
 				if ($counter == 0)
 				{
-					$this->db->like('news.title', $phrase);
+					$this->db->like('blog.title', $phrase);
 				}
 				else
 				{
-					$this->db->or_like('news.title', $phrase);
+					$this->db->or_like('blog.title', $phrase);
 				}
 
-				$this->db->or_like('news.body', $phrase);
-				$this->db->or_like('news.intro', $phrase);
+				$this->db->or_like('blog.body', $phrase);
+				$this->db->or_like('blog.intro', $phrase);
 				$this->db->or_like('profiles.display_name', $phrase);
 				$counter++;
 			}
