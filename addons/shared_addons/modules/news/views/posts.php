@@ -5,10 +5,10 @@
             <h3><a href="{{ url }}">{{ title }}</a></h3>
             <ul class="unstyled inline blog-info">
                 {{ if category }}
-                <li>{{ helper:lang line="news:category_label" }}: <a href="{{ url:site }}news/category/{{ category:slug }}">{{ category:title }}</a></li>
+                <li><i class="icon-list"></i> <a href="{{ url:site }}news/category/{{ category:slug }}">{{ category:title }}</a></li>
                 {{ endif }}
                 <li><i class="icon-calendar"></i> {{ helper:lang line="news:posted_label" }}: {{ helper:date timestamp=created_on }}</li>
-                <li><i class="icon-pencil"></i> Diana Anderson</li>
+                <li><i class="icon-pencil"></i> <?php echo get_username_by_id(1);?></li>
                 <li><i class="icon-comments"></i> <a href="#">24 Comments</a></li>
             </ul>
             {{ if keywords }}
