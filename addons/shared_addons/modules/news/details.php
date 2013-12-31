@@ -1,14 +1,14 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
- * news module
+ * Blog module
  *
  * @author  PyroCMS Dev Team
- * @package PyroCMS\Core\Modules\news
+ * @package PyroCMS\Core\Modules\Blog
  */
 class Module_News extends Module
 {
-	public $version = '2.0.0';
+	public $version = '1.0.0';
 
 	public function info()
 	{
@@ -19,32 +19,32 @@ class Module_News extends Module
 				'br' => 'News',
 				'pt' => 'News',
 				'el' => 'Ιστολόγιο',
-                            'fa' => 'بلاگ',
+                'fa' => 'بلاگ',
 				'he' => 'בלוג',
-				'id' => 'news',
-				'lt' => 'newsas',
-				'pl' => 'news',
+				'id' => 'News',
+				'lt' => 'Newsas',
+				'pl' => 'News',
 				'ru' => 'Блог',
 				'tw' => '文章',
 				'cn' => '文章',
-				'hu' => 'news',
-				'fi' => 'newsi',
+				'hu' => 'News',
+				'fi' => 'Newsi',
 				'th' => 'บล็อก',
-				'se' => 'newsg',
+				'se' => 'Newsg',
 			),
 			'description' => array(
 				'en' => 'Post news entries.',
 				'ar' => 'أنشر المقالات على مدوّنتك.',
-				'br' => 'Escrever publicações de news',
+				'br' => 'Escrever publicações de News',
 				'pt' => 'Escrever e editar publicações no news',
 				'cs' => 'Publikujte nové články a příspěvky na news.', #update translation
 				'da' => 'Skriv newsindlæg',
-				'de' => 'Veröffentliche neue Artikel und news-Einträge', #update translation
+				'de' => 'Veröffentliche neue Artikel und News-Einträge', #update translation
 				'sl' => 'Objavite news prispevke',
 				'fi' => 'Kirjoita newsi artikkeleita.',
 				'el' => 'Δημιουργήστε άρθρα και εγγραφές στο ιστολόγιο σας.',
 				'es' => 'Escribe entradas para los artículos y news (web log).', #update translation
-                                'fa' => 'مقالات منتشر شده در بلاگ',
+                'fa' => 'مقالات منتشر شده در بلاگ',
 				'fr' => 'Poster des articles d\'actualités.',
 				'he' => 'ניהול בלוג',
 				'id' => 'Post entri news',
@@ -56,7 +56,7 @@ class Module_News extends Module
 				'tw' => '發表新聞訊息、部落格等文章。',
 				'cn' => '发表新闻讯息、部落格等文章。',
 				'th' => 'โพสต์รายการบล็อก',
-				'hu' => 'news bejegyzések létrehozása.',
+				'hu' => 'News bejegyzések létrehozása.',
 				'se' => 'Inlägg i newsgen.',
 			),
 			'frontend' => true,
@@ -164,7 +164,7 @@ class Module_News extends Module
 		$news_fields = array(
 				'title' => array('type' => 'VARCHAR', 'constraint' => 200, 'null' => false, 'unique' => true),
 				'slug' => array('type' => 'VARCHAR', 'constraint' => 200, 'null' => false),
-                'thumbnail' => array('type' => 'VARCHAR', 'constraint' => 200, 'null' => false),
+				'thumbnail' => array('type' => 'VARCHAR', 'constraint' => 200, 'null' => false),
 				'category_id' => array('type' => 'INT', 'constraint' => 11, 'key' => true),
 				'body' => array('type' => 'TEXT'),
 				'parsed' => array('type' => 'TEXT'),
@@ -180,11 +180,13 @@ class Module_News extends Module
 		return $this->dbforge->add_column('news', $news_fields);
 	}
 
-	public function uninstall()
-	{
-		// This is a core module, lets keep it around.
-		return false;
-	}
+    public function uninstall()
+    {
+        if($this->dbforge->drop_table('news'))
+        {
+            return TRUE;
+        }
+    }
 
 	public function upgrade($old_version)
 	{

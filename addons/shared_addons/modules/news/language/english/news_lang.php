@@ -26,8 +26,8 @@ $lang['news:new_category_label']             = 'Add a category';
 $lang['news:subscripe_to_rss_label']         = 'Subscribe to RSS';
 $lang['news:all_posts_label']                = 'All posts';
 $lang['news:posts_of_category_suffix']       = ' posts';
-$lang['news:rss_name_suffix']                = ' News';
-$lang['news:rss_category_suffix']            = ' News';
+$lang['news:rss_name_suffix']                = ' news';
+$lang['news:rss_category_suffix']            = ' news';
 $lang['news:author_name_label']              = 'Author name';
 $lang['news:read_more_label']                = 'Read More&nbsp;&raquo;';
 $lang['news:created_hour']                   = 'Created on Hour';
@@ -39,8 +39,8 @@ $lang['news:create_title']                   = 'Add Post';
 $lang['news:edit_title']                     = 'Edit post "%s"';
 $lang['news:archive_title']                 = 'Archive';
 $lang['news:posts_title']					= 'Posts';
-$lang['news:rss_posts_title']				= 'News posts for %s';
-$lang['news:news_title']					= 'News';
+$lang['news:rss_posts_title']				= 'news posts for %s';
+$lang['news:news_title']					= 'news';
 $lang['news:list_title']					= 'List Posts';
 
 // messages
@@ -58,7 +58,7 @@ $lang['news:publish_error']                  = 'No posts were published.';
 $lang['news:delete_success']                 = 'The post "%s" has been deleted.';
 $lang['news:mass_delete_success']            = 'The posts "%s" have been deleted.';
 $lang['news:delete_error']                   = 'No posts were deleted.';
-$lang['news:already_exist_error']            = 'A post with this URL already exists.';
+$lang['news:already_exist_error']            = 'An post with this URL already exists.';
 
 $lang['news:twitter_posted']                 = 'Posted "%s" %s';
 $lang['news:twitter_error']                  = 'Twitter Error';

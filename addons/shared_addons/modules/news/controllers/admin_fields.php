@@ -28,7 +28,7 @@ class Admin_fields extends Admin_Controller {
 	}
 
 	// --------------------------------------------------------------------------
-	
+
 	/**
 	 * List out profile fields
 	 *
@@ -39,7 +39,7 @@ class Admin_fields extends Admin_Controller {
 	{
 		$buttons = array(
 			array(
-				'url'		=> 'admin/news/fields/edit/-assign_id-', 
+				'url'		=> 'admin/news/fields/edit/-assign_id-',
 				'label'		=> $this->lang->line('global:edit')
 			),
 			array(
@@ -95,7 +95,7 @@ class Admin_fields extends Admin_Controller {
 		{
 			show_error(lang('streams:cannot_find_assign'));
 		}
-	
+
 		// Tear down the assignment
 		if ( ! $this->streams->cp->teardown_assignment_field($assign_id))
 		{
@@ -103,9 +103,9 @@ class Admin_fields extends Admin_Controller {
 		}
 		else
 		{
-		    $this->session->set_flashdata('success', lang('streams:field_delete_success'));			
+		    $this->session->set_flashdata('success', lang('streams:field_delete_success'));
 		}
-	
+
 		redirect('admin/news/fields');
 	}
 
