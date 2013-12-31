@@ -28,6 +28,7 @@ class Feedbackuser extends Public_Controller {
     {
         parent::__construct();
         if(!check_user_permission($this->current_user, $this->module, $this->permissions)) redirect();
+        $this->template->set_layout('feedback_layout.html');
         $this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
         $this->load->driver('Streams');
         $this->load->library(array('keywords/keywords', 'form_validation'));
