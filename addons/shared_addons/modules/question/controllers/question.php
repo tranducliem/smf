@@ -77,6 +77,7 @@ class Question extends Public_Controller {
             ->set_metadata('description', $meta['description'])
             ->set_metadata('keywords', $meta['keywords'])
             ->append_js('module::question_form.js')
+            ->append_js('module::statistics.js')
             ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
             ->set('posts', $posts['entries'])
             ->set('pagination', $posts['pagination']);
@@ -302,5 +303,31 @@ class Question extends Public_Controller {
             'keywords' => implode(', ', $keywords),
             'description' => implode(', ', $description)
         );
+    }
+    
+    /**
+     * The statistics function
+     * @Description: This is statistics function
+     * @Parameter:
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    public function  statistic(){
+        $data = array();
+        $statistics=array();
+        $this->load->model('answer_m');
+        $this->load->model('answeruser_m');
+        $data['title'] = $this->question_m->get(6)->title;
+        $list_answer = $this->answer_m->get_many_by('question_id','6');
+        $i=0;
+        foreach ($list_answer as $anwser){
+            $statistics[$i]['name']=$anwser->title;
+            $statistics[$i]['percent']=  $this->answeruser_m->count_by('answer_id',$anwser->id)/4;
+            $i++;
+        }
+        $data['count_answer']=$i;
+        $data['statistics']=$statistics;
+        echo json_encode($data);
     }
 } 
