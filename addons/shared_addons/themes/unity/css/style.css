@@ -1924,8 +1924,6 @@ button[disabled="disabled"]{
 
 /*Side bar navigator*/
 .nav_sidebar {
-    /*margin-top:30px;
-    margin-left:420px;*/
     width: 100%;
 }
 
@@ -1948,7 +1946,7 @@ button[disabled="disabled"]{
 
 .nav_sidebar ul li.current,
 .nav_sidebar ul li.has_current {
-    background-color: #C8C8C8;
+    background-color: #C8C8C8 !important;
 }
 
 .nav_sidebar ul li a {
@@ -1982,20 +1980,4 @@ button[disabled="disabled"]{
 }
 .nav_sidebar ul ul li:hover {
     text-decoration:none;
-}
-
-.nav_sidebar ul li{
-    background: #72C02C url("../img/item.png") no-repeat;
-    background-size: 35px 35px;
-    color: #FFF;
-    padding: 0 0 0 40px !important;
-    text-decoration: none;
-    text-transform: uppercase;
-}
-
-.nav_sidebar ul li ul li {
-    background: url("../img/plus.png") no-repeat scroll 5px 8px / 20px 20px #72C02C;
-    height: 35px;
-    padding-left: 30px !important;
-    padding-top: 5px;
 }
