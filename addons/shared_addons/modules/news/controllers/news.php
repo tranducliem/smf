@@ -136,6 +136,7 @@ class News extends Public_Controller
 			->set_metadata('keywords', $category->title)
 			->set_breadcrumb(lang('news:news_title'), 'news')
 			->set_breadcrumb($category->title)
+            ->set('breadcrumb_title', $category->title)
 			->set('pagination', $posts['pagination'])
 			->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
 			->set('posts', $posts['entries'])
