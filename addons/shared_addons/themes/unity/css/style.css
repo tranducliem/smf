@@ -1955,6 +1955,7 @@ button[disabled="disabled"]{
     text-transform:uppercase;
     line-height: 35px;
     font-weight: 500;
+    display: block;
 }
 .nav_sidebar ul li:hover {
     background-color:#687074 !important;
