@@ -43,8 +43,8 @@ class Team extends Public_Controller {
         //Get companies list from cached to bidding select list
         $company = array(''  => lang('team:select_company'));
         $companies = $this->streams->entries->get_entries(array('stream' => 'company', 'namespace' => 'companies'));
-        foreach ($companies['entries'] as &$post) {
-            $company[][$post['id']] = $post['title'];
+        foreach ($companies['entries'] as $post) {
+            $company[$post['id']] = $post['title'];
         }
         $this->template->set('companies', $company);
     }

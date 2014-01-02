@@ -9,10 +9,11 @@
     </tr>
     </thead>
     <tbody>
-    {{ posts }}
+    {{ if posts }}
+        {{ posts }}
         <tr>
             <td><input type="checkbox" value="{{ id }}" name="action_to[]"></td>
-            <td>{{ title }}</td>
+            <td><a href="javascript:void(0);" onclick="edit_record({{ id }})" title="{{ title }}" class="button">{{ title }}</a></td>
             <td>{{ description }}</td>
             <td>{{ company }}</td>
             <td>
@@ -20,7 +21,10 @@
                 <a href="javascript:void(0);" onclick="delete_record({{ id }})" title="{{ helper:lang line="global:delete" }}" class="button confirm">{{ helper:lang line="global:delete" }}</a>
             </td>
         </tr>
-    {{ /posts }}
+        {{ /posts }}
+    {{ else }}
+        <tr><td colspan="5">{{ helper:lang line="team:currently_no_posts" }}</td></tr>
+    {{ endif }}
     </tbody>
 </table>
 <button type="submit" name="btnAction" class="btn-u btn-u-red" value="delete" disabled="disabled">Delete</button>

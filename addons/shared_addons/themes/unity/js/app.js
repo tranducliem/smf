@@ -93,6 +93,7 @@ var App = function () {
             uploadProgress: function(event, position, total, percentComplete) {},
             success: function(data) {
                 $('#filter-result').html(data);
+                handleAjaxActionForm();
             },
             complete: function(xhr) {}
         });

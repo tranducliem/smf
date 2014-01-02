@@ -116,7 +116,7 @@ function list_refresh(){
         data: {},
         success: function(data){
             $('#filter-result').html(data);
-            //Init
+            //Init load select all
             App.initDeleteButton();
         },
         error: function(xhr){
