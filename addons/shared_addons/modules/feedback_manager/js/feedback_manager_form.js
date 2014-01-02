@@ -28,6 +28,16 @@ function form_validate(){
         description.focus();
         return false;
     }
+    else if(require.val() == ""){
+        open_message_block("error", "Require is required!");
+        require.focus();
+        return false;
+    }
+    else if(status.val() == ""){
+        open_message_block("error", "Status is required!");
+        status.focus();
+        return false;
+    }
     return true;
 }
 
@@ -48,7 +58,7 @@ function edit_record(id){
     $('#row_edit_id').val(id);
     //Set action for submit
     $('#action').val('edit');
-    $('#tab_form a').html('Edit feedback manager');
+    $('#tab_form1 a').html('Edit feedback manager');
     $('#btnSubmit').html('Edit feedback manager');
     //Bidding data
     $.ajax({
@@ -67,8 +77,58 @@ function edit_record(id){
             //Show tab form team
             $('#tab-1').removeClass('active');
             $('#tab_list').removeClass('active');
-            $('#tab_form').addClass('active');
+            $('#tab-3').removeClass('active');
+            $('#tab_form2').removeClass('active');
+            $('#tab_form1').addClass('active');
             $('#tab-2').addClass('active');
+        },
+        error: function(xhr){
+            console.log("Error: " + xhr.message);
+        }
+    });
+}
+
+function list_record(id){
+    //Set id for row
+    $('#row_edit_id').val(id);
+    //Set action for submit
+    $('#action').val('edit');
+    $('#tab_form2 a').html('List question');
+    // $('#tab-1').removeClass('active');
+    // $('#tab_list').removeClass('active');
+    // $('#tab-2').removeClass('active');
+    // $('#tab_form1').removeClass('active');
+    // $('#tab_form2').addClass('active');
+    // $('#tab-3').addClass('active');
+    // $('#btnSubmit').html('List question');
+    // Bidding data
+    $.ajax({
+        type: "POST",
+        url: BASE_URL + "feedback_manager/get_question_manager/"+id,
+        data: {},
+        success: function(data){
+            data = data.trim();
+            if(data != "")
+            {
+                var response = $.parseJSON(data);
+                var rows = '';
+                for(var i=0; i<response.length;i++)
+                {
+                     rows += '<tr>' +
+                                '<td>'+(i+1)+'</td>' +
+                                '<td>'+response[i].question_title+'</td>' +
+                                '<td>'+response[i].question_description+'</td>' +
+                            '</tr>';
+                }
+                $('#question-result tbody').html(rows);
+            }
+            //Show tab form team
+            $('#tab-1').removeClass('active');
+            $('#tab_list').removeClass('active');
+            $('#tab-2').removeClass('active');
+            $('#tab_form1').removeClass('active');
+            $('#tab_form2').addClass('active');
+            $('#tab-3').addClass('active');
         },
         error: function(xhr){
             console.log("Error: " + xhr.message);

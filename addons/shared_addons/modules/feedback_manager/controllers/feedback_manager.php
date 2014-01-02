@@ -57,7 +57,7 @@ class Feedback_manager extends Public_Controller {
         $this->load->driver('Streams');
         $this->load->library(array('keywords/keywords', 'form_validation'));
         $this->stream = $this->streams_m->get_stream('feedback_manager', true, 'feedback_managers');
-        $this->load->model(array('feedback_manager_m', 'feedbacktype/feedbacktype_m'));
+        $this->load->model(array('feedback_manager_m', 'feedbacktype/feedbacktype_m','feedback_manager_question_m'));
         $this->lang->load('feedback_manager');
 
         if ( ! $feedback_manager_types = $this->cache->get('feedback_manager_types')){
@@ -223,6 +223,17 @@ class Feedback_manager extends Public_Controller {
         }
     }
 
+    public function get_question_manager($id)
+    {
+        if(!$this->input->is_ajax_request()) redirect('feedback_manager');
+        if($id != null && $id != ""){
+            $item = $this->feedback_manager_question_m->get_question_list_by_fid($id);
+            if(count($item)>0) echo json_encode($item);
+            else echo "";
+        }else{
+            echo "";
+        }
+    }
     /**
      * The create function
      * @Description: This is create function
@@ -327,8 +338,8 @@ class Feedback_manager extends Public_Controller {
      */
     private function _process_post(&$post) {
         $post['type'] = $this->feedbacktype_m->get_by(array('id'=>$post['type_id']))->title;
-        $post['url_edit'] = site_url('feedback_employee/edit/'.$post['id']);
-        $post['url_delete'] = site_url('feedback_employee/delete/'.$post['id']);
+        $post['url_edit'] = site_url('feedback_manager/edit/'.$post['id']);
+        $post['url_delete'] = site_url('feedback_manager/delete/'.$post['id']);
     }
 
     /**

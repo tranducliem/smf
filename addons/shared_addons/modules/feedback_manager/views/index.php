@@ -3,7 +3,8 @@
     <!-- Tabs Widget -->
     <ul class="nav nav-tabs tabs">
         <li id="tab_list" class="active"><a href="#tab-1" data-toggle="tab">{{ helper:lang line="feedback_manager:list_title" }}</a></li>
-        <li id="tab_form" ><a href="#tab-2" data-toggle="tab">{{ helper:lang line="feedback_manager:create_new_title" }}</a></li>
+        <li id="tab_form1" ><a href="#tab-2" data-toggle="tab">{{ helper:lang line="feedback_manager:create_new_title" }}</a></li>
+        <li id="tab_form2" ><a href="#tab-3" data-toggle="tab">Test</a></li>
     </ul>
     <!--/Tabs Widget-->
 
@@ -25,6 +26,11 @@
         <div class="tab-pane" id="tab-2">
             <div class="form_field">
                 <?php echo $this->load->view('partials/form') ?>
+            </div>
+        </div>
+        <div class="tab-pane" id="tab-3">
+            <div id="question-result">
+                <?php echo $this->load->view('test');?>
             </div>
         </div>
     </div>

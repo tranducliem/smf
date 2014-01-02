@@ -37,8 +37,8 @@ function edit_record(id){
         data: {},
         success: function(data){
             var response = $.parseJSON(data);
-            $('#feedback_manager_id').val(response.title);
-            $('#question_id').val(response.company_id);
+            $('#feedback_manager_id').val(response.feedback_manager_id);
+            $('#question_id').val(response.question_id);
             //Show tab form team
             $('#tab-1').removeClass('active');
             $('#tab_list').removeClass('active');

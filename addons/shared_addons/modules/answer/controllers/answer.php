@@ -193,7 +193,7 @@ class Answer extends Public_Controller {
      * @Date: 11/21/13
      * @Update: 11/21/13
      */
-    public function get_team_by_id($id){
+    public function get_answer_by_id($id){
         if(!$this->input->is_ajax_request()) redirect('answer');
         if($id != null && $id != ""){
             $item = $this->answer_m->get($id);
@@ -287,6 +287,8 @@ class Answer extends Public_Controller {
         }
         echo json_encode($message);
     }
+
+
 
     /**
      * The process_post function
