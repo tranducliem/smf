@@ -172,6 +172,8 @@ class Users extends Public_Controller
 		}
 
 		$this->template
+            ->set_breadcrumb(lang('user:login_header'))
+            ->set('breadcrumb_title', $this->module_details['name'])
 			->build('login', array(
 				'_user' => $user,
 				'redirect_to' => $redirect_to,
@@ -470,6 +472,8 @@ class Users extends Public_Controller
 
 		$this->template
 			->title(lang('user:register_title'))
+            ->set_breadcrumb(lang('user:register_header'))
+            ->set('breadcrumb_title', $this->module_details['name'])
 			->set('_user', $user)
 			->build('register');
 	}
