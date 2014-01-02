@@ -2,35 +2,26 @@
 
 {{ post }}
 
-<div class="post">
-
+<div class="span9">
+        <div class="blog margin-bottom-30">
 	<h3>{{ title }}</h3>
 
 	<div class="meta">
-
-		<div class="date">
-			{{ helper:lang line="news:posted_label" }}
-			<span>{{ helper:date timestamp=created_on }}</span>
-		</div>
-
-		<div class="author">
-			{{ helper:lang line="news:written_by_label" }}
-			<span><a href="{{ url:site }}user/{{ created_by:user_id }}">{{ created_by:display_name }}</a></span>
-		</div>
-
-		{{ if category }}
-		<div class="category">
-			{{ helper:lang line="news:category_label" }}
-			<span><a href="{{ url:site }}news/category/{{ category:slug }}">{{ category:title }}</a></span>
-		</div>
-		{{ endif }}
-
-		{{ if keywords }}
-		<div class="keywords">
-			{{ keywords }}
-				<span><a href="{{ url:site }}news/tagged/{{ keyword }}">{{ keyword }}</a></span>
+                <ul class="unstyled inline blog-info">
+                    <li><i class="icon-calendar"></i> {{ helper:date timestamp=created_on }}</li>
+                    <li><i class="icon-pencil"></i><a href="{{ url:site }}user/{{ created_by:user_id }}">{{ created_by:display_name }}</a></li>
+                    <li><i class="icon-comments"></i> <a href="#">24 Comments</a></li>
+                </ul>
+		{{ if keywords || category }}
+                <ul class="unstyled inline blog-tags">
+                    <li>
+                        <i class="icon-tags"></i>
+                        <a href="{{ url:site }}news/category/{{ category:slug }}">{{ category:title }}</a>
+                        {{ keywords }}
+				<a href="{{ url:site }}news/tagged/{{ keyword }}">{{ keyword }}</a>
 			{{ /keywords }}
-		</div>
+                    </li>
+                </ul>
 		{{ endif }}
 
 	</div>
@@ -38,8 +29,8 @@
 	<div class="body">
 		{{ body }}
 	</div>
+        </div><!--/blog-->
 
-</div>
 
 {{ /post }}
 
@@ -48,15 +39,19 @@
 <div id="comments">
 
 	<div id="existing-comments">
-		<h4><?php echo lang('comments:title') ?></h4>
-		<?php echo $this->comments->display() ?>
+            <h3 class="color-green"><?php echo lang('comments:title') ?></h3>
+            <div class="media">
+            <?php echo $this->comments->display() ?>
+            </div>
 	</div>
-
-	<?php if ($form_display): ?>
-		<?php echo $this->comments->form() ?>
-	<?php else: ?>
-	<?php echo sprintf(lang('news:disabled_after'), strtolower(lang('global:duration:'.str_replace(' ', '-', $post[0]['comments_enabled'])))) ?>
-	<?php endif ?>
+        <div class="post-comment">
+            <?php if ($form_display): ?>
+                    <?php echo $this->comments->form() ?>
+            <?php else: ?>
+            <?php echo sprintf(lang('news:disabled_after'), strtolower(lang('global:duration:'.str_replace(' ', '-', $post[0]['comments_enabled'])))) ?>
+            <?php endif ?>
+        </div><!--/post-comment-->
 </div>
 
 <?php endif ?>
+</div>
