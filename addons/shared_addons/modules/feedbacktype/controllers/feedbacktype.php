@@ -32,6 +32,7 @@ class Feedbacktype extends Public_Controller {
         $this->load->library(array('keywords/keywords', 'form_validation'));
         $this->stream = $this->streams_m->get_stream('feedback_manager_type', true, 'feedback_manager_types');
         $this->load->model('feedbacktype_m');
+        $this->load->model('feedback_manager_m');
         $this->lang->load('feedbacktype');
     }
     
@@ -101,10 +102,15 @@ class Feedbacktype extends Public_Controller {
             $deleted_ids = array();
             foreach ($ids as $id){
                 if ($post = $this->feedbacktype_m->get($id)){
-                    if ($this->feedbacktype_m->delete($id)){
-                        $this->pyrocache->delete('feedbacktype_m');
-                        $post_names[] = $post->title;
-                        $deleted_ids[] = $id;
+                    // Check references data  
+                    $check = $this->check_references_by_typeid($id);
+                    if($check != true)
+                    {
+                        if ($this->feedbacktype_m->delete($id)){
+                            $this->pyrocache->delete('feedbacktype_m');
+                            $post_names[] = $post->title;
+                            $deleted_ids[] = $id;
+                        }
                     }
                 }
             }
@@ -124,6 +130,25 @@ class Feedbacktype extends Public_Controller {
             $message['message']  = lang('feedbacktype:delete_error');
         }
         echo json_encode($message);
+    }
+    
+    /**
+     * The check_references_by_typeid function
+     * @Description: Check references data 
+     * @Parameter:
+     *      1. $var int The ID of the feedbackType to check
+     * @Return: null
+     * @Date: 1/2/14
+     * @Update: 1/2/14
+     */
+    private function check_references_by_typeid($var) {
+        $base_where['type_id'] = $var;
+        $references = $this->feedback_manager_m->get_many_by($base_where);
+        if(count($references) > 0) {
+            return true;
+        }else { 
+            return false;
+        }
     }
     
     /**
