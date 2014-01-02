@@ -18,9 +18,9 @@ class Module_Feedback_manager extends Module
                 'en' => 'Feedback Manager',
             ),
             'description' => array(
-                'en' => 'Post feedback_manager entries.',
+                'en' => 'Feedback manager.',
             ),
-            'frontend' => true,
+            //'frontend' => true,
             'backend' => true,
             'skip_xss' => true,
             'menu' => 'content',

@@ -9,9 +9,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * @Date: 12/25/13
  * @Update: 12/25/2013
  */
-class Feedback_manager_m extends MY_Model {
+class Feedback_manager_question_m extends MY_Model {
 
-    protected $_table = "feedback_manager";
+    protected $_table = "feedback_manager_question";
 
     public function __construct() {
         parent::__construct();
@@ -30,13 +30,14 @@ class Feedback_manager_m extends MY_Model {
         return parent::get_all();
     }
 
-    public function get_question($id)
+    public function get_question_list_by_fid($id)
     {
-        $this->db
-            ->select('feedback_manager.id','feedback_manager_question.feedback_manager_id')
-            ->db->join('feedback_manager_question','feedback_manager.id=feedback_manager_question.feedback_manager_id')
-            ->db->join('question','feedback_manager.question_id = question.id');
-        return parent::get_by(array('id'=>$id));
+        return $this->db
+                    ->select('feedback_manager_question.feedback_manager_id, question.id as question_id, question.title as question_title, question.description as question_description')
+                    ->join('question','feedback_manager_question.question_id = question.id')
+                    ->where('feedback_manager_question.feedback_manager_id', $id)
+                    ->get($this->_table)
+                    ->result();
     }
 
 }

@@ -37,7 +37,7 @@ class Feedback_manager_question extends Public_Controller {
 
         if ( ! $feedback_managers = $this->cache->get('feedback_managers')){
             $feedback_managers = array(
-                ''  => lang('team:select_feedback_manager')
+                ''  => lang('feedback_manager_question:select_feedback_manager')
             );
             $rows = $this->feedback_manager_m->get_all();
             foreach($rows as $row){
@@ -48,7 +48,7 @@ class Feedback_manager_question extends Public_Controller {
 
         if ( ! $questions = $this->cache->get('questions')){
             $questions = array(
-                ''  => lang('team:select_question')
+                ''  => lang('feedback_manager_question:select_question')
             );
             $rows = $this->question_m->get_all();
             foreach($rows as $row){

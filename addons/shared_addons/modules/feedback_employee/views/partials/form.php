@@ -16,7 +16,12 @@
 <label>{{ helper:lang line="feedback_employee:form_department_id" }}<span class="require">*</span></label>
 <?php echo form_dropdown('department_id', $departments, '', 'id="department_id" class="span6"')?>
 <label>{{ helper:lang line="feedback_employee:form_status" }}<span class="require">*</span></label>
-<?php echo form_input('status', '', 'id="status" class="span6 border-radius-none" placeholder="Status input"') ?><br>
+    <select name="status" data-placeholder="Choose status" class="span6" tabindex="2">
+        <option value="0">Not start</option>
+        <option value="1">Processing</option>
+        <option value="2">Done</option>
+    </select>
+    <br>
 <button type="submit" id="btnSubmit" class="btn-u pull-left">Create feedback_employee</button>
 <?php echo form_close()?>
 
