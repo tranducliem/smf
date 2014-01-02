@@ -1,24 +1,25 @@
 <!--=== Breadcrumbs ===-->
 {{ if template:has_breadcrumbs }}
-    {{ if theme:options:show_breadcrumbs == 'yes' }}
-        <div class="breadcrumbs margin-bottom-20">
-            <div class="container">
-                <h1 class="color-green pull-left">
-                    {{ if breadcrumb_title }}
-                        {{ breadcrumb_title }}
-                    {{ endif }}
-                </h1>
-                <ul class="pull-right breadcrumb">
-                    {{ template:breadcrumbs }}
-                        {{ if uri }}
-                            <li>{{ url:anchor segments=uri title=name }} <span class="divider">/</span></li>
-                        {{ else }}
-                            <li class="active">{{ name }}</li>
-                        {{ endif }}
-                    {{ /template:breadcrumbs }}
-                </ul>
-            </div><!--/container-->
-        </div><!--/breadcrumbs-->
-    {{ endif }}
+{{ if theme:options:show_breadcrumbs == 'yes' }}
+<div class="breadcrumbs margin-bottom-20">
+    <div class="container">
+        <h1 class="color-green pull-left">
+            {{ if breadcrumb_title }}
+            {{ breadcrumb_title }}
+            {{ endif }}
+        </h1>
+        <ul class="pull-right breadcrumb">
+            <li><a href="<?php echo base_url(); ?>">Home</a> <span class="divider">/</span></li>
+            {{ template:breadcrumbs }}
+            {{ if uri }}
+            <li>{{ url:anchor segments=uri title=name }} <span class="divider">/</span></li>
+            {{ else }}
+            <li class="active">{{ name }}</li>
+            {{ endif }}
+            {{ /template:breadcrumbs }}
+        </ul>
+    </div><!--/container-->
+</div><!--/breadcrumbs-->
+{{ endif }}
 {{ endif }}
 <!--=== End Breadcrumbs ===-->
