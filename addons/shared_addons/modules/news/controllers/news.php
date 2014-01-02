@@ -84,7 +84,8 @@ class News extends Public_Controller
 
 		$this->template
 			->title($this->module_details['name'])
-			->set_breadcrumb(lang('news:news_title'))
+            ->set_breadcrumb(lang('news:news_title'))
+            ->set('breadcrumb_title', $this->module_details['name'])
 			->set_metadata('og:title', $this->module_details['name'], 'og')
 			->set_metadata('og:type', 'news', 'og')
 			->set_metadata('og:url', current_url(), 'og')
@@ -135,6 +136,7 @@ class News extends Public_Controller
 			->set_metadata('keywords', $category->title)
 			->set_breadcrumb(lang('news:news_title'), 'news')
 			->set_breadcrumb($category->title)
+            ->set('breadcrumb_title', $category->title)
 			->set('pagination', $posts['pagination'])
 			->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
 			->set('posts', $posts['entries'])

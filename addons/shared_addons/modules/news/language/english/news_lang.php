@@ -1,15 +1,15 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-$lang['news:post']                 = 'Post';
-$lang['news:posts']                   = 'Posts';
+$lang['news:post']                           = 'Post';
+$lang['news:posts']                          = 'Posts';
 
 // labels
 $lang['news:posted_label']                   = 'Posted';
 $lang['news:posted_label_alt']               = 'Posted at';
-$lang['news:written_by_label']				= 'Written by';
-$lang['news:author_unknown']				= 'Unknown';
-$lang['news:keywords_label']				= 'Keywords';
-$lang['news:tagged_label']					= 'Tagged';
+$lang['news:written_by_label']				 = 'Written by';
+$lang['news:author_unknown']				 = 'Unknown';
+$lang['news:keywords_label']				 = 'Keywords';
+$lang['news:tagged_label']					 = 'Tagged';
 $lang['news:category_label']                 = 'Category';
 $lang['news:post_label']                     = 'Post';
 $lang['news:date_label']                     = 'Date';
@@ -37,19 +37,19 @@ $lang['news:comments_enabled_label']         = 'Comments Enabled';
 // titles
 $lang['news:create_title']                   = 'Add Post';
 $lang['news:edit_title']                     = 'Edit post "%s"';
-$lang['news:archive_title']                 = 'Archive';
-$lang['news:posts_title']					= 'Posts';
-$lang['news:rss_posts_title']				= 'news posts for %s';
-$lang['news:news_title']					= 'news';
-$lang['news:list_title']					= 'List Posts';
+$lang['news:archive_title']                  = 'Archive';
+$lang['news:posts_title']					 = 'Posts';
+$lang['news:rss_posts_title']				 = 'News posts for %s';
+$lang['news:news_title']					 = 'News';
+$lang['news:list_title']					 = 'List Posts';
 
 // messages
-$lang['news:disabled_after'] 				= 'Posting comments after %s has been disabled.';
-$lang['news:no_posts']                      = 'There are no posts.';
+$lang['news:disabled_after'] 				 = 'Posting comments after %s has been disabled.';
+$lang['news:no_posts']                       = 'There are no posts.';
 $lang['news:subscripe_to_rss_desc']          = 'Get posts straight away by subscribing to our RSS feed. You can do this via most popular e-mail clients, or try <a href="http://reader.google.co.uk/">Google Reader</a>.';
-$lang['news:currently_no_posts']          = 'There are no posts at the moment.';
-$lang['news:post_add_success']            = 'The post "%s" was added.';
-$lang['news:post_add_error']              = 'An error occured.';
+$lang['news:currently_no_posts']             = 'There are no posts at the moment.';
+$lang['news:post_add_success']               = 'The post "%s" was added.';
+$lang['news:post_add_error']                 = 'An error occured.';
 $lang['news:edit_success']                   = 'The post "%s" was updated.';
 $lang['news:edit_error']                     = 'An error occurred.';
 $lang['news:publish_success']                = 'The post "%s" has been published.';
@@ -64,4 +64,4 @@ $lang['news:twitter_posted']                 = 'Posted "%s" %s';
 $lang['news:twitter_error']                  = 'Twitter Error';
 
 // date
-$lang['news:archive_date_format']		= "%B %Y";
+$lang['news:archive_date_format']		     = "%B %Y";

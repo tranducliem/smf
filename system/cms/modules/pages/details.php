@@ -246,7 +246,7 @@ class Module_Pages extends Module
 			'slug' => 'default',
 			'description' => 'A simple page type with a WYSIWYG editor that will get you started adding content.',
 			'stream_id' => $stream_id,
-			'body' => '<h2>{{ page:title }}</h2>'."\n\n".'{{ body }}',
+			'body' => '<h2 class="page_title">{{ page:title }}</h2>'."\n\n".'{{ body }}',
 			'css' => '',
 			'js' => '',
 			'updated_on' => now()

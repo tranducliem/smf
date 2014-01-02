@@ -71,6 +71,7 @@ class Answeruser extends Public_Controller {
         $this->template
             ->title($this->module_details['name'])
             ->set_breadcrumb(lang('answeruser:title'))
+            ->set('breadcrumb_title', $this->module_details['name'])
             ->set_partial('filters', 'partials/filters')
             ->set('posts', $posts)
             ->set('pagination', $pagination);

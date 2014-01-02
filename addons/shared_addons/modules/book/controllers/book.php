@@ -49,6 +49,7 @@ class Book extends Public_Controller {
         $this->template
             ->title($this->module_details['name'])
             ->set_breadcrumb(lang('book:book_title'))
+            ->set('breadcrumb_title', $this->module_details['name'])
             ->set_metadata('og:title', $this->module_details['name'], 'og')
             ->set_metadata('og:type', 'book', 'og')
             ->set_metadata('og:url', current_url(), 'og')
