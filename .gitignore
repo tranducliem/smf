@@ -9,7 +9,6 @@
 /system/cms/logs/log-*.php
 
 # Ignore other unneeded files.
-index.php
 .travis.yml
 phpdoc.dist
 *.swp
