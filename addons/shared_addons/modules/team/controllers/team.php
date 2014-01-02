@@ -40,16 +40,13 @@ class Team extends Public_Controller {
         $this->load->model(array('team_m', 'company_m'));
         $this->lang->load('team');
 
-        if ( ! $companies = $this->cache->get('companies')){
-            $companies = array(
-                ''  => lang('team:select_company')
-            );
-            $rows = $this->company_m->get_all();
-            foreach($rows as $row){
-                $companies[$row->id] = $row->title;
-            }
-            $this->cache->save('companies', $companies, 300);
+        //Get companies list from cached to bidding select list
+        $company = array(''  => lang('team:select_company'));
+        $companies = $this->streams->entries->get_entries(array('stream' => 'company', 'namespace' => 'companies'));
+        foreach ($companies['entries'] as &$post) {
+            $company[][$post['id']] = $post['title'];
         }
+        $this->template->set('companies', $company);
     }
 
     /**
@@ -97,8 +94,7 @@ class Team extends Public_Controller {
             ->append_js('module::team_form.js')
             ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
             ->set('posts', $posts['entries'])
-            ->set('pagination', $posts['pagination'])
-            ->set('companies', $this->cache->get('companies'));
+            ->set('pagination', $posts['pagination']);
 
         $this->input->is_ajax_request()
             ? $this->template->build('tables/posts')
