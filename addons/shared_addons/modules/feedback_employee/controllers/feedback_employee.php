@@ -55,7 +55,8 @@ class Feedback_employee extends Public_Controller {
         $this->load->model(array('feedback_employee_m', 'users/user_m', 'department/department_m'));
         $this->lang->load('feedback_employee');
 
-        if ( ! $users = $this->cache->get('users')){
+
+        /*if ( ! $users = $this->cache->get('users')){
             $users = array(
                 ''  => lang('feedback_employee:select_apply')
             );
@@ -64,14 +65,18 @@ class Feedback_employee extends Public_Controller {
                 $users[$row->id] = $row->username;
             }
             $this->cache->save('users', $users, 300);
-        }
-        // // Get apply list from cached to bidding select list
-        // $apply = array(''  => lang('feedback_employee:select_apply'));
-        // $users = $this->streams->entries->get_entries(array('stream' => 'profiles', 'namespace' => 'users'));
-        // foreach ($users['entries'] as $post) {
-        //     $apply[$post['id']] = $post['username'];
-        // }
-        // $this->template->set('users', $apply);
+        }*/
+
+         // Get apply list from cached to bidding select list
+         $apply = array(''  => lang('feedback_employee:select_apply'));
+         $users = $this->streams->entries->get_entries(array('stream' => 'profiles', 'namespace' => 'users'));
+         foreach ($users['entries'] as $post) {
+             $apply[$post['user_id']] = get_username_by_id($post['user_id']);
+         }
+         $this->template->set('users', $apply);
+
+
+
 
         // if ( ! $departments = $this->cache->get('departments')){
         //     $departments = array(
@@ -137,8 +142,8 @@ class Feedback_employee extends Public_Controller {
             ->append_js('module::feedback_employee_form.js')
             ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
             ->set('posts', $posts['entries'])
-            ->set('pagination', $posts['pagination'])
-            ->set('users', $this->cache->get('users'));
+            ->set('pagination', $posts['pagination']);
+            //->set('users', $this->cache->get('users'));
             // ->set('departments', $this->cache->get('departments'));
 
         $this->input->is_ajax_request()

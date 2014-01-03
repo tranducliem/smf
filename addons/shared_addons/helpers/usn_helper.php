@@ -39,6 +39,27 @@ if (!function_exists('get_email_by_id')) {
     }
 }
 
+if (!function_exists('get_user_by_id')) {
+    function get_user_by_id($id){
+        $obj = array();
+        $CI = & get_instance();
+        $CI->load->model('users/user_m');
+        $param = array('id'=>$id);
+        $usn = $CI->user_m->get($param);
+        if(!empty($usn->username)){
+            $obj = array(
+                'email'     => $usn->email,
+                'group_id'     => $usn->group_id,
+                'username'     => $usn->username,
+                'department_id'     => $usn->department_id,
+                'team_id'     => $usn->team_id,
+                'created_on'     => $usn->created_on,
+            );
+        }
+        return $obj;
+    }
+}
+
 if (!function_exists('truncate')) {
     function truncate($text, $length) {
         $tail = max(0, $length-10);
