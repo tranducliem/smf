@@ -44,7 +44,8 @@ class Feedback_manager_question extends Public_Controller {
         $this->template->set('feedback_managers', $feedback_manager);
 
         //Get question list from cached to bidding select list
-        $question = array(''  => lang('feedback_manager_question:select_question'));
+        // $question = array(''  => lang('feedback_manager_question:select_question'));
+        $question = array();
         $questions = $this->streams->entries->get_entries(array('stream' => 'question', 'namespace' => 'questions'));
         foreach ($questions['entries'] as $post) {
             $question[$post['id']] = $post['title'];
@@ -137,7 +138,7 @@ class Feedback_manager_question extends Public_Controller {
                 if ($post = $this->feedback_manager_question_m->get($id)){
                     if ($this->feedback_manager_question_m->delete($id)){
                         $this->pyrocache->delete('feedback_manager_question_m');
-                        $post_names[] = $post->title;
+                        $post_names[] = $post->id;
                         $deleted_ids[] = $id;
                     }
                 }
@@ -219,19 +220,25 @@ class Feedback_manager_question extends Public_Controller {
         if ($this->form_validation->run()){
             $extra = array(
                 'feedback_manager_id'   => $this->input->post('feedback_manager_id'),
-                'question_id'           => $this->input->post('question_id'),
+                // 'question_id'           => $this->input->post('question_id'),
                 'created'		        => date('Y-m-d H:i:s', now()),
                 'created_by'            => $this->current_user->id
             );
 
-            if ($id = $this->streams->entries->insert_entry($_POST, 'feedback_manager_question', 'feedback_manager_questions', array('created'), $extra)) {
-                $this->pyrocache->delete_all('feedback_manager_question_m');
-                $message['status']  = 'success';
-                $message['message']  = "Success";//str_replace("%s", $this->input->post('title'), lang('feedback_manager_question:post_add_success'));
-                Events::trigger('feedback_manager_question_created', $id);
-            } else {
-                $message['status']  = 'error';
-                $message['message']  = lang('feedback_manager_question:post_add_error');
+             $data = $this->input->post('myselect');
+
+             foreach ($data as $item) {
+                $extra['question_id'] = $item;
+
+                if ($id = $this->streams->entries->insert_entry($_POST, 'feedback_manager_question', 'feedback_manager_questions', array('created'), $extra)) {
+                    $this->pyrocache->delete_all('feedback_manager_question_m');
+                    $message['status']  = 'success';
+                    $message['message']  = "Success";//str_replace("%s", $this->input->post('title'), lang('feedback_manager_question:post_add_success'));
+                    Events::trigger('feedback_manager_question_created', $id);
+                } else {
+                    $message['status']  = 'error';
+                    $message['message']  = lang('feedback_manager_question:post_add_error');
+                }
             }
         } else {
             $message['status']  = 'error';
@@ -263,19 +270,43 @@ class Feedback_manager_question extends Public_Controller {
             $author_id = empty($post->created_by) ? $this->current_user->id : $post->created_by;
             $extra = array(
                 'feedback_manager_id'   => $this->input->post('feedback_manager_id'),
-                'question_id'           => $this->input->post('question_id'),
+                // 'question_id'           => $this->input->post('question_id'),
                 'updated'		    => date('Y-m-d H:i:s', now()),
                 'created_by'        => $author_id
             );
 
-            if ($this->streams->entries->update_entry($id, $_POST, 'feedback_manager_question', 'feedback_manager_questions', array('updated'), $extra)) {
-                $message['status']  = 'success';
-                $message['message']  = "Success";//str_replace("%s", $this->input->post('title'), lang('team:edit_success'));
-                Events::trigger('feedback_manager_question_updated', $id);
-            } else {
-                $message['status']  = 'error';
-                $message['message']  = lang('feedback_manager_question:edit_error');
+            $data = $this->input->post('myselect');
+
+            $test = $extra['feedback_manager_id'];
+                
+            if ($post = $this->feedback_manager_question_m->get_many_by(array('feedback_manager_id'=>$test))){
+                foreach ($post as $t) 
+                {
+                    $this->feedback_manager_question_m->delete($t->id);
+                    $this->pyrocache->delete('feedback_manager_question_m');
+                }
             }
+            foreach ($data as $item) {
+                $extra['question_id'] = $item;
+
+                if ($id = $this->streams->entries->insert_entry($_POST, 'feedback_manager_question', 'feedback_manager_questions', array('updated'), $extra)) {
+                    $this->pyrocache->delete_all('feedback_manager_question_m');
+                    $message['status']  = 'success';
+                    $message['message']  = "Success";
+                    Events::trigger('feedback_manager_question_updated', $id);
+                } else {
+                    $message['status']  = 'error';
+                    $message['message']  = lang('feedback_manager_question:edit_error');
+                }
+            }
+                // if ($this->streams->entries->update_entry($id, $_POST, 'feedback_manager_question', 'feedback_manager_questions', array('updated'), $extra)) {
+                //     $message['status']  = 'success';
+                //     $message['message']  = "Success";//str_replace("%s", $this->input->post('title'), lang('team:edit_success'));
+                //     Events::trigger('feedback_manager_question_updated', $id);
+                // } else {
+                //     $message['status']  = 'error';
+                //     $message['message']  = lang('feedback_manager_question:edit_error');
+                // }
         } else {
             $message['status']  = 'error';
             $message['message']  = lang('feedback_manager_question:validate_error');

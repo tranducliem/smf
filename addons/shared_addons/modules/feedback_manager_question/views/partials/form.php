@@ -5,6 +5,11 @@
     <label>{{ helper:lang line="feedback_manager_question:form_feedback_manager_id" }}<span class="require">*</span></label>
     <?php echo form_dropdown('feedback_manager_id', $feedback_managers, '', 'id="feedback_manager_id" class="span6"')?>
     <label>{{ helper:lang line="feedback_manager_question:form_question_id" }}<span class="require">*</span></label>
-    <?php echo form_dropdown('question_id', $questions, '', 'id="question_id" class="span6"')?><br>
+    <select multiple="multiple" id="myselect" name="myselect[]">
+    	<?php foreach ($questions as $id => $item){ ?>
+    		<option value="<?php echo $id?>"><?php echo $item?></option>
+    	<?php } ?>
+	</select> 
+    <br>
     <button type="submit" id="btnSubmit" class="btn-u pull-left">Create feedback_manager_question</button>
 <?php echo form_close()?>
