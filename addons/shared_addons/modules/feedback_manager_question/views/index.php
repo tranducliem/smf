@@ -10,17 +10,12 @@
     <!--tab-content-->
     <div class="tab-content">
         <div class="tab-pane active" id="tab-1">
-            {{ if posts }}
-                <?php echo $this->load->view('partials/filters') ?>
-                <div class="clear"></div>
-                <?php echo form_open('feedback_manager_question/action', array('class' => 'ajax_delete_form')) ?>
-                    <div id="filter-result">
-                        <?php echo $this->load->view('tables/posts') ?>
-                    </div>
-                <?php echo form_close(); ?>
-            {{ else }}
-                {{ helper:lang line="feedback_manager_question:currently_no_posts" }}
-            {{ endif }}
+            <div class="clear"></div>
+            <?php echo form_open('feedback_manager_question/action', array('class' => 'ajax_delete_form')) ?>
+                <div id="filter-result">
+                    <?php echo $this->load->view('tables/posts') ?>
+                </div>
+            <?php echo form_close(); ?>
         </div>
         <div class="tab-pane" id="tab-2">
             <div class="form_field">

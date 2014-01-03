@@ -57,19 +57,15 @@ class Feedback_manager extends Public_Controller {
         $this->load->driver('Streams');
         $this->load->library(array('keywords/keywords', 'form_validation'));
         $this->stream = $this->streams_m->get_stream('feedback_manager', true, 'feedback_managers');
-        $this->load->model(array('feedback_manager_m', 'feedbacktype/feedbacktype_m','feedback_manager_question_m'));
+        $this->load->model(array('feedback_manager_m', 'feedbacktype/feedbacktype_m','feedbackquestion_m','feedback_manager_question/feedback_manager_question_m', 'feedbackuser/feedbackuser_m'));
         $this->lang->load('feedback_manager');
 
-        if ( ! $feedback_manager_types = $this->cache->get('feedback_manager_types')){
-            $feedback_manager_types = array(
-                ''  => lang('feedback_manager:select_type')
-            );
-            $rows = $this->feedbacktype_m->get_all();
-            foreach($rows as $row){
-                $feedback_manager_types[$row->id] = $row->title;
-            }
-            $this->cache->save('feedback_manager_types', $feedback_manager_types, 300);
+        $feedback_manager_type = array(''  => lang('feedback_manager:select_type'));
+        $feedback_manager_types = $this->streams->entries->get_entries(array('stream' => 'feedback_manager_type', 'namespace' => 'feedback_manager_types'));
+        foreach ($feedback_manager_types['entries'] as $post) {
+            $feedback_manager_type[$post['id']] = $post['title'];
         }
+        $this->template->set('feedback_manager_types', $feedback_manager_type);    
     }
 
     /**
@@ -117,8 +113,8 @@ class Feedback_manager extends Public_Controller {
             ->append_js('module::feedback_manager_form.js')
             ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
             ->set('posts', $posts['entries'])
-            ->set('pagination', $posts['pagination'])
-            ->set('feedback_manager_types', $this->cache->get('feedback_manager_types'));
+            ->set('pagination', $posts['pagination']);
+            // ->set('feedback_manager_types', $this->cache->get('feedback_manager_types'));
 
         $this->input->is_ajax_request()
             ? $this->template->build('tables/posts')
@@ -159,6 +155,12 @@ class Feedback_manager extends Public_Controller {
             foreach ($ids as $id){
                 if ($post = $this->feedback_manager_m->get($id)){
                     if ($this->feedback_manager_m->delete($id)){
+                        $postx = $this->feedbackuser_m->get_by(array('feedback_manager_id'=>$id));
+                        $this->feedbackuser_m->delete($postx->id);
+                        $posty = $this->feedback_manager_question_m->get_by(array('feedback_manager_id'=>$id));
+                        $this->feedback_manager_question_m->delete($posty->id);
+                        $this->pyrocache->delete('feedback_manager_question_m');
+                        $this->pyrocache->delete('feedbackuser_m');
                         $this->pyrocache->delete('feedback_manager_m');
                         $post_names[] = $post->title;
                         $deleted_ids[] = $id;
@@ -227,7 +229,7 @@ class Feedback_manager extends Public_Controller {
     {
         if(!$this->input->is_ajax_request()) redirect('feedback_manager');
         if($id != null && $id != ""){
-            $item = $this->feedback_manager_question_m->get_question_list_by_fid($id);
+            $item = $this->feedbackquestion_m->get_question_list_by_fid($id);
             if(count($item)>0) echo json_encode($item);
             else echo "";
         }else{
