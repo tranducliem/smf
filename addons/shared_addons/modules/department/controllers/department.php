@@ -1,4 +1,6 @@
-<?php defined('BASEPATH') or exit('No direct script access allowed');
+<?php
+
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
  * Class Question
@@ -8,7 +10,6 @@
  * @Date: 11/21/13
  * @Update: 11/21/13
  */
-
 class Department extends Public_Controller {
 
     protected $validation_rules = array(
@@ -29,9 +30,10 @@ class Department extends Public_Controller {
         )
     );
 
-    public function __construct(){
+    public function __construct() {
         parent::__construct();
-        if(!check_user_permission($this->current_user, $this->module, $this->permissions)) redirect();
+        if (!check_user_permission($this->current_user, $this->module, $this->permissions))
+            redirect();
         $this->template->set_layout('feedback_layout.html');
         $this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
         $this->load->driver('Streams');
@@ -39,17 +41,13 @@ class Department extends Public_Controller {
         $this->stream = $this->streams_m->get_stream('department', true, 'departments');
         $this->load->model(array('department_m', 'company_m'));
         $this->lang->load('department');
-
-        if ( ! $companies = $this->cache->get('companies')){
-            $companies = array(
-                ''  => lang('department:select_company')
-            );
-            $rows = $this->company_m->get_all();
-            foreach($rows as $row){
-                $companies[$row->id] = $row->title;
-            }
-            $this->cache->save('companies', $companies, 300);
+        // Get companies list from cached to bidding select list
+        $company = array('' => lang('department:select_company'));
+        $companies = $this->streams->entries->get_entries(array('stream' => 'company', 'namespace' => 'companies'));
+        foreach ($companies['entries'] as $post) {
+            $company[$post['id']] = $post['title'];
         }
+        $this->template->set('companies', $company);
     }
 
     /**
@@ -60,21 +58,21 @@ class Department extends Public_Controller {
      * @Date: 11/21/13
      * @Update: 11/21/13
      */
-    public function index(){
+    public function index() {
         $where = "";
         if ($this->input->post('f_keywords')) {
-            $where .= "`title` LIKE '%".$this->input->post('f_keywords')."%' ";
+            $where .= "`title` LIKE '%" . $this->input->post('f_keywords') . "%' ";
         }
 
         // Get the latest department posts
         $posts = $this->streams->entries->get_entries(array(
-            'stream'		=> 'department',
-            'namespace'		=> 'departments',
-            'limit'         => Settings::get('records_per_page'),
-            'where'		    => $where,
-            'paginate'		=> 'yes',
-            'pag_base'		=> site_url('department/page'),
-            'pag_segment'   => 3
+            'stream' => 'department',
+            'namespace' => 'departments',
+            'limit' => Settings::get('records_per_page'),
+            'where' => $where,
+            'paginate' => 'yes',
+            'pag_base' => site_url('department/page'),
+            'pag_segment' => 3
         ));
 
         // Process posts
@@ -85,24 +83,21 @@ class Department extends Public_Controller {
         $this->input->is_ajax_request() and $this->template->set_layout(false);
 
         $this->template
-            ->title($this->module_details['name'])
-            ->set_breadcrumb(lang('department:department_title'))
-            ->set('breadcrumb_title', $this->module_details['name'])
-            ->set_metadata('og:title', $this->module_details['name'], 'og')
-            ->set_metadata('og:type', 'department', 'og')
-            ->set_metadata('og:url', current_url(), 'og')
-            ->set_metadata('og:description', $meta['description'], 'og')
-            ->set_metadata('description', $meta['description'])
-            ->set_metadata('keywords', $meta['keywords'])
-            ->append_js('module::department_form.js')
-            ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
-            ->set('posts', $posts['entries'])
-            ->set('pagination', $posts['pagination'])
-            ->set('companies', $this->cache->get('companies'));
+                ->title($this->module_details['name'])
+                ->set_breadcrumb(lang('department:department_title'))
+                ->set('breadcrumb_title', $this->module_details['name'])
+                ->set_metadata('og:title', $this->module_details['name'], 'og')
+                ->set_metadata('og:type', 'department', 'og')
+                ->set_metadata('og:url', current_url(), 'og')
+                ->set_metadata('og:description', $meta['description'], 'og')
+                ->set_metadata('description', $meta['description'])
+                ->set_metadata('keywords', $meta['keywords'])
+                ->append_js('module::department_form.js')
+                ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
+                ->set('posts', $posts['entries'])
+                ->set('pagination', $posts['pagination']);
 
-        $this->input->is_ajax_request()
-            ? $this->template->build('tables/posts')
-            : $this->template->build('index');
+        $this->input->is_ajax_request() ? $this->template->build('tables/posts') : $this->template->build('index');
     }
 
     /**
@@ -113,11 +108,12 @@ class Department extends Public_Controller {
      * @Date: 11/21/13
      * @Update: 11/21/13
      */
-    public function process(){
-        if(!$this->input->is_ajax_request()) redirect('department');
-        if($this->input->post('action') == 'create'){
+    public function process() {
+        if (!$this->input->is_ajax_request())
+            redirect('department');
+        if ($this->input->post('action') == 'create') {
             $this->create();
-        }else if($this->input->post('action') == 'edit'){
+        } else if ($this->input->post('action') == 'edit') {
             $this->edit();
         }
     }
@@ -133,12 +129,12 @@ class Department extends Public_Controller {
      */
     public function delete($id = 0) {
         $ids = ($id) ? array($id) : $this->input->post('action_to');
-        if (!empty($ids)){
+        if (!empty($ids)) {
             $post_names = array();
             $deleted_ids = array();
-            foreach ($ids as $id){
-                if ($post = $this->department_m->get($id)){
-                    if ($this->department_m->delete($id)){
+            foreach ($ids as $id) {
+                if ($post = $this->department_m->get($id)) {
+                    if ($this->department_m->delete($id)) {
                         $this->pyrocache->delete('department_m');
                         $post_names[] = $post->title;
                         $deleted_ids[] = $id;
@@ -148,17 +144,17 @@ class Department extends Public_Controller {
             Events::trigger('department_deleted', $deleted_ids);
         }
         $message = array();
-        if (!empty($post_names)){
+        if (!empty($post_names)) {
             if (count($post_names) == 1) {
-                $message['status']  = 'success';
-                $message['message']  = str_replace("%s", $post_names[0], lang('department:delete_success'));
+                $message['status'] = 'success';
+                $message['message'] = str_replace("%s", $post_names[0], lang('department:delete_success'));
             } else {
-                $message['status']  = 'success';
-                $message['message']  = str_replace("%s", implode('", "', $post_names), lang('department:mass_delete_success'));
+                $message['status'] = 'success';
+                $message['message'] = str_replace("%s", implode('", "', $post_names), lang('department:mass_delete_success'));
             }
         } else {
-            $message['status']  = 'warning';
-            $message['message']  = lang('department:delete_error');
+            $message['status'] = 'warning';
+            $message['message'] = lang('department:delete_error');
         }
         echo json_encode($message);
     }
@@ -171,10 +167,8 @@ class Department extends Public_Controller {
      * @Date: 11/21/13
      * @Update: 11/21/13
      */
-    public function action()
-    {
-        switch ($this->input->post('btnAction'))
-        {
+    public function action() {
+        switch ($this->input->post('btnAction')) {
             case 'delete':
                 $this->delete();
                 break;
@@ -193,12 +187,13 @@ class Department extends Public_Controller {
      * @Date: 11/21/13
      * @Update: 11/21/13
      */
-    public function get_department_by_id($id){
-        if(!$this->input->is_ajax_request()) redirect('department');
-        if($id != null && $id != ""){
+    public function get_department_by_id($id) {
+        if (!$this->input->is_ajax_request())
+            redirect('department');
+        if ($id != null && $id != "") {
             $item = $this->department_m->get($id);
             echo json_encode($item);
-        }else{
+        } else {
             echo "";
         }
     }
@@ -211,7 +206,7 @@ class Department extends Public_Controller {
      * @Date: 11/21/13
      * @Update: 11/21/13
      */
-    private function create(){
+    private function create() {
         $message = array();
         $stream = $this->streams->streams->get_stream('department', 'departments');
         // Get the validation for our custom blog fields.
@@ -219,27 +214,27 @@ class Department extends Public_Controller {
         $rules = array_merge($this->validation_rules, $department_validation);
         $this->form_validation->set_rules($rules);
 
-        if ($this->form_validation->run()){
+        if ($this->form_validation->run()) {
             $extra = array(
-                'title'            => $this->input->post('title'),
-                'description'      => $this->input->post('description'),
-                'company_id'       => $this->input->post('company_id'),
-                'created'		   => date('Y-m-d H:i:s', now()),
-                'created_by'       => $this->current_user->id
+                'title' => $this->input->post('title'),
+                'description' => $this->input->post('description'),
+                'company_id' => $this->input->post('company_id'),
+                'created' => date('Y-m-d H:i:s', now()),
+                'created_by' => $this->current_user->id
             );
 
             if ($id = $this->streams->entries->insert_entry($_POST, 'department', 'departments', array('created'), $extra)) {
                 $this->pyrocache->delete_all('department_m');
-                $message['status']  = 'success';
-                $message['message']  = str_replace("%s", $this->input->post('title'), lang('department:post_add_success'));
+                $message['status'] = 'success';
+                $message['message'] = str_replace("%s", $this->input->post('title'), lang('department:post_add_success'));
                 Events::trigger('department_created', $id);
             } else {
-                $message['status']  = 'error';
-                $message['message']  = lang('department:post_add_error');
+                $message['status'] = 'error';
+                $message['message'] = lang('department:post_add_error');
             }
         } else {
-            $message['status']  = 'error';
-            $message['message']  = lang('department:validate_error');
+            $message['status'] = 'error';
+            $message['message'] = lang('department:validate_error');
         }
         echo json_encode($message);
     }
@@ -253,7 +248,7 @@ class Department extends Public_Controller {
      * @Date: 11/21/13
      * @Update: 11/21/13
      */
-    private function edit(){
+    private function edit() {
         $id = $this->input->post('row_edit_id');
         $post = $this->department_m->get($id);
         $message = array();
@@ -263,27 +258,27 @@ class Department extends Public_Controller {
         $rules = array_merge($this->validation_rules, $department_validation);
         $this->form_validation->set_rules($rules);
 
-        if ($this->form_validation->run()){
+        if ($this->form_validation->run()) {
             $author_id = empty($post->created_by) ? $this->current_user->id : $post->created_by;
             $extra = array(
-                'title'            => $this->input->post('title'),
-                'description'      => $this->input->post('description'),
-                'company_id'       => $this->input->post('company_id'),
-                'updated'		   => date('Y-m-d H:i:s', now()),
-                'created_by'       => $author_id
+                'title' => $this->input->post('title'),
+                'description' => $this->input->post('description'),
+                'company_id' => $this->input->post('company_id'),
+                'updated' => date('Y-m-d H:i:s', now()),
+                'created_by' => $author_id
             );
 
             if ($this->streams->entries->update_entry($id, $_POST, 'department', 'departments', array('updated'), $extra)) {
-                $message['status']  = 'success';
-                $message['message']  = str_replace("%s", $this->input->post('title'), lang('department:edit_success'));
+                $message['status'] = 'success';
+                $message['message'] = str_replace("%s", $this->input->post('title'), lang('department:edit_success'));
                 Events::trigger('department_updated', $id);
             } else {
-                $message['status']  = 'error';
-                $message['message']  = lang('department:edit_error');
+                $message['status'] = 'error';
+                $message['message'] = lang('department:edit_error');
             }
         } else {
-            $message['status']  = 'error';
-            $message['message']  = lang('department:validate_error');
+            $message['status'] = 'error';
+            $message['message'] = lang('department:validate_error');
         }
         echo json_encode($message);
     }
@@ -298,8 +293,8 @@ class Department extends Public_Controller {
      */
     private function _process_post(&$post) {
         $post['company'] = $this->company_m->get($post['company_id'])->title;
-        $post['url_edit'] = site_url('department/edit/'.$post['id']);
-        $post['url_delete'] = site_url('department/delete/'.$post['id']);
+        $post['url_edit'] = site_url('department/edit/' . $post['id']);
+        $post['url_delete'] = site_url('department/delete/' . $post['id']);
     }
 
     /**
@@ -315,7 +310,7 @@ class Department extends Public_Controller {
         $description = array();
 
         if (!empty($posts)) {
-            foreach ($posts as &$post){
+            foreach ($posts as &$post) {
                 $keywords[] = $post['title'];
                 $description[] = $post['description'];
             }
@@ -326,4 +321,5 @@ class Department extends Public_Controller {
             'description' => implode(', ', $description)
         );
     }
-} 
+
+}

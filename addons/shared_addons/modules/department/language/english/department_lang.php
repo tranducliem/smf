@@ -1,7 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 $lang['department:title']                                 = 'Department';
-$lang['department:department_title']                            = 'Department';
+$lang['department:department_title']                      = 'Department';
 $lang['department:posts_title']                           = 'Department';
 
 //Label
@@ -12,7 +12,7 @@ $lang['department:posted_label']                          = 'Posted';
 $lang['department:read_more_label']                       = 'Read more';
 $lang['department:detail_label']                          = 'Detail';
 $lang['department:written_by_label']                      = 'Created by';
-$lang['department:list_title']                         = 'List Department';
+$lang['department:list_title']                            = 'List Department';
 
 //Action title
 $lang['department:create_title']                          = 'Add department';
@@ -32,8 +32,8 @@ $lang['department:delete_error']                          = 'No department were 
 
 //Form
 $lang['department:form_title']                            = 'Title';
-$lang['department:title']                            = 'Title';
-$lang['department:form_description']                           = 'Description';
+$lang['department:title']                                 = 'Title';
+$lang['department:form_description']                      = 'Description';
 $lang['department:description']                           = 'Description';
 $lang['department:company_id']                            = 'Company ID';
-$lang['department:form_company_id']                           = 'Company ID';
+$lang['department:form_company_id']                       = 'Company ID';
