@@ -172,7 +172,7 @@ function form_success(data){
     }finally{
         //Show tab list team
         $('#tab-2').removeClass('active');
-        $('#tab_form').removeClass('active');
+        $('#tab_form1').removeClass('active');
         $('#tab_form2').removeClass('active');
         $('#tab-3').removeClass('active');
         $('#tab_form3').removeClass('active');
