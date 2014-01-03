@@ -155,16 +155,15 @@ class Feedback_manager extends Public_Controller {
             $deleted_ids = array();
             foreach ($ids as $id){
                 if ($post = $this->feedback_manager_m->get($id)){
-                    if ($this->feedback_manager_m->delete($id)){
-                        $postx = $this->feedbackuser_m->get_by(array('feedback_manager_id'=>$id));
-                        $this->feedbackuser_m->delete($postx->id);
-                        $posty = $this->feedback_manager_question_m->get_by(array('feedback_manager_id'=>$id));
-                        $this->feedback_manager_question_m->delete($posty->id);
-                        $this->pyrocache->delete('feedback_manager_question_m');
-                        $this->pyrocache->delete('feedbackuser_m');
-                        $this->pyrocache->delete('feedback_manager_m');
-                        $post_names[] = $post->title;
-                        $deleted_ids[] = $id;
+                    $postx = $this->feedbackuser_m->get_by(array('feedback_manager_id'=>$id));
+                    $posty = $this->feedback_manager_question_m->get_by(array('feedback_manager_id'=>$id));
+                    if($postx == "" && $posty == "")
+                    {
+                        if ($this->feedback_manager_m->delete($id)){
+                            $this->pyrocache->delete('feedback_manager_m');
+                            $post_names[] = $post->title;
+                            $deleted_ids[] = $id;
+                        }
                     }
                 }
             }
