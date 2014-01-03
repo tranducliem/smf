@@ -65,17 +65,31 @@ class Feedback_employee extends Public_Controller {
             }
             $this->cache->save('users', $users, 300);
         }
+        // // Get apply list from cached to bidding select list
+        // $apply = array(''  => lang('feedback_employee:select_apply'));
+        // $users = $this->streams->entries->get_entries(array('stream' => 'profiles', 'namespace' => 'users'));
+        // foreach ($users['entries'] as $post) {
+        //     $apply[$post['id']] = $post['username'];
+        // }
+        // $this->template->set('users', $apply);
 
-        if ( ! $departments = $this->cache->get('departments')){
-            $departments = array(
-                ''  => lang('feedback_employee:select_department')
-            );
-            $rows = $this->department_m->get_all();
-            foreach($rows as $row){
-                $departments[$row->id] = $row->title;
-            }
-            $this->cache->save('departments', $departments, 300);
+        // if ( ! $departments = $this->cache->get('departments')){
+        //     $departments = array(
+        //         ''  => lang('feedback_employee:select_department')
+        //     );
+        //     $rows = $this->department_m->get_all();
+        //     foreach($rows as $row){
+        //         $departments[$row->id] = $row->title;
+        //     }
+        //     $this->cache->save('departments', $departments, 300);
+        // }
+
+        $department = array(''  => lang('feedback_employee:select_department'));
+        $departments = $this->streams->entries->get_entries(array('stream' => 'department', 'namespace' => 'departments'));
+        foreach ($departments['entries'] as $post) {
+            $department[$post['id']] = $post['title'];
         }
+        $this->template->set('departments', $department);
     }
 
     /**
@@ -124,8 +138,8 @@ class Feedback_employee extends Public_Controller {
             ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
             ->set('posts', $posts['entries'])
             ->set('pagination', $posts['pagination'])
-            ->set('users', $this->cache->get('users'))
-            ->set('departments', $this->cache->get('departments'));
+            ->set('users', $this->cache->get('users'));
+            // ->set('departments', $this->cache->get('departments'));
 
         $this->input->is_ajax_request()
             ? $this->template->build('tables/posts')

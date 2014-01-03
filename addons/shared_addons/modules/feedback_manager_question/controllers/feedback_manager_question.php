@@ -35,27 +35,21 @@ class Feedback_manager_question extends Public_Controller {
         $this->load->model(array('feedback_manager_question_m', 'feedback_manager/feedback_manager_m', 'question/question_m'));
         $this->lang->load('feedback_manager_question');
 
-        if ( ! $feedback_managers = $this->cache->get('feedback_managers')){
-            $feedback_managers = array(
-                ''  => lang('feedback_manager_question:select_feedback_manager')
-            );
-            $rows = $this->feedback_manager_m->get_all();
-            foreach($rows as $row){
-                $feedback_managers[$row->id] = $row->title;
-            }
-            $this->cache->save('feedback_managers', $feedback_managers, 300);
+        //Get feedback_manager list from cached to bidding select list
+        $feedback_manager = array(''  => lang('feedback_manager_question:select_feedback_manager'));
+        $feedback_managers = $this->streams->entries->get_entries(array('stream' => 'feedback_manager', 'namespace' => 'feedback_managers'));
+        foreach ($feedback_managers['entries'] as $post) {
+            $feedback_manager[$post['id']] = $post['title'];
         }
+        $this->template->set('feedback_managers', $feedback_manager);
 
-        if ( ! $questions = $this->cache->get('questions')){
-            $questions = array(
-                ''  => lang('feedback_manager_question:select_question')
-            );
-            $rows = $this->question_m->get_all();
-            foreach($rows as $row){
-                $questions[$row->id] = $row->title;
-            }
-            $this->cache->save('questions', $questions, 300);
+        //Get question list from cached to bidding select list
+        $question = array(''  => lang('feedback_manager_question:select_question'));
+        $questions = $this->streams->entries->get_entries(array('stream' => 'question', 'namespace' => 'questions'));
+        foreach ($questions['entries'] as $post) {
+            $question[$post['id']] = $post['title'];
         }
+        $this->template->set('questions', $question);
     }
 
     /**
@@ -68,9 +62,9 @@ class Feedback_manager_question extends Public_Controller {
      */
     public function index(){
         $where = "";
-        if ($this->input->post('f_keywords')) {
-            $where .= "`title` LIKE '%".$this->input->post('f_keywords')."%' ";
-        }
+        // if ($this->input->post('f_keywords')) {
+        //     $where .= "`title` LIKE '%".$this->input->post('f_keywords')."%' ";
+        // }
 
         // Get the latest team posts
         $posts = $this->streams->entries->get_entries(array(
@@ -97,16 +91,11 @@ class Feedback_manager_question extends Public_Controller {
             ->set_metadata('og:title', $this->module_details['name'], 'og')
             ->set_metadata('og:type', 'feedback_manager_question', 'og')
             ->set_metadata('og:url', current_url(), 'og')
-//            ->set_metadata('og:description', $meta['description'], 'og')
-//            ->set_metadata('description', $meta['description'])
             ->set_metadata('keywords', $meta['keywords'])
             ->append_js('module::feedback_manager_question_form.js')
             ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
             ->set('posts', $posts['entries'])
-            ->set('pagination', $posts['pagination'])
-            ->set('feedback_managers', $this->cache->get('feedback_managers'))
-            ->set('questions', $this->cache->get('questions'))
-        ;
+            ->set('pagination', $posts['pagination']);
 
         $this->input->is_ajax_request()
             ? $this->template->build('tables/posts')
