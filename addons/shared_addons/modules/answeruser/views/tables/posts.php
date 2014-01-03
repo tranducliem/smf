@@ -8,17 +8,21 @@
     </tr>
     </thead>
     <tbody>
-    <?php foreach($posts as $item): ?>
-    <tr>
-        <td><?php echo form_checkbox('action_to[]', $item->id) ?></td>
-        <td><?php echo $item->username; ?></td>
-        <td><?php echo $item->title; ?></td>
-        <td>
-            <a href="<?php echo site_url('answeruser/edit/' . $item->id) ?>" title="<?php echo lang('global:edit')?>" class="button"><?php echo lang('global:edit')?></a> |
-            <a href="<?php echo site_url('answeruser/delete/' . $item->id) ?>" title="<?php echo lang('global:delete')?>" class="button confirm"><?php echo lang('global:delete')?></a>
-        </td>
-    </tr>
-    <?php endforeach; ?>
+    <?php if($posts){ ?>
+        <?php foreach($posts as $item): ?>
+        <tr>
+            <td><?php echo form_checkbox('action_to[]', $item->id) ?></td>
+            <td><?php echo $item->username; ?></td>
+            <td><?php echo $item->title; ?></td>
+            <td>
+                <a href="<?php echo site_url('answeruser/edit/' . $item->id) ?>" title="<?php echo lang('global:edit')?>" class="button"><?php echo lang('global:edit')?></a> |
+                <a href="<?php echo site_url('answeruser/delete/' . $item->id) ?>" title="<?php echo lang('global:delete')?>" class="button confirm"><?php echo lang('global:delete')?></a>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+    <?php }else { ?>
+        <tr><td><?php echo lang('answeruser:currently_no_answer');?></td></tr>
+    <?php } ?>
     </tbody>
 </table>
 

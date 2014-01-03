@@ -37,18 +37,7 @@ class Feedbackuser extends Public_Controller {
         $this->load->model('user_m');
         $this->lang->load('feedbackuser');
         
-        if (!$feedbackmanagers = $this->cache->get('feedbackmanagers')){
-            $feedbackmanagers = array(
-                ''  => lang('feedbackuser:select_feedback')
-            );
-            $rows = $this->feedbackmanager_m->get_all();
-            foreach($rows as $row){
-                $feedbackmanagers[$row->id] = $row->title;
-            }
-            $this->cache->save('feedbackmanagers', $feedbackmanagers, 300);
-        }
-        
-         if (!$users = $this->cache->get('users')){
+        if (!$users = $this->cache->get('users')){
             $users = array(
                 ''  => lang('feedbackuser:select_user')
             );
@@ -58,6 +47,14 @@ class Feedbackuser extends Public_Controller {
             }
             $this->cache->save('users', $users, 300);
         }
+        
+        //Get feedbackmanager list from cached to bidding select list
+        $feedbackmanager = array(''  => lang('feedbackuser:select_feedback'));
+        $feedbackmanagers = $this->streams->entries->get_entries(array('stream' => 'feedback_manager', 'namespace' => 'feedback_managers'));
+        foreach ($feedbackmanagers['entries'] as $post) {
+            $feedbackmanager[$post['id']] = $post['title'];
+        }
+        $this->template->set('feedbackmanagers', $feedbackmanager);
     }
     
      /**
@@ -110,7 +107,6 @@ class Feedbackuser extends Public_Controller {
             ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
             ->set('posts', $posts['entries'])
             ->set('pagination', $posts['pagination'])
-            ->set('feedbackmanagers', $this->cache->get('feedbackmanagers'))
             ->set('users', $this->cache->get('users'));
 
         $this->input->is_ajax_request()
