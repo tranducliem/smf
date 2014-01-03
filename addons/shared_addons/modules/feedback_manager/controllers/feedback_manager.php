@@ -113,6 +113,7 @@ class Feedback_manager extends Public_Controller {
             ->set_metadata('description', $meta['description'])
             ->set_metadata('keywords', $meta['keywords'])
             ->append_js('module::feedback_manager_form.js')
+            ->append_js('module::statistics.js')
             ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
             ->set('posts', $posts['entries'])
             ->set('pagination', $posts['pagination']);
