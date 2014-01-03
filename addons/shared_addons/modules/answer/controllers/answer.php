@@ -50,6 +50,14 @@ class Answer extends Public_Controller {
             }
             $this->cache->save('questions', $questions, 300);
         }
+
+        //Get question list from cached to bidding select list
+        $question = array(''  => lang('answer:select_question'));
+        $questions = $this->streams->entries->get_entries(array('stream' => 'question', 'namespace' => 'questions'));
+        foreach ($questions['entries'] as $post) {
+            $question[$post['id']] = $post['title'];
+        }
+        $this->template->set('questions', $question);
     }
 
     /**
@@ -97,8 +105,7 @@ class Answer extends Public_Controller {
             ->append_js('module::answer_form.js')
             ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
             ->set('posts', $posts['entries'])
-            ->set('pagination', $posts['pagination'])
-            ->set('questions', $this->cache->get('questions'));
+            ->set('pagination', $posts['pagination']);
 
         $this->input->is_ajax_request()
             ? $this->template->build('tables/posts')
