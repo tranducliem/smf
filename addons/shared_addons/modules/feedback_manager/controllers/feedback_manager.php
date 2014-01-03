@@ -384,10 +384,10 @@ class Feedback_manager extends Public_Controller {
         $this->load->model('answer_m');
         $this->load->model('answeruser_m');
         $this->load->model('question_m');
-        $this->load->model('feedbackuser_m');
+        $this->load->model('feedback_manager_user_m');
         $this->load->model('feedback_manager_question_m');
         $feedback_manager_id = $this->feedback_manager_question_m->get_by('question_id', $id)->feedback_manager_id;
-        $count_users = $this->feedbackuser_m->count_by('feedback_manager_id', $feedback_manager_id);
+        $count_users = $this->feedback_manager_user_m->count_by('feedback_manager_id', $feedback_manager_id);
         $data['title'] = $this->question_m->get($id)->title;
         $list_answer = $this->answer_m->get_many_by('question_id', $id);
         $i = 1;
