@@ -1,7 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 $lang['question:title']                                 = 'Question';
-$lang['question:question_title']                            = 'Question';
+$lang['question:question_title']                        = 'Question';
 $lang['question:posts_title']                           = 'Question';
 
 //Label
@@ -16,7 +16,7 @@ $lang['question:list_title']                            = 'List Question';
 
 //Action title
 $lang['question:create_title']                          = 'Add question';
-$lang['question:create_new_title']                          = 'Create new question';
+$lang['question:create_new_title']                      = 'Create new question';
 $lang['question:statistics']                            = 'Statistics';
 $lang['question:edit_title']                            = 'Edit question';
 $lang['question:edit_title_label']                      = 'Edit question "%s"';
@@ -33,6 +33,6 @@ $lang['question:delete_error']                          = 'No question were dele
 
 //Form
 $lang['question:form_title']                            = 'Title';
-$lang['question:form_description']                           = 'Description';
-$lang['question:title']                            = 'Title';
+$lang['question:form_description']                      = 'Description';
+$lang['question:title']                                 = 'Title';
 $lang['question:description']                           = 'Description';

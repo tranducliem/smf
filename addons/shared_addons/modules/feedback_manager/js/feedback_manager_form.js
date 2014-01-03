@@ -112,6 +112,7 @@ function list_record(id){
                                 '<td>'+(i+1)+'</td>' +
                                 '<td>'+response[i].question_title+'</td>' +
                                 '<td>'+response[i].question_description+'</td>' +
+                                '<td>'+'<a href="javascript:void(0);" onclick="statistics('+response[i].question_id+')" title="List question" class="button">Statistics</a>'+'</td>'
                             '</tr>';
                 }
                 $('#question-result tbody').html(rows);
@@ -121,6 +122,8 @@ function list_record(id){
             $('#tab_list').removeClass('active');
             $('#tab-2').removeClass('active');
             $('#tab_form1').removeClass('active');
+            $('#tab_form3').removeClass('active');
+            $('#tab-4').removeClass('active');
             $('#tab_form2').addClass('active');
             $('#tab-3').addClass('active');
         },
@@ -169,9 +172,11 @@ function form_success(data){
     }finally{
         //Show tab list team
         $('#tab-2').removeClass('active');
-        $('#tab_form1').removeClass('active');
-        $('#tab-3').removeClass('active');
+        $('#tab_form').removeClass('active');
         $('#tab_form2').removeClass('active');
+        $('#tab-3').removeClass('active');
+        $('#tab_form3').removeClass('active');
+        $('#tab-4').removeClass('active');
         $('#tab_list').addClass('active');
         $('#tab-1').addClass('active');
         //Refresh data

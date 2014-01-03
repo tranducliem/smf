@@ -13,6 +13,7 @@ $lang['feedback_manager:read_more_label']                       = 'Read more';
 $lang['feedback_manager:detail_label']                          = 'Detail';
 $lang['feedback_manager:written_by_label']                      = 'Created by';
 $lang['feedback_manager:list_title']                            = 'List feedback_manager';
+$lang['feedback_manager:not_answer']                            = 'Not Answer';
 
 //Action title
 $lang['feedback_manager:create_title']                          = 'Add feedback_manager';

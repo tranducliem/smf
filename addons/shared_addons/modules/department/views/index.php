@@ -10,7 +10,6 @@
     <!--tab-content-->
     <div class="tab-content">
         <div class="tab-pane active" id="tab-1">
-            {{ if posts }}
                 <?php echo $this->load->view('partials/filters') ?>
                 <div class="clear"></div>
                 <?php echo form_open('department/action', array('class' => 'ajax_delete_form')) ?>
@@ -18,9 +17,6 @@
                         <?php echo $this->load->view('tables/posts') ?>
                     </div>
                 <?php echo form_close(); ?>
-            {{ else }}
-                {{ helper:lang line="department:currently_no_posts" }}
-            {{ endif }}
         </div>
         <div class="tab-pane" id="tab-2">
             <div class="form_field">
