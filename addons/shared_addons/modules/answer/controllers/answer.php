@@ -134,13 +134,14 @@ class Answer extends Public_Controller {
             $deleted_ids = array();
             foreach ($ids as $id){
                 if ($post = $this->answer_m->get($id)){
-                    if ($this->answer_m->delete($id)){
-                        $postx = $this->answeruser_m->get_by(array('answer_id'=>$id));
-                        $this->answeruser_m->delete($postx->id);
-                        $this->pyrocache->delete('answer_m');
-                        $this->pyrocache->delete('answeruser_m');
-                        $post_names[] = $post->title;
-                        $deleted_ids[] = $id;
+                    $postx = $this->answeruser_m->get_by(array('answer_id'=>$id));
+                    if($postx == "")
+                    {
+                        if ($this->answer_m->delete($id)){
+                            $this->pyrocache->delete('answer_m');
+                            $post_names[] = $post->title;
+                            $deleted_ids[] = $id;
+                        }
                     }
                 }
             }
