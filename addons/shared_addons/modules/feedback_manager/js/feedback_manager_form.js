@@ -43,7 +43,7 @@ function form_validate(){
 }
 
 function form_reset(){
-    $('#tab_form a').html('Create new feedback manager');
+    $('#tab_form1 a').html('Create new feedback manager');
     $('#btnSubmit').html('Create feedback manager');
     $('#title').val("");
     $('#type_id').val("");
@@ -90,11 +90,6 @@ function edit_record(id){
 }
 
 function list_record(id){
-    //Set id for row
-    $('#row_edit_id').val(id);
-    //Set action for submit
-    $('#action').val('edit');
-    $('#tab_form2 a').html('List question');
     // Bidding data
     $.ajax({
         type: "POST",
@@ -112,8 +107,7 @@ function list_record(id){
                                 '<td>'+(i+1)+'</td>' +
                                 '<td>'+response[i].question_title+'</td>' +
                                 '<td>'+response[i].question_description+'</td>' +
-                                '<td>'+'<a href="javascript:void(0);" onclick="statistics('+response[i].question_id+')" title="List question" class="button">Statistics</a>'+'</td>'
-                            '</tr>';
+                                '<td>'+'<a href="javascript:void(0);" onclick="statistics('+response[i].question_id+')" title="List question" class="button">Statistics</a>'+'</td></tr>';
                 }
                 $('#question-result tbody').html(rows);
             }
