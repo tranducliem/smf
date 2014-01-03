@@ -4,8 +4,6 @@ function form_validate(){
     var description = $('#description');
     var start_date = $('#start_date');
     var end_date = $('#end_date');
-    var require = $('#require');
-    var status = $('#status');
 
     if(title.val() == ""){
         open_message_block("error", "Title is required!");
@@ -23,24 +21,25 @@ function form_validate(){
         open_message_block("error", "End date is required!");
         end_date.focus();
         return false;
-    }
-    else if(description.val() == ""){
+    } else if(description.val() == ""){
         open_message_block("error", "Description is required!");
         description.focus();
         return false;
     }
-    else if(require.val() == ""){
-        open_message_block("error", "Require is required!");
-        require.focus();
-        return false;
-    }
-    else if(status.val() == ""){
-        open_message_block("error", "Status is required!");
-        status.focus();
-        return false;
-    }
     return true;
 }
+
+function ValidateEndDate() {
+       var startDate = $('#start_date');.val();
+       var endDate = $('#end_date');.val();
+       if (startDate != '' && endDate !='') {
+           if (Date.parse(startDate) > Date.parse(endDate)) {
+               $("txttodate").val('');
+               alert("Start date should not be greater than end date");
+           }
+       }
+       return false;
+   }
 
 function form_reset(){
     $('#tab_form a').html('Create new feedback manager');
@@ -169,7 +168,7 @@ function form_success(data){
     }finally{
         //Show tab list team
         $('#tab-2').removeClass('active');
-        $('#tab_form1').removeClass('active');
+        $('#tab_form').removeClass('active');
         $('#tab-3').removeClass('active');
         $('#tab_form2').removeClass('active');
         $('#tab_list').addClass('active');

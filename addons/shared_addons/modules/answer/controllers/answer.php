@@ -37,19 +37,8 @@ class Answer extends Public_Controller {
         $this->load->driver('Streams');
         $this->load->library(array('keywords/keywords', 'form_validation'));
         $this->stream = $this->streams_m->get_stream('answer', true, 'answers');
-        $this->load->model(array('answer_m', 'question/question_m'));
+        $this->load->model(array('answer_m', 'question/question_m', 'answeruser/answeruser_m'));
         $this->lang->load('answer');
-
-        if ( ! $questions = $this->cache->get('questions')){
-            $questions = array(
-                ''  => lang('answer:select_question')
-            );
-            $rows = $this->question_m->get_all();
-            foreach($rows as $row){
-                $questions[$row->id] = $row->title;
-            }
-            $this->cache->save('questions', $questions, 300);
-        }
 
         //Get question list from cached to bidding select list
         $question = array(''  => lang('answer:select_question'));
@@ -146,7 +135,10 @@ class Answer extends Public_Controller {
             foreach ($ids as $id){
                 if ($post = $this->answer_m->get($id)){
                     if ($this->answer_m->delete($id)){
+                        $postx = $this->answeruser_m->get_by(array('answer_id'=>$id));
+                        $this->answeruser_m->delete($postx->id);
                         $this->pyrocache->delete('answer_m');
+                        $this->pyrocache->delete('answeruser_m');
                         $post_names[] = $post->title;
                         $deleted_ids[] = $id;
                     }

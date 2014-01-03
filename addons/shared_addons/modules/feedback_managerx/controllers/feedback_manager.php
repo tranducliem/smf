@@ -9,37 +9,42 @@
  * @Update:
  */
 
-class Feedback_employee extends Public_Controller {
+class Feedback_manager extends Public_Controller {
 
     protected $validation_rules = array(
         'title'         => array(
             'field'     => 'title',
-            'label'     => 'lang:feedback_employee:title',
+            'label'     => 'lang:feedback_manager:title',
             'rules'     => 'trim|htmlspecialchars|required|max_length[200]'
         ),
         'description'   => array(
             'field'     => 'description',
-            'label'     => 'lang:feedback_employee:description',
+            'label'     => 'lang:feedback_manager:description',
             'rules'     => 'trim|htmlspecialchars|'
         ),
-        'date'    => array(
-            'field'     => 'date',
-            'label'     => 'lang:feedback_employee:date',
+        'start_date'    => array(
+            'field'     => 'start_date',
+            'label'     => 'lang:feedback_manager:start_date',
             'rules'     => ''
         ),
-        'apply_id'    => array(
-            'field'     => 'apply_id',
-            'label'     => 'lang:feedback_employee:apply_id',
-            'rules'     => 'required'
+        'end_date'    => array(
+            'field'     => 'end_date',
+            'label'     => 'lang:feedback_manager:end_date',
+            'rules'     => ''
         ),
-        'department_id'    => array(
-            'field'     => 'department_id',
-            'label'     => 'lang:feedback_employee:department_id',
-            'rules'     => 'required'
+        'type_id'    => array(
+            'field'     => 'type_id',
+            'label'     => 'lang:feedback_manager:type_id',
+            'rules'     => ''
+        ),
+        'require'       => array(
+            'field'     => 'require',
+            'label'     => 'lang:feedback_manager:require',
+            'rules'     => ''
         ),
         'status'    => array(
             'field'     => 'status',
-            'label'     => 'lang:feedback_employee:status',
+            'label'     => 'lang:feedback_manager:status',
             'rules'     => ''
         ),
     );
@@ -51,45 +56,16 @@ class Feedback_employee extends Public_Controller {
         $this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
         $this->load->driver('Streams');
         $this->load->library(array('keywords/keywords', 'form_validation'));
-        $this->stream = $this->streams_m->get_stream('feedback_employee', true, 'feedback_employees');
-        $this->load->model(array('feedback_employee_m', 'users/user_m', 'department/department_m'));
-        $this->lang->load('feedback_employee');
+        $this->stream = $this->streams_m->get_stream('feedback_manager', true, 'feedback_managers');
+        $this->load->model(array('feedback_manager_m', 'feedbacktype/feedbacktype_m','feedback_manager_question_m'));
+        $this->lang->load('feedback_manager');
 
-        if ( ! $users = $this->cache->get('users')){
-            $users = array(
-                ''  => lang('feedback_employee:select_apply')
-            );
-            $rows = $this->user_m->get_all();
-            foreach($rows as $row){
-                $users[$row->id] = $row->username;
-            }
-            $this->cache->save('users', $users, 300);
+        $feedback_manager_type = array(''  => lang('feedback_manager:select_type'));
+        $feedback_manager_types = $this->streams->entries->get_entries(array('stream' => 'feedback_manager_type', 'namespace' => 'feedback_manager_types'));
+        foreach ($feedback_manager_types['entries'] as $post) {
+            $feedback_manager_type[$post['id']] = $post['title'];
         }
-        // // Get apply list from cached to bidding select list
-        // $apply = array(''  => lang('feedback_employee:select_apply'));
-        // $users = $this->streams->entries->get_entries(array('stream' => 'profiles', 'namespace' => 'users'));
-        // foreach ($users['entries'] as $post) {
-        //     $apply[$post['id']] = $post['username'];
-        // }
-        // $this->template->set('users', $apply);
-
-        // if ( ! $departments = $this->cache->get('departments')){
-        //     $departments = array(
-        //         ''  => lang('feedback_employee:select_department')
-        //     );
-        //     $rows = $this->department_m->get_all();
-        //     foreach($rows as $row){
-        //         $departments[$row->id] = $row->title;
-        //     }
-        //     $this->cache->save('departments', $departments, 300);
-        // }
-
-        $department = array(''  => lang('feedback_employee:select_department'));
-        $departments = $this->streams->entries->get_entries(array('stream' => 'department', 'namespace' => 'departments'));
-        foreach ($departments['entries'] as $post) {
-            $department[$post['id']] = $post['title'];
-        }
-        $this->template->set('departments', $department);
+        $this->template->set('feedback_manager_types', $feedback_manager_type);
     }
 
     /**
@@ -108,12 +84,12 @@ class Feedback_employee extends Public_Controller {
 
         // Get the latest team posts
         $posts = $this->streams->entries->get_entries(array(
-            'stream'		=> 'feedback_employee',
-            'namespace'		=> 'feedback_employees',
+            'stream'		=> 'feedback_manager',
+            'namespace'		=> 'feedback_managers',
             'limit'         => Settings::get('records_per_page'),
             'where'		    => $where,
             'paginate'		=> 'yes',
-            'pag_base'		=> site_url('feedback_employee/page'),
+            'pag_base'		=> site_url('feedback_manager/page'),
             'pag_segment'   => 3
         ));
 
@@ -126,20 +102,18 @@ class Feedback_employee extends Public_Controller {
 
         $this->template
             ->title($this->module_details['name'])
-            ->set_breadcrumb(lang('feedback_employee:feedback_employee_title'))
+            ->set_breadcrumb(lang('feedback_manager:feedback_manager_title'))
             ->set('breadcrumb_title', $this->module_details['name'])
             ->set_metadata('og:title', $this->module_details['name'], 'og')
-            ->set_metadata('og:type', 'feedback_employee', 'og')
+            ->set_metadata('og:type', 'feedback_manager', 'og')
             ->set_metadata('og:url', current_url(), 'og')
             ->set_metadata('og:description', $meta['description'], 'og')
             ->set_metadata('description', $meta['description'])
             ->set_metadata('keywords', $meta['keywords'])
-            ->append_js('module::feedback_employee_form.js')
+            ->append_js('module::feedback_manager_form.js')
             ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
             ->set('posts', $posts['entries'])
-            ->set('pagination', $posts['pagination'])
-            ->set('users', $this->cache->get('users'));
-            // ->set('departments', $this->cache->get('departments'));
+            ->set('pagination', $posts['pagination']);
 
         $this->input->is_ajax_request()
             ? $this->template->build('tables/posts')
@@ -155,7 +129,7 @@ class Feedback_employee extends Public_Controller {
      * @Update: 11/21/13
      */
     public function process(){
-        if(!$this->input->is_ajax_request()) redirect('feedback_employee');
+        if(!$this->input->is_ajax_request()) redirect('feedback_manager');
         if($this->input->post('action') == 'create'){
             $this->create();
         }else if($this->input->post('action') == 'edit'){
@@ -178,28 +152,28 @@ class Feedback_employee extends Public_Controller {
             $post_names = array();
             $deleted_ids = array();
             foreach ($ids as $id){
-                if ($post = $this->feedback_employee_m->get($id)){
-                    if ($this->feedback_employee_m->delete($id)){
-                        $this->pyrocache->delete('feedback_employee_m');
+                if ($post = $this->feedback_manager_m->get($id)){
+                    if ($this->feedback_manager_m->delete($id)){
+                        $this->pyrocache->delete('feedback_manager_m');
                         $post_names[] = $post->title;
                         $deleted_ids[] = $id;
                     }
                 }
             }
-            Events::trigger('feedback_employee_deleted', $deleted_ids);
+            Events::trigger('feedback_manager_deleted', $deleted_ids);
         }
         $message = array();
         if (!empty($post_names)){
             if (count($post_names) == 1) {
                 $message['status']  = 'success';
-                $message['message']  = str_replace("%s", $post_names[0], lang('feedback_employee:delete_success'));
+                $message['message']  = str_replace("%s", $post_names[0], lang('feedback_manager:delete_success'));
             } else {
                 $message['status']  = 'success';
-                $message['message']  = str_replace("%s", implode('", "', $post_names), lang('feedback_employee:mass_delete_success'));
+                $message['message']  = str_replace("%s", implode('", "', $post_names), lang('feedback_manager:mass_delete_success'));
             }
         } else {
             $message['status']  = 'warning';
-            $message['message']  = lang('feedback_employee:delete_error');
+            $message['message']  = lang('feedback_manager:delete_error');
         }
         echo json_encode($message);
     }
@@ -234,16 +208,27 @@ class Feedback_employee extends Public_Controller {
      * @Date: 11/21/13
      * @Update: 11/21/13
      */
-    public function get_feedback_employee_by_id($id){
-        if(!$this->input->is_ajax_request()) redirect('feedback_employee');
+    public function get_feedback_manager_by_id($id){
+        if(!$this->input->is_ajax_request()) redirect('feedback_manager');
         if($id != null && $id != ""){
-            $item = $this->feedback_employee_m->get($id);
+            $item = $this->feedback_manager_m->get($id);
             echo json_encode($item);
         }else{
             echo "";
         }
     }
 
+    public function get_question_manager($id)
+    {
+        if(!$this->input->is_ajax_request()) redirect('feedback_manager');
+        if($id != null && $id != ""){
+            $item = $this->feedback_manager_question_m->get_question_list_by_fid($id);
+            if(count($item)>0) echo json_encode($item);
+            else echo "";
+        }else{
+            echo "";
+        }
+    }
     /**
      * The create function
      * @Description: This is create function
@@ -254,37 +239,38 @@ class Feedback_employee extends Public_Controller {
      */
     private function create(){
         $message = array();
-        $stream = $this->streams->streams->get_stream('feedback_employee', 'feedback_employees');
+        $stream = $this->streams->streams->get_stream('feedback_manager', 'feedback_managers');
         // Get the validation for our custom blog fields.
-        $feedback_employee_validation = $this->streams->streams->validation_array($stream->stream_slug, $stream->stream_namespace, 'new');
-        $rules = array_merge($this->validation_rules, $feedback_employee_validation);
+        $feedback_manager_validation = $this->streams->streams->validation_array($stream->stream_slug, $stream->stream_namespace, 'new');
+        $rules = array_merge($this->validation_rules, $feedback_manager_validation);
         $this->form_validation->set_rules($rules);
 
         if ($this->form_validation->run()){
             $extra = array(
                 'title'             => $this->input->post('title'),
                 'description'       => $this->input->post('description'),
-                'date'              => $this->input->post('date'),
-                'apply_id'          => $this->input->post('apply_id'),
-                'department_id'     => $this->input->post('department_id'),
+                'start_date'        => $this->input->post('start_date'),
+                'end_date'          => $this->input->post('end_date'),
+                'type_id'           => $this->input->post('type_id'),
+                'require'           => $this->input->post('require'),
                 'status'            => $this->input->post('status'),
                 'created'		    => date('Y-m-d H:i:s', now()),
                 'created_by'        => $this->current_user->id
             );
 
 
-            if ($id = $this->streams->entries->insert_entry($_POST, 'feedback_employee', 'feedback_employees', array('created'), $extra)) {
-                $this->pyrocache->delete_all('feedback_employee_m');
+            if ($id = $this->streams->entries->insert_entry($_POST, 'feedback_manager', 'feedback_managers', array('created'), $extra)) {
+                $this->pyrocache->delete_all('feedback_manager_m');
                 $message['status']  = 'success';
-                $message['message']  = str_replace("%s", $this->input->post('title'), lang('feedback_employee:post_add_success'));
-                Events::trigger('feedback_employee_created', $id);
+                $message['message']  = str_replace("%s", $this->input->post('title'), lang('feedback_manager:post_add_success'));
+                Events::trigger('feedback_manager_created', $id);
             } else {
                 $message['status']  = 'error';
-                $message['message']  = lang('feedback_employee:post_add_error');
+                $message['message']  = lang('feedback_manager:post_add_error');
             }
         } else {
             $message['status']  = 'error';
-            $message['message']  = lang('feedback_employee:validate_error');
+            $message['message']  = lang('feedback_manager:validate_error');
         }
         echo json_encode($message);
     }
@@ -300,12 +286,12 @@ class Feedback_employee extends Public_Controller {
      */
     private function edit(){
         $id = $this->input->post('row_edit_id');
-        $post = $this->feedback_employee_m->get($id);
+        $post = $this->feedback_manager_m->get($id);
         $message = array();
         // Get all company
-        $stream = $this->streams->streams->get_stream('feedback_employee', 'feedback_employees');
-        $feedback_employee_validation = $this->streams->streams->validation_array($stream->stream_slug, $stream->stream_namespace, 'new');
-        $rules = array_merge($this->validation_rules, $feedback_employee_validation);
+        $stream = $this->streams->streams->get_stream('feedback_manager', 'feedback_managers');
+        $feedback_manager_validation = $this->streams->streams->validation_array($stream->stream_slug, $stream->stream_namespace, 'new');
+        $rules = array_merge($this->validation_rules, $feedback_manager_validation);
         $this->form_validation->set_rules($rules);
 
         if ($this->form_validation->run()){
@@ -313,25 +299,26 @@ class Feedback_employee extends Public_Controller {
             $extra = array(
                 'title'             => $this->input->post('title'),
                 'description'       => $this->input->post('description'),
-                'date'              => $this->input->post('date'),
-                'apply_id'          => $this->input->post('apply_id'),
-                'department_id'     => $this->input->post('department_id'),
+                'start_date'        => $this->input->post('start_date'),
+                'end_date'          => $this->input->post('end_date'),
+                'type_id'           => $this->input->post('type_id'),
+                'require'           => $this->input->post('require'),
                 'status'            => $this->input->post('status'),
                 'updated'		    => date('Y-m-d H:i:s', now()),
                 'created_by'        => $author_id
             );
 
-            if ($this->streams->entries->update_entry($id, $_POST, 'feedback_employee', 'feedback_employees', array('updated'), $extra)) {
+            if ($this->streams->entries->update_entry($id, $_POST, 'feedback_manager', 'feedback_managers', array('updated'), $extra)) {
                 $message['status']  = 'success';
-                $message['message']  = str_replace("%s", $this->input->post('title'), lang('feedback_employee:edit_success'));
-                Events::trigger('feedback_employee_updated', $id);
+                $message['message']  = str_replace("%s", $this->input->post('title'), lang('feedback_manager:edit_success'));
+                Events::trigger('feedback_manager_updated', $id);
             } else {
                 $message['status']  = 'error';
-                $message['message']  = lang('feedback_employee:edit_error');
+                $message['message']  = lang('feedback_manager:edit_error');
             }
         } else {
             $message['status']  = 'error';
-            $message['message']  = lang('feedback_employee:validate_error');
+            $message['message']  = lang('feedback_manager:validate_error');
         }
         echo json_encode($message);
     }
@@ -345,10 +332,9 @@ class Feedback_employee extends Public_Controller {
      * @Update: 11/21/13
      */
     private function _process_post(&$post) {
-        $post['apply'] = $this->user_m->get_by(array('id'=>$post['apply_id']))->username;
-        $post['department'] = $this->department_m->get_by(array('id'=>$post['department_id']))->title;
-        $post['url_edit'] = site_url('feedback_employee/edit/'.$post['id']);
-        $post['url_delete'] = site_url('feedback_employee/delete/'.$post['id']);
+        $post['type'] = $this->feedbacktype_m->get_by(array('id'=>$post['type_id']))->title;
+        $post['url_edit'] = site_url('feedback_manager/edit/'.$post['id']);
+        $post['url_delete'] = site_url('feedback_manager/delete/'.$post['id']);
     }
 
     /**
