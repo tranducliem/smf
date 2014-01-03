@@ -8,7 +8,7 @@
  * @Update: 12/25/2013
  */
 
-class Feedbackuser_m extends MY_Model {
+class Feedback_manager_user_m extends MY_Model {
 
     protected $_table = "feedback_manager_user";
 
