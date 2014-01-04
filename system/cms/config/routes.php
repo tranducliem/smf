@@ -57,6 +57,13 @@ $route['edit-profile']	                    = 'users/edit';
 $route['logout']	                        = 'users/logout';
 $route['login']	                            = 'users/login';
 
+$route['employee']                          = 'users/employee';
+$route['employee/create']                   = 'users/employee_create';
+$route['employee/process']                  = 'users/employee_process';
+$route['employee/delete']                   = 'users/employee_delete';
+$route['employee/action']                   = 'users/employee_action';
+
+
 $route['sitemap.xml']                       = 'sitemap/xml';
 
 /* End of file routes.php */

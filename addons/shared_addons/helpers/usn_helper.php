@@ -55,22 +55,30 @@ if (!function_exists('get_department_id_by_id')) {
 
 if (!function_exists('get_user_by_id')) {
     function get_user_by_id($id){
-        $obj = array();
+        $obj = new stdClass();
         $CI = & get_instance();
         $CI->load->model('users/user_m');
         $param = array('id'=>$id);
         $usn = $CI->user_m->get($param);
         if(!empty($usn->username)){
-            $obj = array(
-                'email'     => $usn->email,
-                'group_id'     => $usn->group_id,
-                'username'     => $usn->username,
-                'department_id'     => $usn->department_id,
-                'team_id'     => $usn->team_id,
-                'created_on'     => $usn->created_on,
-            );
+            return $usn;
+        }else{
+            return $obj;
         }
-        return $obj;
+    }
+}
+
+if(!function_exists('get_department_by_user_id')){
+    function get_department_by_user_id($id){
+        $CI = & get_instance();
+        $CI->load->model('department/department_m');
+        $department_id = get_department_id_by_id($id);
+        $rs =  $CI->department_m->get($department_id);
+        if(!empty($rs->title)){
+            return $rs->title;
+        }else{
+            return "";
+        }
     }
 }
 
