@@ -11,10 +11,14 @@
 <?php echo form_textarea(array('id' => 'description', 'name' => 'description', 'value' => '', 'rows' => 6, 'class' => 'span12 border-radius-none margin-bottom-10')) ?>
 <label>{{ helper:lang line="feedback_employee:form_date" }}<span class="require">*</span></label>
 <input type="text" name="date" id="datepicker1"/>
-<label>{{ helper:lang line="feedback_employee:form_apply_id" }}<span class="require">*</span></label>
-<?php echo form_dropdown('apply_id', $users, '', 'id="apply_id" class="span6"')?>
 <label>{{ helper:lang line="feedback_employee:form_department_id" }}<span class="require">*</span></label>
-<?php echo form_dropdown('department_id', $departments, '', 'id="department_id" class="span6"')?>
+<?php echo form_dropdown('department_id', $departments, '', 'id="department_id" class="span6" onchange="get_user_by_department()"')?>
+<label>{{ helper:lang line="feedback_employee:form_apply_id" }}<span class="require">*</span></label>
+<?php foreach ($users as $id => $value) {
+    $department_id = get_department_id_by_id($id);
+}?>
+
+<?php echo form_dropdown('apply_id', $users, '', 'id="apply_id" class="span6"')?>
 <label>{{ helper:lang line="feedback_employee:form_status" }}<span class="require">*</span></label>
     <select name="status" data-placeholder="Choose status" class="span6" tabindex="2">
         <option value="0">Not start</option>
@@ -26,7 +30,6 @@
 <?php echo form_close()?>
 
 <script type="text/javascript">
-
     (function($){
         $(function(){
             $( "#datepicker1" ).datepicker(
