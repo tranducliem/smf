@@ -6,8 +6,8 @@
         <th>{{ helper:lang line="feedback_employee:form_title" }}</th>
         <th>{{ helper:lang line="feedback_employee:form_description" }}</th>
         <th>{{ helper:lang line="feedback_employee:form_date" }}</th>
-        <th>{{ helper:lang line="feedback_employee:form_apply_id" }}</th>
         <th>{{ helper:lang line="feedback_employee:form_department_id" }}</th>
+        <th>{{ helper:lang line="feedback_employee:form_apply_id" }}</th>
         <th>{{ helper:lang line="feedback_employee:form_status" }}</th>
         <th>{{ helper:lang line="global:action" }}</th>
     </tr>
@@ -20,8 +20,8 @@
                 <td>{{ title }}</td>
                 <td>{{ description }}</td>
                 <td>{{ date }}</td>
-                <td>{{ apply }}</td>
                 <td>{{ department }}</td>
+                <td>{{ apply }}</td>
                 <td>{{ status }}</td>
                 <td>
                     <a href="javascript:void(0);" onclick="edit_record({{ id }})" title="{{ helper:lang line="global:edit" }}" class="button">{{ helper:lang line="global:edit" }}</a> |

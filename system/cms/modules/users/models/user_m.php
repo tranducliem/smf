@@ -204,4 +204,12 @@ class User_m extends MY_Model
 		return $this->get_all();
 	}
 
+	public function get_users_by_department($department_id){
+		if ( ! empty($department_id))
+		{
+			$this->db->where('department_id', $department_id);
+		}
+		return $this->get_all();
+	}
+
 }

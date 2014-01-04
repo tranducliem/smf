@@ -39,6 +39,20 @@ if (!function_exists('get_email_by_id')) {
     }
 }
 
+if (!function_exists('get_department_id_by_id')) {
+    function get_department_id_by_id($id){
+        $CI = & get_instance();
+        $CI->load->model('users/user_m');
+        $param = array('id'=>$id);
+        $ttt = $CI->user_m->get($param);
+        if(!empty($ttt->department_id)){
+            return $ttt->department_id;
+        }else{
+            return '';
+        }
+    }
+}
+
 if (!function_exists('get_user_by_id')) {
     function get_user_by_id($id){
         $obj = array();

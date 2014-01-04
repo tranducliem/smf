@@ -134,3 +134,29 @@ function list_refresh(){
         }
     });
 }
+
+
+function get_user_by_department(){
+    var department_id = $('#department_id').val();
+    if((department_id != null) && (department_id != "")){
+        $.ajax({
+            type: 'POST',
+            url: BASE_URL + "feedback_employee/get_users_by_department",
+            data: { department_id: department_id },
+            success: function(data){
+                data = data.trim();
+                if(data != ""){
+                    data = $.parseJSON(data);
+                    var rows = "";
+                    for (var i = 0; i < data.length; i++) {
+                        rows += '<option value="'+ data[i].user_id +'">'+ data[i].username +'</option>';
+                    };
+                    $('#apply_id').html(rows);
+                }
+            },
+            error: function(xhr){
+                console.log("Error: " + xhr.message);
+            }
+        });
+    }
+}

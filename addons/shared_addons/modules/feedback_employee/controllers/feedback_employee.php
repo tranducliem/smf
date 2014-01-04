@@ -75,20 +75,6 @@ class Feedback_employee extends Public_Controller {
          }
          $this->template->set('users', $apply);
 
-
-
-
-        // if ( ! $departments = $this->cache->get('departments')){
-        //     $departments = array(
-        //         ''  => lang('feedback_employee:select_department')
-        //     );
-        //     $rows = $this->department_m->get_all();
-        //     foreach($rows as $row){
-        //         $departments[$row->id] = $row->title;
-        //     }
-        //     $this->cache->save('departments', $departments, 300);
-        // }
-
         $department = array(''  => lang('feedback_employee:select_department'));
         $departments = $this->streams->entries->get_entries(array('stream' => 'department', 'namespace' => 'departments'));
         foreach ($departments['entries'] as $post) {
@@ -379,5 +365,32 @@ class Feedback_employee extends Public_Controller {
             'keywords' => implode(', ', $keywords),
             'description' => implode(', ', $description)
         );
+    }
+
+    /**
+     * The get_users_by_department function
+     * @Description: This is get_users_by_department function
+     * @Parameter:
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    public function get_users_by_department(){
+        if (!$this->input->is_ajax_request()){
+            echo '';
+            return;
+        }else{
+            $this->load->model('users/user_m');
+            $apply = array();
+            $users = $this->user_m->get_users_by_department($this->input->post('department_id'));
+
+            foreach ($users as $post) {
+                $apply[] = array(
+                    'user_id'   => $post->user_id,
+                    'username'  => get_username_by_id($post->user_id)
+                );
+            }
+            echo json_encode($apply);
+        }
     }
 } 
