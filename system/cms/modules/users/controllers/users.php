@@ -912,6 +912,22 @@ class Users extends Public_Controller
         $this->template->set_layout('feedback_layout.html');
         $this->input->is_ajax_request() and $this->template->set_layout(false);
 
+        if(!$this->input->is_ajax_request()){
+            $department = array(''  => lang('employee:select_department'));
+            $departments = $this->streams->entries->get_entries(array('stream' => 'department', 'namespace' => 'departments'));
+            foreach ($departments['entries'] as $post) {
+                $department[$post['id']] = $post['title'];
+            }
+            $this->template->set('departments', $department);
+
+            $team = array(''  => lang('employee:select_team'));
+            $teams = $this->streams->entries->get_entries(array('stream' => 'team', 'namespace' => 'teams'));
+            foreach ($teams['entries'] as $post) {
+                $team[$post['id']] = $post['title'];
+            }
+            $this->template->set('teams', $team);
+        }
+
         $this->template
             ->title(lang('employee:title'))
             ->set_breadcrumb(lang('employee:employee_title'))

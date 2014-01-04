@@ -23,6 +23,7 @@ $lang['employee:edit_title_label']                      = 'Edit employee "%s"';
 $lang['employee:edit_btn_title']                        = 'Update';
 $lang['employee:select_apply']                          = 'Select apply';
 $lang['employee:select_department']                     = 'Select department';
+$lang['employee:select_team']                           = 'Select team';
 
 //Message
 $lang['employee:currently_no_posts']                    = 'There are no posts at the moment.';
