@@ -191,13 +191,8 @@ function form_success(data) {
         }
     } catch (xhr) {
         console.error("Exception: " + xhr.message);
-<<<<<<< HEAD
     }finally{
         //Show tab list feedback manager
-=======
-    } finally {
-        //Show tab list team
->>>>>>> 38a14a028d0bda0fc7207b300f6e78c665eeb70d
         $('#tab-2').removeClass('active');
         $('#tab_form1').removeClass('active');
         $('#tab_form2').removeClass('active');
