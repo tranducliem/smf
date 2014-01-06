@@ -884,6 +884,8 @@ class Users extends Public_Controller
 		return true;
 	}
 
+    // --------------------------------------------------------------------------
+
     /**
      * Method to show employee list
      */
@@ -945,33 +947,38 @@ class Users extends Public_Controller
             : $this->template->build('index');
     }
 
+    /**
+     * The process function
+     * @Description: This is process function
+     * @Parameter:
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    public function employee_process(){
+        if(!$this->input->is_ajax_request()) redirect('team');
+        if($this->input->post('action') == 'create'){
+            $message = $this->employee_create();
+            echo json_encode($message);
+        }else if($this->input->post('action') == 'edit'){
+            $this->employee_edit();
+        }
+    }
 
     /**
      * Method to employee_create a new user
      */
-    public function employee_create()
+    private function employee_create()
     {
+        $message = array();
         if (!$this->current_user)
         {
-            redirect();
+            $message['status']  = 'error';
+            $message['message']  = lang('employee:activation_not_allow');
+            return $message;
         }
-
-        /* show the disabled registration message */
-        if ( ! Settings::get('enable_registration'))
-        {
-            $this->template
-                ->title(lang('user:register_title'))
-                ->build('disabled');
-            return;
-        }
-
         // Validation rules
         $validation = array(
-            array(
-                'field' => 'password',
-                'label' => lang('global:password'),
-                'rules' => 'required|min_length['.$this->config->item('min_password_length', 'ion_auth').']|max_length['.$this->config->item('max_password_length', 'ion_auth').']'
-            ),
             array(
                 'field' => 'email',
                 'label' => lang('global:email'),
@@ -981,6 +988,16 @@ class Users extends Public_Controller
                 'field' => 'username',
                 'label' => lang('user:username'),
                 'rules' => Settings::get('auto_username') ? '' : 'required|alpha_dot_dash|min_length[3]|max_length[20]|callback__username_check',
+            ),
+            array(
+                'field' => 'department_id',
+                'label' => lang('employee:form_department'),
+                'rules' => 'required|numeric',
+            ),
+            array(
+                'field' => 'team_id',
+                'label' => lang('employee:form_team'),
+                'rules' => 'required|numeric',
             ),
         );
 
@@ -1034,7 +1051,6 @@ class Users extends Public_Controller
 
         // Set the validation rules
         $this->form_validation->set_rules($validation);
-
         $user = new stdClass();
 
         // Set default values as empty or POST values
@@ -1052,12 +1068,16 @@ class Users extends Public_Controller
                 // don't fill this input in trick.
                 if ($this->input->post('d0ntf1llth1s1n') !== ' ')
                 {
-                    $this->session->set_flashdata('error', lang('user:register_error'));
-                    redirect(current_url());
+                    $message['status']  = 'error';
+                    $message['message']  = lang('user:register_error');
+                    return $message;
                 }
 
                 $email = $this->input->post('email');
-                $password = $this->input->post('password');
+                //$password = $this->input->post('password');
+                $password = rand(111111, 9999999999);
+                $department = $this->input->post('department_id');
+                $team = $this->input->post('team_id');
 
                 // --------------------------------
                 // Auto-Username
@@ -1128,7 +1148,7 @@ class Users extends Public_Controller
 
                 // We are registering with a null group_id so we just
                 // use the default user ID in the settings.
-                $id = $this->ion_auth->register($username, $password, $email, null, $profile_data);
+                $id = $this->ion_auth->register($username, $password, $email, $department, $team, null, $profile_data);
 
                 // Try to create the user
                 if ($id > 0)
@@ -1146,7 +1166,6 @@ class Users extends Public_Controller
                     if (Settings::get('registered_email'))
                     {
                         $this->load->library('user_agent');
-
                         Events::trigger('email', array(
                             'name' => $user->display_name,
                             'sender_ip' => $this->input->ip_address(),
@@ -1160,40 +1179,45 @@ class Users extends Public_Controller
                     // show the "you need to activate" page while they wait for their email
                     if ((int)Settings::get('activation_email') === 1)
                     {
-                        $this->session->set_flashdata('notice', $this->ion_auth->messages());
-                        redirect('users/activate');
+                        $message['status']  = 'success';
+                        $message['message']  = lang('employee:created_success_email_send');
+                        return $message;
                     }
                     // activate instantly
                     elseif ((int)Settings::get('activation_email') === 2)
                     {
                         $this->ion_auth->activate($id, false);
-
                         $this->ion_auth->login($this->input->post('email'), $this->input->post('password'));
-                        redirect($this->config->item('register_redirect', 'ion_auth'));
+                        $message['status']  = 'success';
+                        $message['message']  = lang('employee:created_success');
+                        return $message;
                     }
                     else
                     {
                         $this->ion_auth->deactivate($id);
-
                         /* show that admin needs to activate your account */
-                        $this->session->set_flashdata('notice', lang('user:activation_by_admin_notice'));
-                        redirect('users/register'); /* bump it to show the flash data */
+                        $message['status']  = 'warning';
+                        $message['message']  = lang('user:activation_by_admin_notice');
+                        return $message;
                     }
                 }
 
                 // Can't create the user, show why
                 else
                 {
-                    $this->template->error_string = $this->ion_auth->errors();
+                    $message['status']  = 'error';
+                    $message['message']  = $this->ion_auth->errors();
+                    return $message;
                 }
             }
             else
             {
                 // Return the validation error
-                $this->template->error_string = $this->form_validation->error_string();
+                $message['status']  = 'error';
+                $message['message']  = $this->form_validation->error_string();
+                return $message;
             }
         }
-
         // Is there a user hash?
         else {
             if (($user_hash = $this->session->userdata('user_hash')))
@@ -1204,22 +1228,13 @@ class Users extends Public_Controller
             }
         }
 
-        // --------------------------------
-        // Create profile fields.
-        // --------------------------------
+    }
 
-        // Anything in the post?
+    /**
+     * Method to employee_edit a user
+     */
+    private function employee_edit(){
 
-        $this->template->set('profile_fields', $this->streams->fields->get_stream_fields('profiles', 'users', $profile_data));
-
-        // --------------------------------
-
-        $this->template
-            ->title(lang('user:employee_title'))
-            ->set_breadcrumb(lang('user:register_employee'))
-            ->set('breadcrumb_title', lang('user:register_employee'))
-            ->set('_user', $user)
-            ->build('register_employee');
     }
 
     /**
@@ -1232,10 +1247,6 @@ class Users extends Public_Controller
      */
     private function _process_post(&$post) {
         $post['department'] = get_department_by_user_id($post['user_id']);
-        /*$post['apply'] = $this->user_m->get_by(array('id'=>$post['apply_id']))->username;
-        $post['department'] = $this->department_m->get_by(array('id'=>$post['department_id']))->title;
-        $post['url_edit'] = site_url('feedback_employee/edit/'.$post['id']);
-        $post['url_delete'] = site_url('feedback_employee/delete/'.$post['id']);*/
     }
 
 }

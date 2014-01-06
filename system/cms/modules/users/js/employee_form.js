@@ -1,44 +1,42 @@
 function form_validate(){
-    var title = $('#title');
-    var apply_id = $('#apply_id');
+    var email = $('#email');
+    var first_name = $('#first_name');
+    var last_name = $('#last_name');
     var department_id = $('#department_id');
-    var description = $('#description');
-    var status = $('#status');
-    var date = $('date');
+    var team_id = $('#team_id');
 
-    if(title.val() == ""){
-        open_message_block("error", "Title is required!");
-        title.focus();
+    if(email.val() == ""){
+        open_message_block("error", "E-mail is required!");
+        email.focus();
         return false;
-    } else if(apply_id.val() == ""){
-        open_message_block("error", "Apply is required!");
-        apply_id.focus();
+    } else if(first_name.val() == ""){
+        open_message_block("error", "First name is required!");
+        first_name.focus();
+        return false;
+    } else if(last_name.val() == ""){
+        open_message_block("error", "Last name is required!");
+        last_name.focus();
         return false;
     }else if(department_id.val() == ""){
         open_message_block("error", "Department is required!");
         department_id.focus();
         return false;
-    }else if(date.val() == ""){
-        open_message_block("error", "Date is required!");
-        date.focus();
-        return false;
-    }else if(description.val() == ""){
-        open_message_block("error", "Description is required!");
-        description.focus();
+    }else if(team_id.val() == ""){
+        open_message_block("error", "Team is required!");
+        team_id.focus();
         return false;
     }
     return true;
 }
 
 function form_reset(){
-    $('#tab_form a').html('Create new feedback employee');
-    $('#btnSubmit').html('Create feedback employee');
-    $('#title').val("");
-    $('#apply_id').val("");
+    $('#tab_form a').html('Create new employee');
+    $('#btnSubmit').html('Create employee');
+    $('#email').val("");
+    $('#first_name').val("");
+    $('#last_name').val("");
     $('#department_id').val("");
-    $('#description').val("");
-    $('#status').val("");
-    $('#date').val("");
+    $('#team_id').val("");
 }
 
 function edit_record(id){
@@ -46,12 +44,12 @@ function edit_record(id){
     $('#row_edit_id').val(id);
     //Set action for submit
     $('#action').val('edit');
-    $('#tab_form a').html('Edit feedback employee');
-    $('#btnSubmit').html('Edit feedback employee');
+    $('#tab_form a').html('Edit employee');
+    $('#btnSubmit').html('Edit employee');
     //Bidding data
     $.ajax({
         type: "POST",
-        url: BASE_URL + "feedback_employee/get_feedback_employee_by_id/"+id,
+        url: BASE_URL + "employee/get_feedback_employee_by_id/"+id,
         data: {},
         success: function(data){
             var response = $.parseJSON(data);
@@ -103,19 +101,27 @@ function form_success(data){
         if(response.status == "success"){
             open_message_block("success", response.message);
             form_reset();
+            //Show tab list team
+            $('#tab-2').removeClass('active');
+            $('#tab_form').removeClass('active');
+            $('#tab_list').addClass('active');
+            $('#tab-1').addClass('active');
+        }else if(response.status == "warning"){
+            open_message_block("warning", response.message);
+            form_reset();
+            //Show tab list team
+            $('#tab-2').removeClass('active');
+            $('#tab_form').removeClass('active');
+            $('#tab_list').addClass('active');
+            $('#tab-1').addClass('active');
         }else if(response.status == "error"){
             open_message_block("error", response.message);
         }
     }catch (xhr){
         console.error("Exception: " + xhr.message);
     }finally{
-        //Show tab list team
-        $('#tab-2').removeClass('active');
-        $('#tab_form').removeClass('active');
-        $('#tab_list').addClass('active');
-        $('#tab-1').addClass('active');
         //Refresh data
-        list_refresh();
+        //list_refresh();
     }
 }
 

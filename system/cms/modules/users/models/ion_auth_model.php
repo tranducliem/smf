@@ -488,7 +488,7 @@ class Ion_auth_model extends CI_Model
 	 * @return bool
 	 * @author Mathew
 	 **/
-	public function register($username, $password, $email, $group_id = null, $additional_data = array(), $group_name = false)
+	public function register($username, $password, $email, $department, $team, $group_id = null, $additional_data = array(), $group_name = false)
 	{
 		if ($this->identity_column == 'email' && $this->email_check($email))
 		{
@@ -537,14 +537,16 @@ class Ion_auth_model extends CI_Model
 
 		// Users table.
 		$data = array(
-			'username'   => $username,
-			'password'   => $password,
-			'email'      => $email,
-			'group_id'   => $group_id,
-			'ip_address' => $ip_address,
-			'created_on' => now(),
-			'last_login' => now(),
-			'active'     => 1
+			'username'      => $username,
+			'password'      => $password,
+			'email'         => $email,
+			'group_id'      => $group_id,
+			'ip_address'    => $ip_address,
+			'created_on'    => now(),
+			'last_login'    => now(),
+			'active'        => 1,
+            'department_id' => $department,
+            'team_id'       => $team
 		);
 
 		if ($this->store_salt)

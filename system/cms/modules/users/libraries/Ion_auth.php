@@ -284,9 +284,9 @@ class Ion_auth
 	 * @return void
 	 * @author Mathew
 	 **/
-	public function register($username, $password, $email, $group_id = null, $additional_data = array(), $group_name = false)
+	public function register($username, $password, $email, $department, $team, $group_id = null, $additional_data = array(), $group_name = false)
 	{
-		$id = $this->ci->ion_auth_model->register($username, $password, $email, $group_id, $additional_data, $group_name);
+		$id = $this->ci->ion_auth_model->register($username, $password, $email, $department, $team, $group_id, $additional_data, $group_name);
 
 		if ($id !== false)
 		{

@@ -20,7 +20,7 @@
         </div>
         <div class="tab-pane" id="tab-2">
             <div class="form_field">
-                <?php //echo $this->load->view('partials/form') ?>
+                <?php echo $this->load->view('partials/form') ?>
             </div>
         </div>
     </div>

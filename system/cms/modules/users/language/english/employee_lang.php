@@ -35,6 +35,9 @@ $lang['employee:delete_success']                        = 'The employee "%s" has
 $lang['employee:mass_delete_success']                   = 'The employee "%s" have been deleted.';
 $lang['employee:delete_error']                          = 'No employee were deleted.';
 $lang['employee:validate_error']                        = 'Please enter the correct value.';
+$lang['employee:created_success']                       = 'Account Successfully Created.';
+$lang['employee:created_success_email_send']            = 'Account Successfully Created - Activation Email Sent.';
+$lang['employee:activation_not_allow']                  = 'Please login';
 
 //Form
 $lang['employee:form_title']                            = 'Title';
@@ -47,3 +50,4 @@ $lang['employee:form_phone']                            = 'Phone';
 $lang['employee:form_email']                            = 'Email';
 $lang['employee:form_address']                          = 'Address';
 $lang['employee:form_department']                       = 'Department';
+$lang['employee:form_team']                             = 'Team';
