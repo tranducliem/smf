@@ -7,7 +7,7 @@ function form_validate(){
         feedback_manager_id.focus();
         return false;
     } else if(question_id.val() == ""){
-        open_message_block("error", "Company is required!");
+        open_message_block("error", "Question is required!");
         question_id.focus();
         return false;
     }
@@ -39,7 +39,7 @@ function edit_record(id){
             var response = $.parseJSON(data);
             $('#feedback_manager_id').val(response.feedback_manager_id);
             $('#question_id').val(response.question_id);
-            //Show tab form team
+            //Show tab form feedback manager question
             $('#tab-1').removeClass('active');
             $('#tab_list').removeClass('active');
             $('#tab_form').addClass('active');
@@ -88,7 +88,7 @@ function form_success(data){
     }catch (xhr){
         console.error("Exception: " + xhr.message);
     }finally{
-        //Show tab list team
+        //Show tab list feedback manager question
         $('#tab-2').removeClass('active');
         $('#tab_form').removeClass('active');
         $('#tab_list').addClass('active');

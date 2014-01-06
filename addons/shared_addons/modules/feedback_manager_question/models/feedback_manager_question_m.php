@@ -3,9 +3,9 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
- * The Test Class
- * @Description: This is a model class process crud for test table
- * @Author: tranducliem
+ * The Feedback_manager_question_m Class
+ * @Description: This is a model class process crud for feedback_manager_question table
+ * @Author: Hoang Thi Tuan Dung
  * @Date: 11/20/13
  * @Update: 11/20/2013
  */

@@ -23,6 +23,7 @@ $lang['feedback_manager:edit_title']                            = 'Edit feedback
 $lang['feedback_manager:edit_title_label']                      = 'Edit feedback_manager "%s"';
 $lang['feedback_manager:edit_btn_title']                        = 'Update';
 $lang['feedback_manager:select_type']                        = 'Select type';
+$lang['feedback_manager:select_apply']                        = 'Select apply';
 
 //Message
 $lang['feedback_manager:currently_no_posts']                    = 'There are no posts at the moment.';
@@ -34,6 +35,7 @@ $lang['feedback_manager:delete_success']                        = 'The feedback_
 $lang['feedback_manager:mass_delete_success']                   = 'The feedback_employee "%s" have been deleted.';
 $lang['feedback_manager:delete_error']                          = 'No feedback_employee were deleted.';
 $lang['feedback_manager:validate_error']                        = 'Please enter the correct value.';
+$lang['feedback_manager:validate_user_error']                   = 'Please select user value';
 
 //Form
 $lang['feedback_manager:form_title']                            = 'Title';
@@ -49,3 +51,5 @@ $lang['feedback_manager:status']                            = 'Status';
 $lang['feedback_manager:form_status']                       = 'Status';
 $lang['feedback_manager:require']                            = 'Require';
 $lang['feedback_manager:form_require']                       = 'Require';
+$lang['feedback_manager:apply']                            = 'Apply';
+$lang['feedback_manager:form_apply']                       = 'Apply';

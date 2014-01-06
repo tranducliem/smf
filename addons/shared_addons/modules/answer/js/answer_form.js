@@ -45,7 +45,7 @@ function edit_record(id){
             $('#title').val(response.title);
             $('#question_id').val(response.question_id);
             $('#description').val(response.description);
-            //Show tab form team
+            //Show tab form answer
             $('#tab-1').removeClass('active');
             $('#tab_list').removeClass('active');
             $('#tab_form').addClass('active');
@@ -94,7 +94,7 @@ function form_success(data){
     }catch (xhr){
         console.error("Exception: " + xhr.message);
     }finally{
-        //Show tab list team
+        //Show tab list answer
         $('#tab-2').removeClass('active');
         $('#tab_form').removeClass('active');
         $('#tab_list').addClass('active');

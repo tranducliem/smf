@@ -6,6 +6,7 @@ function form_validate() {
     var end_date = $('#end_date');
     var require = $('#require');
     var status = $('#status');
+    var user_id = $('#user_id');
 
     if (title.val() == "") {
         open_message_block("error", "Title is required!");
@@ -39,6 +40,11 @@ function form_validate() {
         status.focus();
         return false;
     }
+    else if(user_id.val() == ""){
+        open_message_block("error", "User is required!");
+        user_id.focus();
+        return false;
+    }
     return true;
 }
 
@@ -52,6 +58,7 @@ function form_reset() {
     $('require').val("");
     $('status').val("");
     $('#description').val("");
+    $('#user_id').val("");
 }
 
 function edit_record(id) {
@@ -75,7 +82,8 @@ function edit_record(id) {
             $('#require').val(response.require);
             $('#status').val(response.status);
             $('#description').val(response.description);
-            //Show tab form team
+            $('#user_id').val(response.user_id);
+            //Show tab form feedback manager
             $('#tab-1').removeClass('active');
             $('#tab_list').removeClass('active');
             $('#tab-3').removeClass('active');
@@ -131,7 +139,7 @@ function list_record(id) {
                     });
                 }
             }
-            //Show tab form team
+            //Show tab form feedback manager
             $('#tab-1').removeClass('active');
             $('#tab_list').removeClass('active');
             $('#tab-2').removeClass('active');
@@ -183,8 +191,8 @@ function form_success(data) {
         }
     } catch (xhr) {
         console.error("Exception: " + xhr.message);
-    } finally {
-        //Show tab list team
+    }finally{
+        //Show tab list feedback manager
         $('#tab-2').removeClass('active');
         $('#tab_form1').removeClass('active');
         $('#tab_form2').removeClass('active');

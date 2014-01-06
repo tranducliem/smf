@@ -9,7 +9,9 @@
  * @Update: 11/21/13
  */
 class Answer extends Public_Controller {
-
+    /**
+    * Validate
+    */
     protected $validation_rules = array(
         'title'         => array(
             'field'     => 'title',
@@ -29,6 +31,12 @@ class Answer extends Public_Controller {
 
     );
 
+    /**
+    * construct function
+    * Check login
+    * load library and model
+    * get array $question to use for select box
+    */
     public function __construct(){
         parent::__construct();
         if(!check_user_permission($this->current_user, $this->module, $this->permissions)) redirect();
@@ -58,6 +66,8 @@ class Answer extends Public_Controller {
      * @Update: 11/21/13
      */
     public function index(){
+
+        // Search
         $where = "";
         if ($this->input->post('f_keywords')) {
             $where .= "`title` LIKE '%".$this->input->post('f_keywords')."%' ";

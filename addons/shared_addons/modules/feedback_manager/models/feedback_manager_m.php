@@ -17,25 +17,12 @@ class Feedback_manager_m extends MY_Model {
         parent::__construct();
     }
 
-    public function get_team_list($limit, $offset, $base_where = array()) {
-        $this->db
-            ->select('feedback_manager.*,type.title as type')
-            ->join('feedbacktype', 'feedback_manager.type_id = feedbacktype.id');
-        if (!empty($base_where)) {
-            if ($base_where['title'] != '') {
-                $this->db->like('feedback_manager.title', $base_where['title']);
-            }
-        }
-        parent::limit($limit, $offset);
-        return parent::get_all();
-    }
-
     public function get_question($id)
     {
         $this->db
             ->select('feedback_manager.id','feedback_manager_question.feedback_manager_id')
-            ->db->join('feedback_manager_question','feedback_manager.id=feedback_manager_question.feedback_manager_id')
-            ->db->join('question','feedback_manager.question_id = question.id');
+            ->join('feedback_manager_question','feedback_manager.id=feedback_manager_question.feedback_manager_id')
+            ->join('question','feedback_manager.question_id = question.id');
         return parent::get_by(array('id'=>$id));
     }
 
