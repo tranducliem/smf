@@ -59,15 +59,15 @@ class Feedback_manager extends Public_Controller {
         $this->load->driver('Streams');
         $this->load->library(array('keywords/keywords', 'form_validation'));
         $this->stream = $this->streams_m->get_stream('feedback_manager', true, 'feedback_managers');
-        $this->load->model(array('feedback_manager_m', 'feedbacktype/feedbacktype_m','feedbackquestion_m','feedback_manager_question/feedback_manager_question_m', 'feedbackuser/feedbackuser_m'));
+        $this->load->model(array('feedback_manager_m', 'feedbacktype/feedbacktype_m', 'feedbackquestion_m', 'feedback_manager_question/feedback_manager_question_m', 'feedbackuser/feedbackuser_m'));
         $this->lang->load('feedback_manager');
 
-        $feedback_manager_type = array(''  => lang('feedback_manager:select_type'));
+        $feedback_manager_type = array('' => lang('feedback_manager:select_type'));
         $feedback_manager_types = $this->streams->entries->get_entries(array('stream' => 'feedback_manager_type', 'namespace' => 'feedback_manager_types'));
         foreach ($feedback_manager_types['entries'] as $post) {
             $feedback_manager_type[$post['id']] = $post['title'];
         }
-        $this->template->set('feedback_manager_types', $feedback_manager_type);    
+        $this->template->set('feedback_manager_types', $feedback_manager_type);
     }
 
     /**
@@ -103,21 +103,21 @@ class Feedback_manager extends Public_Controller {
         $this->input->is_ajax_request() and $this->template->set_layout(false);
 
         $this->template
-            ->title($this->module_details['name'])
-            ->set_breadcrumb(lang('feedback_manager:feedback_manager_title'))
-            ->set('breadcrumb_title', $this->module_details['name'])
-            ->set_metadata('og:title', $this->module_details['name'], 'og')
-            ->set_metadata('og:type', 'feedback_manager', 'og')
-            ->set_metadata('og:url', current_url(), 'og')
-            ->set_metadata('og:description', $meta['description'], 'og')
-            ->set_metadata('description', $meta['description'])
-            ->set_metadata('keywords', $meta['keywords'])
-            ->append_js('module::feedback_manager_form.js')
-            ->append_js('module::statistics.js')
-            ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
-            ->set('posts', $posts['entries'])
-            ->set('pagination', $posts['pagination']);
-            // ->set('feedback_manager_types', $this->cache->get('feedback_manager_types'));
+                ->title($this->module_details['name'])
+                ->set_breadcrumb(lang('feedback_manager:feedback_manager_title'))
+                ->set('breadcrumb_title', $this->module_details['name'])
+                ->set_metadata('og:title', $this->module_details['name'], 'og')
+                ->set_metadata('og:type', 'feedback_manager', 'og')
+                ->set_metadata('og:url', current_url(), 'og')
+                ->set_metadata('og:description', $meta['description'], 'og')
+                ->set_metadata('description', $meta['description'])
+                ->set_metadata('keywords', $meta['keywords'])
+                ->append_js('module::feedback_manager_form.js')
+                ->append_js('module::statistics.js')
+                ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
+                ->set('posts', $posts['entries'])
+                ->set('pagination', $posts['pagination']);
+        // ->set('feedback_manager_types', $this->cache->get('feedback_manager_types'));
         $this->input->is_ajax_request() ? $this->template->build('tables/posts') : $this->template->build('index');
     }
 
@@ -153,13 +153,12 @@ class Feedback_manager extends Public_Controller {
         if (!empty($ids)) {
             $post_names = array();
             $deleted_ids = array();
-            foreach ($ids as $id){
-                if ($post = $this->feedback_manager_m->get($id)){
-                    $postx = $this->feedbackuser_m->get_by(array('feedback_manager_id'=>$id));
-                    $posty = $this->feedback_manager_question_m->get_by(array('feedback_manager_id'=>$id));
-                    if($postx == "" && $posty == "")
-                    {
-                        if ($this->feedback_manager_m->delete($id)){
+            foreach ($ids as $id) {
+                if ($post = $this->feedback_manager_m->get($id)) {
+                    $postx = $this->feedbackuser_m->get_by(array('feedback_manager_id' => $id));
+                    $posty = $this->feedback_manager_question_m->get_by(array('feedback_manager_id' => $id));
+                    if ($postx == "" && $posty == "") {
+                        if ($this->feedback_manager_m->delete($id)) {
                             $this->pyrocache->delete('feedback_manager_m');
                             $post_names[] = $post->title;
                             $deleted_ids[] = $id;
@@ -224,14 +223,16 @@ class Feedback_manager extends Public_Controller {
         }
     }
 
-    public function get_question_manager($id)
-    {
-        if(!$this->input->is_ajax_request()) redirect('feedback_manager');
-        if($id != null && $id != ""){
+    public function get_question_manager($id) {
+        if (!$this->input->is_ajax_request())
+            redirect('feedback_manager');
+        if ($id != null && $id != "") {
             $item = $this->feedbackquestion_m->get_question_list_by_fid($id);
-            if(count($item)>0) echo json_encode($item);
-            else echo "";
-        }else{
+            if (count($item) > 0)
+                echo json_encode($item);
+            else
+                echo "";
+        }else {
             echo "";
         }
     }
@@ -400,7 +401,9 @@ class Feedback_manager extends Public_Controller {
         $statistics[0]['name'] = lang('feedback_manager:not_answer');
         $statistics[0]['percent'] = ($count_users - $count_users_answered) / $count_users;
         $data['count_answer'] = $i;
+        $data['count_users'] = $count_users;
         $data['statistics'] = $statistics;
+        $data['question_id'] = $id;
         echo json_encode($data);
     }
 
