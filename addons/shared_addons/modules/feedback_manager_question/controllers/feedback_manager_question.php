@@ -1,16 +1,16 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
- * Class Admin
- * @Description: This is class admin
+ * Class Feedback_manager_question
+ * @Description: This is class Feedback_manager_question
  * @Author: HoangThiTuanDung
- * @Company: framgia
  * @Date: 12/25/13
- * @Update:
+ * @Update: 12/25/13
  */
 
 class Feedback_manager_question extends Public_Controller {
 
+    // Validate
     protected $validation_rules = array(
         'feedback_manager_id'    => array(
             'field'     => 'feedback_manager_id',
@@ -24,6 +24,9 @@ class Feedback_manager_question extends Public_Controller {
         ),
     );
 
+    /**
+    * construct function
+    */
     public function __construct(){
         parent::__construct();
         if(!check_user_permission($this->current_user, $this->module, $this->permissions)) redirect();
@@ -44,7 +47,6 @@ class Feedback_manager_question extends Public_Controller {
         $this->template->set('feedback_managers', $feedback_manager);
 
         //Get question list from cached to bidding select list
-        // $question = array(''  => lang('feedback_manager_question:select_question'));
         $question = array();
         $questions = $this->streams->entries->get_entries(array('stream' => 'question', 'namespace' => 'questions'));
         foreach ($questions['entries'] as $post) {
@@ -63,11 +65,8 @@ class Feedback_manager_question extends Public_Controller {
      */
     public function index(){
         $where = "";
-        // if ($this->input->post('f_keywords')) {
-        //     $where .= "`title` LIKE '%".$this->input->post('f_keywords')."%' ";
-        // }
 
-        // Get the latest team posts
+        // Get the latest feedback manager question posts
         $posts = $this->streams->entries->get_entries(array(
             'stream'		=> 'feedback_manager_question',
             'namespace'		=> 'feedback_manager_questions',
@@ -124,7 +123,7 @@ class Feedback_manager_question extends Public_Controller {
      * The delete function
      * @Description: This is delete function
      * @Parameter:
-     *      1. $id int The ID of the team post to delete
+     *      1. $id int The ID of the feedback manager question post to delete
      * @Return: null
      * @Date: 11/21/13
      * @Update: 11/21/13
@@ -183,11 +182,8 @@ class Feedback_manager_question extends Public_Controller {
     }
 
     /**
-     * The get_team_by_id function
-     * @Description: This is edit function
-     * @Parameter:
-     *      1. $id int The ID of the team post to get
-     * @Return: null
+     * The get_feedback_manager_question_by_id function
+     * @Parameter: $id
      * @Date: 11/21/13
      * @Update: 11/21/13
      */
@@ -220,7 +216,6 @@ class Feedback_manager_question extends Public_Controller {
         if ($this->form_validation->run()){
             $extra = array(
                 'feedback_manager_id'   => $this->input->post('feedback_manager_id'),
-                // 'question_id'           => $this->input->post('question_id'),
                 'created'		        => date('Y-m-d H:i:s', now()),
                 'created_by'            => $this->current_user->id
             );
@@ -233,7 +228,7 @@ class Feedback_manager_question extends Public_Controller {
                 if ($id = $this->streams->entries->insert_entry($_POST, 'feedback_manager_question', 'feedback_manager_questions', array('created'), $extra)) {
                     $this->pyrocache->delete_all('feedback_manager_question_m');
                     $message['status']  = 'success';
-                    $message['message']  = "Success";//str_replace("%s", $this->input->post('title'), lang('feedback_manager_question:post_add_success'));
+                    $message['message']  = "Success";
                     Events::trigger('feedback_manager_question_created', $id);
                 } else {
                     $message['status']  = 'error';
@@ -251,7 +246,7 @@ class Feedback_manager_question extends Public_Controller {
      * The edit function
      * @Description: This is edit function
      * @Parameter:
-     *      1. $id int The ID of the team post to edit
+     *      1. $id int The ID of the feedback manager question post to edit
      * @Return: null
      * @Date: 11/21/13
      * @Update: 11/21/13
@@ -260,7 +255,7 @@ class Feedback_manager_question extends Public_Controller {
         $id = $this->input->post('row_edit_id');
         $post = $this->feedback_manager_question_m->get($id);
         $message = array();
-        // Get all company
+
         $stream = $this->streams->streams->get_stream('feedback_manager_question', 'feedback_manager_questions');
         $feedback_manager_question_validation = $this->streams->streams->validation_array($stream->stream_slug, $stream->stream_namespace, 'new');
         $rules = array_merge($this->validation_rules, $feedback_manager_question_validation);
@@ -270,20 +265,21 @@ class Feedback_manager_question extends Public_Controller {
             $author_id = empty($post->created_by) ? $this->current_user->id : $post->created_by;
             $extra = array(
                 'feedback_manager_id'   => $this->input->post('feedback_manager_id'),
-                // 'question_id'           => $this->input->post('question_id'),
                 'updated'		    => date('Y-m-d H:i:s', now()),
                 'created_by'        => $author_id
             );
 
             $data = $this->input->post('myselect');
 
-            $test = $extra['feedback_manager_id'];
                 
-            if ($post = $this->feedback_manager_question_m->get_many_by(array('feedback_manager_id'=>$test))){
-                foreach ($post as $t) 
+            if ($post = $this->feedback_manager_question_m->get_by(array('id'=>$id))){
+                if($test = $this->feedback_manager_question_m->get_many_by(array('feedback_manager_id'=>$post->feedback_manager_id)))
                 {
-                    $this->feedback_manager_question_m->delete($t->id);
-                    $this->pyrocache->delete('feedback_manager_question_m');
+                    foreach ($test as $t) 
+                    {
+                        $this->feedback_manager_question_m->delete($t->id);
+                        $this->pyrocache->delete('feedback_manager_question_m');
+                    }
                 }
             }
             foreach ($data as $item) {
@@ -299,14 +295,6 @@ class Feedback_manager_question extends Public_Controller {
                     $message['message']  = lang('feedback_manager_question:edit_error');
                 }
             }
-                // if ($this->streams->entries->update_entry($id, $_POST, 'feedback_manager_question', 'feedback_manager_questions', array('updated'), $extra)) {
-                //     $message['status']  = 'success';
-                //     $message['message']  = "Success";//str_replace("%s", $this->input->post('title'), lang('team:edit_success'));
-                //     Events::trigger('feedback_manager_question_updated', $id);
-                // } else {
-                //     $message['status']  = 'error';
-                //     $message['message']  = lang('feedback_manager_question:edit_error');
-                // }
         } else {
             $message['status']  = 'error';
             $message['message']  = lang('feedback_manager_question:validate_error');
@@ -344,13 +332,11 @@ class Feedback_manager_question extends Public_Controller {
         if (!empty($posts)) {
             foreach ($posts as &$post){
                 $keywords[] = $post['feedback_manager'];
-                //$description[] = $post['description'];
             }
         }
 
         return array(
             'keywords' => implode(', ', $keywords),
-            //'description' => implode(', ', $description)
         );
     }
 } 

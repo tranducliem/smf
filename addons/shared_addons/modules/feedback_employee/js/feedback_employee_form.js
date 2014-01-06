@@ -60,7 +60,7 @@ function edit_record(id){
             $('#department_id').val(response.department_id);
             $('#description').val(response.description);
             $('#date').val(response.date);
-            //Show tab form team
+            //Show tab form feedback employee
             $('#tab-1').removeClass('active');
             $('#tab_list').removeClass('active');
             $('#tab_form').addClass('active');
@@ -109,7 +109,7 @@ function form_success(data){
     }catch (xhr){
         console.error("Exception: " + xhr.message);
     }finally{
-        //Show tab list team
+        //Show tab list feedback employee
         $('#tab-2').removeClass('active');
         $('#tab_form').removeClass('active');
         $('#tab_list').addClass('active');

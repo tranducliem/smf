@@ -1,16 +1,16 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
- * Class Admin
- * @Description: This is class admin
+ * Class Feedback_employee
+ * @Description: This is class Feedback_employee
  * @Author: HoangThiTuanDung
- * @Company: framgia
  * @Date: 12/25/13
- * @Update:
+ * @Update: 12/25/13
  */
 
 class Feedback_employee extends Public_Controller {
 
+    // Validate
     protected $validation_rules = array(
         'title'         => array(
             'field'     => 'title',
@@ -43,7 +43,11 @@ class Feedback_employee extends Public_Controller {
             'rules'     => ''
         ),
     );
-
+    
+    /**
+    * function construst
+    * load library and model
+    */
     public function __construct(){
         parent::__construct();
         if(!check_user_permission($this->current_user, $this->module, $this->permissions)) redirect();
@@ -55,26 +59,15 @@ class Feedback_employee extends Public_Controller {
         $this->load->model(array('feedback_employee_m', 'users/user_m', 'department/department_m'));
         $this->lang->load('feedback_employee');
 
+        // Get apply list from cached to bidding select list
+        $apply = array(''  => lang('feedback_employee:select_apply'));
+        $users = $this->streams->entries->get_entries(array('stream' => 'profiles', 'namespace' => 'users'));
+        foreach ($users['entries'] as $post) {
+            $apply[$post['user_id']] = get_username_by_id($post['user_id']);
+        }
+        $this->template->set('users', $apply);
 
-        /*if ( ! $users = $this->cache->get('users')){
-            $users = array(
-                ''  => lang('feedback_employee:select_apply')
-            );
-            $rows = $this->user_m->get_all();
-            foreach($rows as $row){
-                $users[$row->id] = $row->username;
-            }
-            $this->cache->save('users', $users, 300);
-        }*/
-
-         // Get apply list from cached to bidding select list
-         $apply = array(''  => lang('feedback_employee:select_apply'));
-         $users = $this->streams->entries->get_entries(array('stream' => 'profiles', 'namespace' => 'users'));
-         foreach ($users['entries'] as $post) {
-             $apply[$post['user_id']] = get_username_by_id($post['user_id']);
-         }
-         $this->template->set('users', $apply);
-
+        // Get department list from cached to bidding select list
         $department = array(''  => lang('feedback_employee:select_department'));
         $departments = $this->streams->entries->get_entries(array('stream' => 'department', 'namespace' => 'departments'));
         foreach ($departments['entries'] as $post) {
@@ -92,12 +85,13 @@ class Feedback_employee extends Public_Controller {
      * @Update: 11/21/13
      */
     public function index(){
+        // Search
         $where = "";
         if ($this->input->post('f_keywords')) {
             $where .= "`title` LIKE '%".$this->input->post('f_keywords')."%' ";
         }
 
-        // Get the latest team posts
+        // Get the latest feedback_employee posts
         $posts = $this->streams->entries->get_entries(array(
             'stream'		=> 'feedback_employee',
             'namespace'		=> 'feedback_employees',
@@ -129,8 +123,6 @@ class Feedback_employee extends Public_Controller {
             ->set_stream($this->stream->stream_slug, $this->stream->stream_namespace)
             ->set('posts', $posts['entries'])
             ->set('pagination', $posts['pagination']);
-            //->set('users', $this->cache->get('users'));
-            // ->set('departments', $this->cache->get('departments'));
 
         $this->input->is_ajax_request()
             ? $this->template->build('tables/posts')
@@ -158,7 +150,7 @@ class Feedback_employee extends Public_Controller {
      * The delete function
      * @Description: This is delete function
      * @Parameter:
-     *      1. $id int The ID of the team post to delete
+     *      1. $id int The ID of the feedback employee post to delete
      * @Return: null
      * @Date: 11/21/13
      * @Update: 11/21/13
@@ -217,11 +209,8 @@ class Feedback_employee extends Public_Controller {
     }
 
     /**
-     * The get_team_by_id function
-     * @Description: This is edit function
-     * @Parameter:
-     *      1. $id int The ID of the team post to get
-     * @Return: null
+     * The get_feedback_employee_by_id function
+     * @Parameter: $id
      * @Date: 11/21/13
      * @Update: 11/21/13
      */
@@ -284,7 +273,7 @@ class Feedback_employee extends Public_Controller {
      * The edit function
      * @Description: This is edit function
      * @Parameter:
-     *      1. $id int The ID of the team post to edit
+     *      1. $id int The ID of the feedback employee post to edit
      * @Return: null
      * @Date: 11/21/13
      * @Update: 11/21/13
@@ -293,7 +282,7 @@ class Feedback_employee extends Public_Controller {
         $id = $this->input->post('row_edit_id');
         $post = $this->feedback_employee_m->get($id);
         $message = array();
-        // Get all company
+        
         $stream = $this->streams->streams->get_stream('feedback_employee', 'feedback_employees');
         $feedback_employee_validation = $this->streams->streams->validation_array($stream->stream_slug, $stream->stream_namespace, 'new');
         $rules = array_merge($this->validation_rules, $feedback_employee_validation);
