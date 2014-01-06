@@ -4,7 +4,7 @@
 	<?php echo form_open('', '', array('f_module' => $module_details['slug'])) ?>
 		<ul>
 			<li class="">
-				<label for="f_category"><?php echo lang('team:form_title').' '.lang('global:keywords') ?></label>
+				<label for="f_category"><?php echo lang('definition:form_title').' '.lang('global:keywords') ?></label>
 				<?php echo form_input('f_keywords', '', 'style="width: 120%;"') ?>
 			</li>
 		</ul>

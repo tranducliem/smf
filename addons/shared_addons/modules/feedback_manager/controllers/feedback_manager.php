@@ -66,7 +66,7 @@ class Feedback_manager extends Public_Controller {
         $this->load->driver('Streams');
         $this->load->library(array('keywords/keywords', 'form_validation'));
         $this->stream = $this->streams_m->get_stream('feedback_manager', true, 'feedback_managers');
-        $this->load->model(array('feedback_manager_m', 'feedbacktype/feedbacktype_m','feedbackquestion_m','feedback_manager_question/feedback_manager_question_m', 'feedbackuser/feedbackuser_m'));
+        $this->load->model(array('feedback_manager_m', 'feedbacktype/feedbacktype_m', 'feedbackquestion_m', 'feedback_manager_question/feedback_manager_question_m', 'feedbackuser/feedbackuser_m'));
         $this->lang->load('feedback_manager');
 
         // Get feedback_manager_type list from cached to bidding select list
@@ -76,6 +76,7 @@ class Feedback_manager extends Public_Controller {
             $feedback_manager_type[$post['id']] = $post['title'];
         }
         $this->template->set('feedback_manager_types', $feedback_manager_type);
+
 
         // Get apply list from cached to bidding select list
         $apply = array(''  => lang('feedback_manager:select_apply'));
@@ -120,6 +121,7 @@ class Feedback_manager extends Public_Controller {
         $this->input->is_ajax_request() and $this->template->set_layout(false);
 
         $this->template
+
             ->title($this->module_details['name'])
             ->set_breadcrumb(lang('feedback_manager:feedback_manager_title'))
             ->set('breadcrumb_title', $this->module_details['name'])
@@ -170,6 +172,7 @@ class Feedback_manager extends Public_Controller {
         if (!empty($ids)) {
             $post_names = array();
             $deleted_ids = array();
+
             foreach ($ids as $id){
                 if ($post = $this->feedback_manager_m->get($id)){
                     
@@ -252,9 +255,11 @@ class Feedback_manager extends Public_Controller {
         if(!$this->input->is_ajax_request()) redirect('feedback_manager');
         if($id != null && $id != ""){
             $item = $this->feedbackquestion_m->get_question_list_by_fid($id);
-            if(count($item)>0) echo json_encode($item);
-            else echo "";
-        }else{
+            if (count($item) > 0)
+                echo json_encode($item);
+            else
+                echo "";
+        }else {
             echo "";
         }
     }
@@ -467,7 +472,9 @@ class Feedback_manager extends Public_Controller {
         $statistics[0]['name'] = lang('feedback_manager:not_answer');
         $statistics[0]['percent'] = ($count_users - $count_users_answered) / $count_users;
         $data['count_answer'] = $i;
+        $data['count_users'] = $count_users;
         $data['statistics'] = $statistics;
+        $data['question_id'] = $id;
         echo json_encode($data);
     }
 

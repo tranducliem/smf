@@ -1,13 +1,13 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
- * feedback_manager module
+ * Book module
  *
- * @author  HoangThiTuanDung
+ * @author  Tranducliem
  * @company Framgia
- * @package Addons\Share\Modules\Feedback_manager
+ * @package Addons\Share\Modules\Book
  */
-class Module_Feedback_manager extends Module
+class Module_Definition extends Module
 {
     public $version = '1.0.0';
 
@@ -15,12 +15,12 @@ class Module_Feedback_manager extends Module
     {
         $info = array(
             'name' => array(
-                'en' => 'Feedback Manager',
+                'en' => 'Definition',
             ),
             'description' => array(
-                'en' => 'Feedback manager.',
+                'en' => 'Keyword Definition/Description.',
             ),
-            //'frontend' => true,
+            'frontend' => false,
             'backend' => true,
             'skip_xss' => true,
             'menu' => 'content',
@@ -28,12 +28,12 @@ class Module_Feedback_manager extends Module
 
             'sections' => array(
                 'posts' => array(
-                    'name' => 'feedback_manager:posts_title',
-                    'uri' => 'admin/feedback_manager',
+                    'name' => 'definition:posts_title',
+                    'uri' => 'admin/definition',
                     'shortcuts' => array(
                         array(
-                            'name' => 'feedback_manager:create_title',
-                            'uri' => 'admin/feedback_manager/create',
+                            'name' => 'definition:create_title',
+                            'uri' => 'admin/definition/create',
                             'class' => 'add',
                         ),
                     ),
@@ -48,37 +48,33 @@ class Module_Feedback_manager extends Module
     public function install()
     {
         $this->load->driver('Streams');
-        $this->streams->utilities->remove_namespace('feedback_managers');
+        $this->streams->utilities->remove_namespace('definitions');
+
         // Just in case.
-        $this->dbforge->drop_table('feedback_manager');
+        $this->dbforge->drop_table('definition');
 
         if ($this->db->table_exists('data_streams')) {
-            $this->db->where('stream_namespace', 'feedback_managers')->delete('data_streams');
+            $this->db->where('stream_namespace', 'definitions')->delete('data_streams');
         }
 
         $this->streams->streams->add_stream(
-            'lang:feedback_manager:feedback_manager_title',
-            'feedback_manager',
-            'feedback_managers',
+            'lang:definition:definition_title',
+            'definition',
+            'definitions',
             null,
             null
         );
 
         // Ad the rest of the blog fields the normal way.
-        $feedback_manager_fields = array(
-            'title'         => array('type' => 'VARCHAR', 'constraint' => 150, 'null' => false),
-            'description'   => array('type' => 'VARCHAR', 'constraint' => 255, 'null' => true),
-            'start_date'    => array('type' => 'DATETIME', 'null'=>false),
-            'end_date'      => array('type' => 'DATETIME', 'null'=>false),
-            'type_id'       => array('type' => 'INT', 'constraint' => 11, 'null' => true),
-            'require'       => array('type' => 'SMALLINT', 'constraint' => 1,'null' => true),
-            'status'        => array('type' => 'SMALLINT', 'constraint' => 1, 'null' => true),
+        $definition_fields = array(
+            'title' => array('type' => 'VARCHAR', 'constraint' => 200, 'null' => false, 'unique' => true),
+            'slug' => array('type' => 'VARCHAR', 'constraint' => 200, 'null' => false, 'unique' => true),
+            'description' => array('type' => 'TEXT', 'null' => true),
+            'system' => array('type' => 'INT', 'constraint' => 1, 'null' => false)
         );
-
-        if ($this->dbforge->add_column('feedback_manager', $feedback_manager_fields) AND
-            is_dir($this->upload_path . 'feedback_manager') OR @mkdir($this->upload_path . 'feedback_manager', 0777, TRUE)
-        )
-        {
+        if ($this->dbforge->add_column('definition', $definition_fields) AND
+            is_dir($this->upload_path . 'definition') OR @mkdir($this->upload_path . 'definition', 0777, TRUE)
+        ) {
             return TRUE;
         }
     }
@@ -86,9 +82,9 @@ class Module_Feedback_manager extends Module
 
     public function uninstall()
     {
-//        if ($this->dbforge->drop_table('feedback_manager')) {
-        return TRUE;
-//        }
+        //if ($this->dbforge->drop_table('definition')) {
+            return TRUE;
+        //}
     }
 
     public function upgrade($old_version)
@@ -98,8 +94,8 @@ class Module_Feedback_manager extends Module
 
     public function help()
     {
-        $help = "<h3>Feedback Manager Module v1.0.2</h3>";
-        $help .= "Feedback Manager Module is a back-end, front-end module for PyroCMS and it supports the latest version 2.1.x.<br />";
+        $help = "<h3>Definition Module v1.0.2</h3>";
+        $help .= "Definition Module is a back-end, front-end module for PyroCMS and it supports the latest version 2.1.x.<br />";
         $help .= "It helps members to start a discussion internally and collaborate provided the group must be give permissions.<br /><br />";
         $help .= "<strong>Features:</strong><br />";
         $help .= "1. Create / edit / delete test<br />";
