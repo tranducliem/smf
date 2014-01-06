@@ -4,7 +4,7 @@
         <th>ID</th>
         <th>Title</th>
         <th>Description</th>
-        <th>Action</th>
+        <th>Rank</th>
     </tr>
     </thead>
     <tbody>
