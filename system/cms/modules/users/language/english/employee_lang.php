@@ -51,3 +51,4 @@ $lang['employee:form_email']                            = 'Email';
 $lang['employee:form_address']                          = 'Address';
 $lang['employee:form_department']                       = 'Department';
 $lang['employee:form_team']                             = 'Team';
+$lang['employee:view_user']                           	= 'View';
