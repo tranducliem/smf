@@ -40,8 +40,9 @@ function form_reset(){
 }
 
 function edit_record(id){
+    open_message_block("error", 'Not allow update!');
     //Set id for row
-    $('#row_edit_id').val(id);
+    /*$('#row_edit_id').val(id);
     //Set action for submit
     $('#action').val('edit');
     $('#tab_form a').html('Edit employee');
@@ -67,7 +68,7 @@ function edit_record(id){
         error: function(xhr){
             console.log("Error: " + xhr.message);
         }
-    });
+    });*/
 }
 
 function delete_record(id){

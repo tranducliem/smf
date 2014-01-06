@@ -961,7 +961,8 @@ class Users extends Public_Controller
             $message = $this->employee_create();
             echo json_encode($message);
         }else if($this->input->post('action') == 'edit'){
-            $this->employee_edit();
+            $message = $this->employee_edit();
+            echo json_encode($message);
         }
     }
 
@@ -1234,7 +1235,10 @@ class Users extends Public_Controller
      * Method to employee_edit a user
      */
     private function employee_edit(){
-
+        $message = array();
+        $message['status']  = 'error';
+        $message['message']  = 'Not allow!';
+        return $message;
     }
 
     /**
