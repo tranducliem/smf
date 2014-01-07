@@ -57,4 +57,12 @@ class Feedbackuser_m extends MY_Model {
 
         return $this->db->count_all_results($this->_table);
     }
+    
+    public function get_expried_feedback_list($expriedDate) {
+        $this->db->join('users', 'users.id = feedback_manager_user.user_id');
+        $this->db->join('feedback_manager', 'feedback_manager.id = feedback_manager_user.feedback_manager_id');
+        $this->db->where('feedback_manager.end_date < ', $expriedDate);
+        $this->db->select('feedback_manager_user.*, users.*, feedback_manager.title');
+        return parent::get_all();
+    }
 } 
