@@ -60,8 +60,9 @@ $route['login']	                            = 'users/login';
 $route['employee']                          = 'users/employee';
 $route['employee/create']                   = 'users/employee_create';
 $route['employee/process']                  = 'users/employee_process';
-$route['employee/delete']                   = 'users/employee_delete';
-$route['employee/action']                   = 'users/employee_action';
+$route['employee/delete']                   = 'users/delete';
+$route['employee/action']                   = 'users/action';
+$route['employee/get_employee_by_id']       = 'users/get_employee_by_id';
 
 
 $route['sitemap.xml']                       = 'sitemap/xml';

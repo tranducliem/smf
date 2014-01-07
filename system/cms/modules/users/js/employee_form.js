@@ -39,36 +39,43 @@ function form_reset(){
     $('#team_id').val("");
 }
 
-function edit_record(id){
-    open_message_block("error", 'Not allow update!');
+function detail_record(id){
+    // open_message_block("error", 'Not allow update!');
     //Set id for row
-    /*$('#row_edit_id').val(id);
+    $('#row_edit_id').val(id);
     //Set action for submit
-    $('#action').val('edit');
-    $('#tab_form a').html('Edit employee');
-    $('#btnSubmit').html('Edit employee');
+    $('#action').val('view');
+    $('#tab_form2 a').html('View employee');
+    $('#btnSubmit').html('View employee');
     //Bidding data
     $.ajax({
         type: "POST",
-        url: BASE_URL + "employee/get_feedback_employee_by_id/"+id,
+        url: BASE_URL + "users/get_employee_by_id/"+id,
         data: {},
         success: function(data){
             var response = $.parseJSON(data);
-            $('#title').val(response.title);
-            $('#apply_id').val(response.apply_id);
-            $('#department_id').val(response.department_id);
-            $('#description').val(response.description);
-            $('#date').val(response.date);
-            //Show tab form team
+
+            var rows = 
+                '<h3>' + response. username + '</h3></br>'+
+                '<i class="icon-envelope"></i> <b>E-mail:</b> ' + response. email + '</br></br>'+
+                '<i class="icon-user"></i> <b>Username:</b> ' + response. username + '</br></br>'+
+                '<i class="icon-group"></i> <b>Department:</b> ' + response. department.title + '</br></br>'+
+                '<i class="icon-user-md"></i> <b>Team:</b> ' + response. team.title + '</br></br>';
+            
+            $('#view-result').html(rows);
+
+            // //Show tab form user
             $('#tab-1').removeClass('active');
             $('#tab_list').removeClass('active');
-            $('#tab_form').addClass('active');
-            $('#tab-2').addClass('active');
+            $('#tab_form').removeClass('active');
+            $('#tab-2').removeClass('active');
+            $('#tab_form2').addClass('active');
+            $('#tab-3').addClass('active');
         },
         error: function(xhr){
             console.log("Error: " + xhr.message);
         }
-    });*/
+    });
 }
 
 function delete_record(id){
@@ -76,7 +83,7 @@ function delete_record(id){
     if(con){
         $.ajax({
             type: "POST",
-            url: BASE_URL + "feedback_employee/delete/"+id,
+            url: BASE_URL + "users/delete/"+id,
             data: {},
             success: function(data){
                 var response = $.parseJSON(data);
@@ -105,6 +112,8 @@ function form_success(data){
             //Show tab list team
             $('#tab-2').removeClass('active');
             $('#tab_form').removeClass('active');
+            $('#tab-3').removeClass('active');
+            $('#tab_form2').removeClass('active');
             $('#tab_list').addClass('active');
             $('#tab-1').addClass('active');
         }else if(response.status == "warning"){
@@ -113,6 +122,8 @@ function form_success(data){
             //Show tab list team
             $('#tab-2').removeClass('active');
             $('#tab_form').removeClass('active');
+            $('#tab-3').removeClass('active');
+            $('#tab_form2').removeClass('active');
             $('#tab_list').addClass('active');
             $('#tab-1').addClass('active');
         }else if(response.status == "error"){
@@ -129,7 +140,7 @@ function form_success(data){
 function list_refresh(){
     $.ajax({
         type: "POST",
-        url: BASE_URL + "feedback_employee",
+        url: BASE_URL + "employee",
         data: {},
         success: function(data){
             $('#filter-result').html(data);
