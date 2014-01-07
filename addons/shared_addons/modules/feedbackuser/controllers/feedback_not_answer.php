@@ -59,6 +59,7 @@ class Feedback_not_answer extends Public_Controller {
         $feedback_user = $this->feedbackuser_m->get_by_feedback_id_and_user_id($feedback_id, $this->current_user->id);
         $questions = $this->feedback_manager_question_m->get_many_by('feedback_manager_id', $feedback_id);
         $success = 1;
+        $feedback=  $this->feedbackmanager_m->get($feedback_id);
         foreach ($questions as $question) {
             $extra = array(
                 'answer_id' => $this->input->post($question->question_id),
@@ -80,13 +81,18 @@ class Feedback_not_answer extends Public_Controller {
             );
             if ($this->feedbackuser_m->update($feedback_user->id, $feedback_extra)) {
                 $message['status'] = 'success';
-                $message['message'] = str_replace("%s", 'aa', lang('feedbackuser:feedbackuser_add_success'));
+                $message['message'] = str_replace("%s", $feedback->title, lang('feedbackuser:answer_feedback_success'));
             } else {
                 $message['status'] = 'error';
                 $message['message'] = lang('feedbackuser:feedbackuser_add_error');
             }
         }
         echo json_encode($message);
+    }
+    
+    public function list_question($id){
+        $questions = $this->feedback_manager_question_m->get_all_question_in_feedback($id);
+        echo json_encode($questions);
     }
 
 }

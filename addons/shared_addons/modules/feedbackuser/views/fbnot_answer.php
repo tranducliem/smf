@@ -10,7 +10,10 @@
     <!--tab-content-->
     <div class="tab-content">
         <div class="tab-pane active" id="tab-1">
-            <?php echo $this->load->view('tables/not_answers') ?>
+            <div id="filter-result">
+                <?php echo $this->load->view('tables/not_answers') ?>
+            </div>
+
         </div>
         <div class="tab-pane" id="tab-2">
             <div class="form_field">
