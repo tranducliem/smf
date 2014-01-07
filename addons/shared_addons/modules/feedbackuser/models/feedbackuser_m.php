@@ -57,4 +57,21 @@ class Feedbackuser_m extends MY_Model {
 
         return $this->db->count_all_results($this->_table);
     }
+    
+    public function get_feedback_not_answer($user_id){
+        return $this->db->select('feedback_manager.id,feedback_manager.title,feedback_manager.description,feedback_manager.start_date,
+                                  feedback_manager.end_date,feedback_manager.type_id,feedback_manager.require,feedback_manager_user.status')
+                        ->where('user_id',$user_id)
+                        ->where('feedback_manager_user.status',1)
+                        ->join('feedback_manager', 'feedback_manager.id = feedback_manager_user.feedback_manager_id')
+                        ->get($this->_table)
+                        ->result();
+    }
+    
+    public function get_by_feedback_id_and_user_id($feedback_id,$user_id){
+        return $this->db->where('feedback_manager_id',$feedback_id)
+                        ->where('user_id',$user_id)
+                        ->get($this->_table)
+                        ->row();
+    }
 } 

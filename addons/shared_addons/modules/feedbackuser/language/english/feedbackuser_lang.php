@@ -10,6 +10,8 @@ $lang['feedbackuser:status']                    = 'Status';
 $lang['feedbackuser:user_name']                 = 'Username';
 $lang['feedbackuser:manager_title']             = 'Feedback Manager Title';
 $lang['feedbackuser:list_fbuser']               = 'List Feedback User';
+$lang['feedbackuser:list_fbnot_answer']         = 'List Feedback Not Answer';
+$lang['feedbackuser:answer_fb']                 = 'Answer Feedback';
 $lang['feedbackuser:select_feedback']           = 'Select Feedback User';
 $lang['feedbackuser:select_user']               = 'Select User';
 
@@ -22,6 +24,7 @@ $lang['feedbackuser:content_label']             = 'Content';
 
 // Message
 $lang['feedbackuser:currently_no_feedback']     = 'There are no FeedbackUsers at the moment.';
+$lang['feedbackuser:all_answer']                = 'All Feedback answered.';
 $lang['feedbackuser:feedbackuser_add_success']  = 'The feedbackuser was added.';
 $lang['feedbackuser:feedbackuser_add_error']    = 'Add feedbackuser was failed.';
 $lang['feedbackuser:edit_success']              = 'The feedbackuser was updated.';
@@ -39,3 +42,10 @@ $lang['feedbackuser:feedbackuser_title_label']  = 'Edit FeedbackUser "%s"';
 $lang['feedbackuser:form_title']                = 'Title';
 $lang['feedbackuser:form_description']          = 'Description';
 $lang['feedbackuser:form_feedback_id']          = 'FeedbackManager ID';
+$lang['feedbackuser:form_title']                = 'Title';
+$lang['feedbackuser:form_description']          = 'Description';
+$lang['feedbackuser:form_type_id']              = 'Type';
+$lang['feedbackuser:form_start_date']           = 'Start date';
+$lang['feedbackuser:form_end_date']             = 'End date';
+$lang['feedbackuser:form_status']               = 'Status';
+$lang['feedbackuser:form_require']              = 'Require';
