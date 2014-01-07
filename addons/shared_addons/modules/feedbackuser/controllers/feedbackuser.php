@@ -312,6 +312,49 @@ class Feedbackuser extends Public_Controller {
         $post['url_edit'] = site_url('feedbackuser/edit/'.$post['id']);
         $post['url_delete'] = site_url('feedbackuser/delete/'.$post['id']);
     }
+    
+    /**
+     * The send_email function
+     * @Description: Send email to expried feecback user
+     * @Parameter:
+     * @Return: null
+     * @Date: 1/7/14
+     * @Update: 1/7/14
+     */
+    public function send_email() {
+        $this->load->library('email');
+        $this->load->helper('cookie');
+        
+        $expriedDate = date('Y-m-d H:i:s', now() + 86400);
+        $expriedFeedbacks = $this->feedbackuser_m->get_expried_feedback_list($expriedDate);
+        if($expriedFeedbacks) {
+            $emails = "";
+            foreach ($expriedFeedbacks as $item) {
+                $emails = $emails . $item->email . ",";
+            }
+            $emails = rtrim($emails, ",");
+            $data['subject']			= Settings::get('site_name') . ' - Your request feedback expried!'; 
+            $data['slug'] 			= 'feedback-expired';
+            $data['to'] 			= ($emails);
+            $data['from'] 			= Settings::get('server_email');
+            $data['name']			= Settings::get('site_name');
+            $data['reply-to']			= Settings::get('contact_email');
+            $data['user']			= $item;
+
+            // send the email using the template event found in system/cms/templates/
+            $results = Events::trigger('email', $data, 'array');
+
+            // check for errors from the email event
+            foreach ($results as $result)
+            {
+                    if ( ! $result)
+                    {
+                        $this->set_error('activation_email_unsuccessful');
+                        return false;
+                    }
+            }
+        }
+    }
 }
 
 

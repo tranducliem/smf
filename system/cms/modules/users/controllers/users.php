@@ -22,6 +22,8 @@ class Users extends Public_Controller
 
 		// Load the required classes
 		$this->load->model('user_m');
+		$this->load->model('department/department_m');
+		$this->load->model('team/team_m');
 		$this->load->helper('user');
 		$this->lang->load(array('user', 'employee'));
 		$this->load->library('form_validation');
@@ -1251,6 +1253,87 @@ class Users extends Public_Controller
      */
     private function _process_post(&$post) {
         $post['department'] = get_department_by_user_id($post['user_id']);
+    }
+
+    public function get_employee_by_id($id)
+    {
+    	if (!$this->input->is_ajax_request())
+            redirect('employee');
+        if ($id != null && $id != "") {
+            $item = $this->user_m->get_by(array('id' =>$id));
+            $item->department = $this->department_m->get_by(array('id'=>$item->department_id));
+            $item->team = $this->team_m->get_by(array('id'=>$item->team_id));
+            echo json_encode($item);
+        } else {
+            echo "";
+        }
+    }
+
+    function get_department($id)
+    {
+    	$item = $this->department_m->get_by(array('id'=>$id));
+    	print_r($item);
+    }
+
+
+        /**
+     * The delete function
+     * @Description: This is delete function
+     * @Parameter:
+     *      1. $id int The ID of the feedback manager post to delete
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    public function delete($id = 0) {
+        $ids = ($id) ? array($id) : $this->input->post('action_to');
+        if (!empty($ids)) {
+            $post_names = array();
+            $deleted_ids = array();
+
+            foreach ($ids as $id){
+                if ($post = $this->user_m->get_by(array('id'=>$id))){
+                    if ($this->user_m->delete($id)){
+                        $post_names[] = $post->username;
+                        $deleted_ids[] = $id;
+                    }
+                }
+            }
+            Events::trigger('employee_deleted', $deleted_ids);
+        }
+        $message = array();
+        if (!empty($post_names)) {
+            if (count($post_names) == 1) {
+                $message['status'] = 'success';
+                $message['message'] = str_replace("%s", $post_names[0], lang('employee:delete_success'));
+            } else {
+                $message['status'] = 'success';
+                $message['message'] = str_replace("%s", implode('", "', $post_names), lang('employee:mass_delete_success'));
+            }
+        } else {
+            $message['status'] = 'warning';
+            $message['message'] = lang('employee:delete_error');
+        }
+        echo json_encode($message);
+    }
+
+    /**
+     * The action function
+     * @Description: This is action function
+     * @Parameter:
+     * @Return: null
+     * @Date: 11/21/13
+     * @Update: 11/21/13
+     */
+    public function action() {
+        switch ($this->input->post('btnAction')) {
+            case 'delete':
+                $this->delete();
+                break;
+            default:
+                echo '';
+                break;
+        }
     }
 
 }
