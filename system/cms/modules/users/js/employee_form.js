@@ -54,13 +54,13 @@ function detail_record(id){
         data: {},
         success: function(data){
             var response = $.parseJSON(data);
-
+            // alert(response);    
             var rows = 
                 '<h3>' + response. username + '</h3></br>'+
                 '<i class="icon-envelope"></i> <b>E-mail:</b> ' + response. email + '</br></br>'+
                 '<i class="icon-user"></i> <b>Username:</b> ' + response. username + '</br></br>'+
-                '<i class="icon-group"></i> <b>Department:</b> ' + response. department.title + '</br></br>'+
-                '<i class="icon-user-md"></i> <b>Team:</b> ' + response. team.title + '</br></br>';
+                '<i class="icon-group"></i> <b>Department:</b> ' + response. department + '</br></br>'+
+                '<i class="icon-user-md"></i> <b>Team:</b> ' + response. team + '</br></br>';
             
             $('#view-result').html(rows);
 

@@ -24,6 +24,7 @@ class Users extends Public_Controller
 		$this->load->model('user_m');
 		$this->load->model('department/department_m');
 		$this->load->model('team/team_m');
+		$this->load->model('profile_m');
 		$this->load->helper('user');
 		$this->lang->load(array('user', 'employee'));
 		$this->load->library('form_validation');
@@ -1257,12 +1258,15 @@ class Users extends Public_Controller
 
     public function get_employee_by_id($id)
     {
+    	$profile = $this->profile_m->get_by(array('id'=>$id));
+    	$user_id = $profile->user_id;
     	if (!$this->input->is_ajax_request())
             redirect('employee');
-        if ($id != null && $id != "") {
-            $item = $this->user_m->get_by(array('id' =>$id));
-            $item->department = $this->department_m->get_by(array('id'=>$item->department_id));
-            $item->team = $this->team_m->get_by(array('id'=>$item->team_id));
+        if ($user_id != null && $user_id != "") {
+            $item = $this->user_m->get_by(array('id' =>$user_id));
+            
+            $item->department = $this->department_m->get_by(array('id'=>$item->department_id))->title;
+            $item->team = $this->team_m->get_by(array('id'=>$item->team_id))->title;
             echo json_encode($item);
         } else {
             echo "";
@@ -1292,9 +1296,11 @@ class Users extends Public_Controller
             $deleted_ids = array();
 
             foreach ($ids as $id){
-                if ($post = $this->user_m->get_by(array('id'=>$id))){
-                    if ($this->user_m->delete($id)){
-                        $post_names[] = $post->username;
+                if ($post = $this->profile_m->get_by(array('id'=>$id))){
+                    if ($this->profile_m->delete($id)){
+                    	$id_user = $this->user_m->get_by(array('id'=>$post->user_id))->id;
+                    	$this->user_m->delete($id_user);
+                        $post_names[] = $post->first_name;
                         $deleted_ids[] = $id;
                     }
                 }
@@ -1317,6 +1323,11 @@ class Users extends Public_Controller
         echo json_encode($message);
     }
 
+    // public function get_profile($id)
+    // {
+    // 	$id_profile = $this->profile_m->get_by(array('user_id'=>$id))->id;
+    // 	echo $id_profile;
+    // }
     /**
      * The action function
      * @Description: This is action function
