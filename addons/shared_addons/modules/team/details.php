@@ -97,7 +97,7 @@ class Module_Team extends Module
         $help .= "Team Module is a back-end, front-end module for PyroCMS and it supports the latest version 2.1.x.<br />";
         $help .= "It helps members to start a discussion internally and collaborate provided the group must be give permissions.<br /><br />";
         $help .= "<strong>Features:</strong><br />";
-        $help .= "1. Create / edit / delete team<br />";
+        $help .= "1. Create /edit / delete team<br />";
         $help .= "2. View team<br /><br />";
         $help .= "<strong>Installation:</strong><br />";
         $help .= "1. Download the archive and upload via CP<br />";
