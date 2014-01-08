@@ -3,5 +3,5 @@
     <div id="title_feedback"></div>
     <div id="desc_feedback"></div>
     <div id="questions"></div>
-    <button type="submit" id="btnAnswer" name="btnAnswer" class="btn-u pull-left">Answer Feedback</button>
+    <div id="button_submit"></div>
 <?php echo form_close()?>

@@ -26,6 +26,7 @@ $lang['feedbackuser:content_label']             = 'Content';
 $lang['feedbackuser:currently_no_feedback']     = 'There are no FeedbackUsers at the moment.';
 $lang['feedbackuser:all_answer']                = 'All Feedback answered.';
 $lang['feedbackuser:feedbackuser_add_success']  = 'The feedbackuser was added.';
+$lang['feedbackuser:answer_feedback_success']   = 'You answered feedback "%s"';
 $lang['feedbackuser:feedbackuser_add_error']    = 'Add feedbackuser was failed.';
 $lang['feedbackuser:edit_success']              = 'The feedbackuser was updated.';
 $lang['feedbackuser:edit_error']                = 'Edit feedbackuser was failed.';

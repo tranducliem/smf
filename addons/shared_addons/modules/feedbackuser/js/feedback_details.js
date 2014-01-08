@@ -25,6 +25,7 @@ function feedback_details(id) {
 
             }
             $('#questions').html(questions);
+            $('#button_submit').html('<button type="submit" id="btnAnswer" name="btnAnswer" class="btn-u pull-left">Answer Feedback</button>')
             //Show tab form team
             $('#tab-1').removeClass('active');
             $('#tab_list').removeClass('active');
@@ -38,6 +39,25 @@ function feedback_details(id) {
 }
 
 function form_validate() {
+    var feedback_id = $('#feedback_id').val();
+    $.ajax({
+        type: "POST",
+        url: BASE_URL + "feedbackuser/feedback_not_answer/list_question/" + feedback_id,
+        data: {},
+        success: function(data) {
+            var questions=$.parseJSON(data)
+            for (var k = 0; k < questions.length; k++) {
+                if ($('input[name='+questions[k].id+']:checked').length <1) {
+                    message='You did not answer question '+questions[k].title;
+                    open_message_block("error", message);
+                    return false;
+                }
+            }
+        },
+        error: function(xhr) {
+            console.log("Error: " + xhr.message);
+        }
+    });
     return true;
 }
 
@@ -45,11 +65,35 @@ function form_success(data) {
     var response = $.parseJSON(data);
     if (response.status == "success") {
         open_message_block("success", response.message);
+        form_reset();
         $('#tab-2').removeClass('active');
         $('#tab_form').removeClass('active');
         $('#tab_list').addClass('active');
         $('#tab-1').addClass('active');
+        list_refresh();
     } else if (response.status == "error") {
         open_message_block("error", response.message);
     }
 }
+
+function list_refresh() {
+    $.ajax({
+        type: "POST",
+        url: BASE_URL + "feedbackuser/feedback_not_answer",
+        data: {},
+        success: function(data) {
+            $('#filter-result').html(data);
+        },
+        error: function(xhr) {
+            console.log("Error: " + xhr.message);
+        }
+    });
+}
+
+function form_reset() {
+    $('#title_feedback').html('');
+    $('#feedback_id').val('');
+    $('#desc_feedback').html('');
+    $('#questions').html('');
+}
+
