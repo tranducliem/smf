@@ -21,6 +21,8 @@ class Feedback_not_answer extends Public_Controller {
         if (!$this->current_user)
             redirect();
         $this->load->driver('Streams');
+        $this->template->set_layout('feedback_layout.html');
+        $this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
         $this->load->library(array('keywords/keywords', 'form_validation'));
         $this->load->model(array('question_m', 'feedbackuser_m', 'feedbackmanager_m', 'user_m', 'feedback_manager_question_m'));
         $this->lang->load('feedbackuser');
@@ -60,6 +62,11 @@ class Feedback_not_answer extends Public_Controller {
         $questions = $this->feedback_manager_question_m->get_many_by('feedback_manager_id', $feedback_id);
         $success = 1;
         $feedback=  $this->feedbackmanager_m->get($feedback_id);
+        foreach ($questions as $question) {
+            if(!$this->input->post($question->question_id)){
+               return false;
+            }
+        }
         foreach ($questions as $question) {
             $extra = array(
                 'answer_id' => $this->input->post($question->question_id),

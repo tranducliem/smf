@@ -45,10 +45,10 @@ function form_validate() {
         url: BASE_URL + "feedbackuser/feedback_not_answer/list_question/" + feedback_id,
         data: {},
         success: function(data) {
-            var questions=$.parseJSON(data)
+            var questions = $.parseJSON(data)
             for (var k = 0; k < questions.length; k++) {
-                if ($('input[name='+questions[k].id+']:checked').length <1) {
-                    message='You did not answer question '+questions[k].title;
+                if ($('input[name=' + questions[k].id + ']:checked').length < 1) {
+                    message = 'You did not answer question ' + questions[k].title;
                     open_message_block("error", message);
                     return false;
                 }
@@ -63,16 +63,18 @@ function form_validate() {
 
 function form_success(data) {
     var response = $.parseJSON(data);
-    if (response.status == "success") {
-        open_message_block("success", response.message);
-        form_reset();
-        $('#tab-2').removeClass('active');
-        $('#tab_form').removeClass('active');
-        $('#tab_list').addClass('active');
-        $('#tab-1').addClass('active');
-        list_refresh();
-    } else if (response.status == "error") {
-        open_message_block("error", response.message);
+    if (response != null) {
+        if (response.status == "success") {
+            open_message_block("success", response.message);
+            form_reset();
+            $('#tab-2').removeClass('active');
+            $('#tab_form').removeClass('active');
+            $('#tab_list').addClass('active');
+            $('#tab-1').addClass('active');
+            list_refresh();
+        } else if (response.status == "error") {
+            open_message_block("error", response.message);
+        }
     }
 }
 
