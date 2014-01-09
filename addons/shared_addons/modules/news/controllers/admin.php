@@ -84,6 +84,8 @@ class Admin extends Admin_Controller
         parent::__construct();
 
         $this->load->model(array('news_m', 'news_categories_m', 'files/file_folders_m', 'files/file_m'));
+        
+        $this->load->model('email/email_m');
         $this->lang->load(array('news', 'categories'));
 
         $this->load->library(array('keywords/keywords', 'form_validation'));
@@ -216,6 +218,34 @@ class Admin extends Admin_Controller
             );
 
             if ($id = $this->streams->entries->insert_entry($_POST, 'news', 'newss', array('created'), $extra)) {
+                
+                $a_mail = $this->email_m->get_all();
+                
+                $config = array(
+                    'protocol' => 'smtp',
+                    'smtp_host' => 'ssl://smtp.googlemail.com',
+                    'smtp_port' => '465',
+                    'smtp_user' => 'hoangdungframgia@gmail.com',
+                    'smtp_pass' => 'hoangdung123456'
+                );
+                $this->load->library('email',$config);
+                $this->email->set_newline("\r\n");
+                
+                foreach ($a_mail as $value) {
+                    $this->email->from('test@framgia.com');
+                    $this->email->to($value->email);
+                    $this->email->subject('Systems Management Feedback');
+                    $this->email->message('Hi, you have a new from Systems Management Feedback!<br/>'.
+                        $extra['title'].'<br/>'.$extra['body'].'<br/> Thanks for reading^^');  
+                    if($this->email->send()){
+                        echo "Email sent";
+                    }
+                    else
+                    {
+                        show_error($this->email->print_debugger());
+                    }
+                }  
+                
                 $this->pyrocache->delete_all('news_m');
                 $this->session->set_flashdata('success', sprintf($this->lang->line('news:post_add_success'), $this->input->post('title')));
 
@@ -261,6 +291,12 @@ class Admin extends Admin_Controller
             ->set('stream_fields', $this->streams->fields->get_stream_fields($stream->stream_slug, $stream->stream_namespace, $values))
             ->set('post', $post)
             ->build('admin/form', $this->_data);
+    }
+
+    public function test()
+    {
+        $a_mail = $this->email_m->get_all();
+        print_r($a_mail);
     }
 
     /**
